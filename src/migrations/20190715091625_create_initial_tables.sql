@@ -8,7 +8,6 @@ CREATE TABLE persons (
   phone         VARCHAR(20),
   email         VARCHAR(50),
   created_at    TIMESTAMP,
-  updated_at    TIMESTAMP,
   deleted       INT DEFAULT 0
 );
 
@@ -20,7 +19,6 @@ CREATE TABLE addresses (
   state         VARCHAR(25),
   pincode       VARCHAR(6),
   created_at    TIMESTAMP,
-  updated_at    TIMESTAMP,
   deleted       INT DEFAULT 0
 );
 
