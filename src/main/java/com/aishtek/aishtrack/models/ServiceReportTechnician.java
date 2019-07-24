@@ -11,4 +11,8 @@ import org.javalite.activejdbc.annotations.Table;
 @Table("service_report_technicians")
 public class ServiceReportTechnician extends Model {
 
+  public static ServiceReportTechnician assignServiceReportTechnicain(int serviceReportId,
+      int techniciaId) {
+    return createIt("service_report_id", serviceReportId, "technician_id", techniciaId);
+  }
 }

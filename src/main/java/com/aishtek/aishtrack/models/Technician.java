@@ -10,4 +10,15 @@ import org.javalite.activejdbc.annotations.Table;
 @Table("technicians")
 public class Technician extends Model {
 
+  public int getTechnicianId() {
+    return getInteger("id");
+  }
+
+  public String getEmailAddress() {
+    return parent(Person.class).getEmailAddress();
+  }
+
+  public String getFullName() {
+    return parent(Person.class).getFullName();
+  }
 }

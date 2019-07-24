@@ -27,3 +27,17 @@ hs_err_pid*
 .settings/org.eclipse.core.resources.prefs
 .settings/org.eclipse.jdt.core.prefs
 .settings/org.eclipse.m2e.core.prefs
+.externalToolBuilders/Aishtrack Javalite Instrumentation.launch
+.externalToolBuilders/Before Instrumentation.launch
+.settings/org.eclipse.jdt.ui.prefs
+.DS_Store
+
+#backups
+*.backup
+
+# built stuhh
+target
+target/*
+*.class
+src/main/resources/scripts/.instrumentation.sh.swp
+src/main/resources/scripts/instrumentation.sh
