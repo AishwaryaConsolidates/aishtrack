@@ -1,5 +1,7 @@
 create extension "uuid-ossp";
 
+CREATE OR REPLACE FUNCTION updated_at_trigger() RETURNS TRIGGER AS $$ BEGIN NEW.updated_at = NOW(); RETURN NEW; END; $$ LANGUAGE plpgsql;
+
 CREATE TABLE persons (
   id            SERIAL PRIMARY KEY,
   first_name    VARCHAR(50),
@@ -7,7 +9,7 @@ CREATE TABLE persons (
   designation   VARCHAR(50),
   phone         VARCHAR(20),
   email         VARCHAR(50),
-  created_at    TIMESTAMP,
+  created_at    TIMESTAMP DEFAULT NOW(),
   deleted       INT DEFAULT 0
 );
 
@@ -18,7 +20,7 @@ CREATE TABLE addresses (
   city          VARCHAR(25),
   state         VARCHAR(25),
   pincode       VARCHAR(6),
-  created_at    TIMESTAMP,
+  created_at    TIMESTAMP DEFAULT NOW(),
   deleted       INT DEFAULT 0
 );
 
@@ -28,8 +30,7 @@ CREATE TABLE customers (
   nick_name              VARCHAR(50) UNIQUE,
   address_id             INT NOT NULL,
   contact_person_id      INT NOT NULL,
-  created_at             TIMESTAMP,
-  updated_at             TIMESTAMP,
+  created_at             TIMESTAMP DEFAULT NOW(),
   deleted                INT DEFAULT 0,
   FOREIGN KEY (contact_person_id) REFERENCES persons(id),
   FOREIGN KEY (address_id) REFERENCES addresses(id)
@@ -47,9 +48,15 @@ CREATE INDEX ON customer_persons(customer_id, person_id);
 CREATE TABLE technicians (
   id             SERIAL PRIMARY KEY,
   person_id      INT NOT NULL,
+  created_at     TIMESTAMP DEFAULT NOW(),
+  deleted        INT DEFAULT 0,
   FOREIGN KEY (person_id) REFERENCES persons(id)
 );
 CREATE INDEX ON technicians(person_id);
+CREATE TRIGGER set_tech_updated_at
+BEFORE UPDATE ON technicians
+FOR EACH ROW
+EXECUTE PROCEDURE updated_at_trigger();
 
 CREATE TABLE work_orders (
   id             SERIAL PRIMARY KEY,
@@ -58,12 +65,17 @@ CREATE TABLE work_orders (
   status         VARCHAR(15),
   status_date    TIMESTAMP,
   notes          TEXT,
-  created_at     TIMESTAMP,
+  created_at     TIMESTAMP DEFAULT NOW(),
   updated_at     TIMESTAMP,
   deleted        INT DEFAULT 0,
   FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
 CREATE INDEX ON work_orders(customer_id);
+
+CREATE TRIGGER set_wo_updated_at
+BEFORE UPDATE ON work_orders
+FOR EACH ROW
+EXECUTE PROCEDURE updated_at_trigger();
 
 CREATE TABLE service_reports (
   id                     SERIAL PRIMARY KEY,
@@ -79,7 +91,7 @@ CREATE TABLE service_reports (
   serial_number          VARCHAR(30),
   service_rating         INT,
   notes                  TEXT,
-  created_at             TIMESTAMP,
+  created_at             TIMESTAMP DEFAULT NOW(),
   updated_at             TIMESTAMP,
   deleted                INT DEFAULT 0,
   FOREIGN KEY (customer_id) REFERENCES customers(id),
@@ -87,6 +99,11 @@ CREATE TABLE service_reports (
   FOREIGN KEY (address_id) REFERENCES addresses(id)
 );
 CREATE INDEX ON service_reports(customer_id);
+
+CREATE TRIGGER set_sr_updated_at
+BEFORE UPDATE ON service_reports
+FOR EACH ROW
+EXECUTE PROCEDURE updated_at_trigger();
 
 CREATE TABLE work_order_service_reports (
   id                   SERIAL PRIMARY KEY,
@@ -189,7 +206,7 @@ CREATE TABLE installation_reports (
   installation_details   JSON,
   service_rating         INT,
   notes                  TEXT,
-  created_at             TIMESTAMP,
+  created_at             TIMESTAMP DEFAULT NOW(),
   updated_at             TIMESTAMP,
   deleted                INT DEFAULT 0,
   FOREIGN KEY (customer_id) REFERENCES customers(id),
@@ -198,6 +215,11 @@ CREATE TABLE installation_reports (
   FOREIGN KEY (rating_card_file_id) REFERENCES files(id)
 );
 CREATE INDEX ON installation_reports(customer_id);
+
+CREATE TRIGGER set_ir_updated_at
+BEFORE UPDATE ON installation_reports
+FOR EACH ROW
+EXECUTE PROCEDURE updated_at_trigger();
 
 CREATE TABLE work_order_installation_reports (
   id                        SERIAL PRIMARY KEY,

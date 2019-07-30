@@ -1,40 +1,55 @@
 package com.aishtek.aishtrack.test;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
-import org.javalite.activejdbc.test.DBSpec;
-import com.aishtek.aishtrack.models.Address;
-import com.aishtek.aishtrack.models.Customer;
-import com.aishtek.aishtrack.models.Person;
-import com.aishtek.aishtrack.models.Technician;
-import com.aishtek.aishtrack.models.WorkOrder;
-import com.aishtek.aishtrack.utils.WorkStatus;
+import com.aishtek.aishtrack.beans.Address;
+import com.aishtek.aishtrack.beans.Customer;
+import com.aishtek.aishtrack.beans.Person;
+import com.aishtek.aishtrack.beans.WorkOrder;
+import com.aishtek.aishtrack.dao.AddressDAO;
+import com.aishtek.aishtrack.dao.CustomerDAO;
+import com.aishtek.aishtrack.dao.PersonDAO;
+import com.aishtek.aishtrack.dao.TechnicianDAO;
+import com.aishtek.aishtrack.dao.WorkOrderDAO;
 
-public class BaseIntegrationTest extends DBSpec {
+public class BaseIntegrationTest {
 
-  public Person createTestPerson() {
-    return Person.createIt("first_name", "Asterix", "last_name", "Gaul", "designation",
-        "Troubleshooter", "email", "asterix@aishtek.tst", "phone", "9999999999");
+  public Connection getConnection() throws SQLException {
+    Connection connection =
+        DriverManager.getConnection("jdbc:postgresql://localhost/aishtek_test", "adarsh",
+        "adarsh");
+    connection.setAutoCommit(false);
+    return connection;
   }
 
-  public Address createTestAddress() {
-    return Address.createIt("street", "Gaul Street", "city", "Gaul", "pincode", "55555");
+  public int createTestPerson(Connection connection) throws SQLException {
+    return PersonDAO.create(connection,
+        new Person("Asterix", "Gaul", "Troubleshooter", "asterix@aishtek.tst", "9999999999"));
   }
 
-  public Customer createTestCustomer() {
-    return Customer.createIt("name", "The Cafe", "nick_name", "Cafe", "contact_person_id",
-        createTestPerson().getPersonId(), "address_id", createTestAddress().getAddressId());
+  public int createTestAddress(Connection connection) throws SQLException {
+    return AddressDAO.create(connection,
+        new Address("Food St.", "VV Puram", "Blore", "KTKA", "560004"));
   }
 
-  public WorkOrder createTestWorkOrder() {
-    return WorkOrder.createIt("type", "service_report", "customer_id",
-        createTestCustomer().getCustomerId(), "status_date", currentTimestamp(), "status",
-        WorkStatus.CREATED_STATUS, "notes", "Some Note about WO");
+  public int createTestCustomer(Connection connection) throws SQLException {
+    return CustomerDAO.create(connection,
+        new Customer("Bajji Corner", "Bajji", createTestAddress(connection),
+            createTestPerson(connection)));
   }
 
-  public Technician createTestTechnician() {
-    return Technician.createIt("person_id", createTestPerson().getPersonId());
+  public int createTestWorkOrder(Connection connection) throws SQLException {
+    return WorkOrderDAO.create(connection,
+        new WorkOrder(createTestCustomer(connection), "Type 2", "Notify this"));
   }
+
+  public int createTestTechnician(Connection connection) throws SQLException {
+    return TechnicianDAO.create(connection, createTestPerson(connection));
+  }
+
   public static Timestamp currentTimestamp() {
     return new Timestamp(new Date().getTime());
   }

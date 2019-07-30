@@ -30,7 +30,8 @@ public class EmailSenderService {
           .withSource(FROM_EMAIL_ADDRESS);
       client.sendEmail(request);
     } catch (Exception ex) {
-      System.out.println("The email was not sent. Error message: " + ex.getMessage());
+      System.out.println(ex);
+      throw new IOException("The email was not sent. Error message: " + ex.getMessage());
     }
   }
 }

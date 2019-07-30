@@ -1,13 +1,19 @@
 package com.aishtek.aishtrack.function;
 
-import java.util.Map;
-import com.google.gson.Gson;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class BaseFunction {
 
-  @SuppressWarnings("unchecked")
-  public Map<String, String> getParams(String jsonString) {
-    Gson gson = new Gson();
-    return gson.fromJson(jsonString, Map.class);
+  protected Connection getConnection() throws SQLException {
+    Connection connection =
+        DriverManager.getConnection("jdbc:postgresql://localhost/aishtek_test", "adarsh",
+        "adarsh");
+    connection.setAutoCommit(false);
+    return connection;
+    // return DriverManager.getConnection(
+    // "jdbc:postgresql://aishtek.cufbjsmbrpfk.ap-south-1.rds.amazonaws.com/aishtek", "aishtek",
+    // "a1shwarya");
   }
 }
