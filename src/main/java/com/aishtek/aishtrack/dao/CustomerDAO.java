@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import com.aishtek.aishtrack.beans.Customer;
+import com.aishtek.aishtrack.utils.Util;
 
 public class CustomerDAO extends BaseDAO {
   public static Customer findById(Connection connection, int customerId) throws SQLException {
@@ -52,6 +53,16 @@ public class CustomerDAO extends BaseDAO {
     }
   }
 
+  public static void update(Connection connection, Customer customer) throws SQLException {
+    PreparedStatement preparedStatement = connection.prepareStatement(
+        "update customers set name =?, nick_name =?, deleted = ? where id = ?");
+    preparedStatement.setString(1, customer.getName());
+    preparedStatement.setString(2, customer.getNickName());
+    preparedStatement.setInt(3, customer.getDeleted());
+    preparedStatement.setInt(4, customer.getId());
+    preparedStatement.executeUpdate();
+  }
+
   public static ArrayList<Integer> findCustomerPersons(Connection connection, int customerId)
       throws SQLException {
     String sql = "SELECT person_id FROM customer_persons where customer_id = ?";
@@ -65,5 +76,29 @@ public class CustomerDAO extends BaseDAO {
       personIds.add(result.getInt(1));
     }
     return personIds;
+  }
+
+  public static ArrayList<Customer> searchFor(Connection connection, String name)
+      throws SQLException {
+    String sql = "SELECT id, name, nick_name FROM customers where deleted = 0 ";
+
+    if (!Util.isNullOrEmpty(name)) {
+      sql += " and (name like ? or nick_name like ?) ";
+    }
+
+    PreparedStatement statement = connection.prepareStatement(sql);
+    if (!Util.isNullOrEmpty(name)) {
+      name = "%" + name + "%";
+      statement.setString(1, name);
+      statement.setString(2, name);
+    }
+
+    ResultSet result = statement.executeQuery();
+
+    ArrayList<Customer> customers = new ArrayList<Customer>();
+    while (result.next()) {
+      customers.add(new Customer(result.getInt(1), result.getString(2), result.getString(3)));
+    }
+    return customers;
   }
 }

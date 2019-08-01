@@ -7,6 +7,12 @@ public class Customer extends BaseBean {
   private int addressId;
   private int contactPersonId;
 
+  public Customer(int id, String name, String nickName) {
+    this.id = id;
+    this.name = name;
+    this.nickName = nickName;
+  }
+
   public Customer(int id, String name, String nickName, int addressId, int contactPersonId,
       int deleted) {
     this.id = id;

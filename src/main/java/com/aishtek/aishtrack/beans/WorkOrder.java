@@ -11,6 +11,9 @@ public class WorkOrder extends BaseBean {
   private Date statusDate;
   private String notes;
 
+  // search fields
+  private String customerName;
+
   public WorkOrder(int customerId, String type, String notes) {
     this.customerId = customerId;
     this.type = type;
@@ -68,6 +71,14 @@ public class WorkOrder extends BaseBean {
 
   public void setNotes(String notes) {
     this.notes = notes;
+  }
+
+  public String getCustomerName() {
+    return customerName;
+  }
+
+  public void setCustomerName(String customerName) {
+    this.customerName = customerName;
   }
 
 }

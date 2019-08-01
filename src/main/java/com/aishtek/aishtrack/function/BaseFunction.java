@@ -7,13 +7,10 @@ import java.sql.SQLException;
 public class BaseFunction {
 
   protected Connection getConnection() throws SQLException {
-    Connection connection =
-        DriverManager.getConnection("jdbc:postgresql://localhost/aishtek_test", "adarsh",
-        "adarsh");
+    Connection connection = DriverManager.getConnection(
+        "jdbc:postgresql://aishtek.cufbjsmbrpfk.ap-south-1.rds.amazonaws.com/aishtek", "aishtek",
+        "a1shwarya");
     connection.setAutoCommit(false);
     return connection;
-    // return DriverManager.getConnection(
-    // "jdbc:postgresql://aishtek.cufbjsmbrpfk.ap-south-1.rds.amazonaws.com/aishtek", "aishtek",
-    // "a1shwarya");
   }
 }
