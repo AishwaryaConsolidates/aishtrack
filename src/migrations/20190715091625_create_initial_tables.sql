@@ -49,6 +49,7 @@ CREATE TABLE technicians (
   id             SERIAL PRIMARY KEY,
   person_id      INT NOT NULL,
   created_at     TIMESTAMP DEFAULT NOW(),
+  updated_at     TIMESTAMP,
   deleted        INT DEFAULT 0,
   FOREIGN KEY (person_id) REFERENCES persons(id)
 );

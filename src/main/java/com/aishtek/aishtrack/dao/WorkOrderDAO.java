@@ -58,6 +58,16 @@ public class WorkOrderDAO extends BaseDAO {
     preparedStatement.executeUpdate();
   }
 
+  public static void update(Connection connection, WorkOrder workOrder) throws SQLException {
+    PreparedStatement preparedStatement = connection.prepareStatement(
+        "update work_orders set customer_id =?, type = ?, notes = ? where id = ?");
+    preparedStatement.setInt(1, workOrder.getCustomerId());
+    preparedStatement.setString(2, workOrder.getType());
+    preparedStatement.setString(3, workOrder.getNotes());
+    preparedStatement.setInt(4, workOrder.getId());
+    preparedStatement.executeUpdate();
+  }
+
   public static ArrayList<WorkOrder> searchFor(Connection connection, String customerName,
       String status) throws SQLException {
     String sql =

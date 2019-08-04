@@ -13,6 +13,11 @@ public class Technician extends BaseBean {
     this.deleted = deleted;
   }
 
+  public Technician(int id, String firstName, String lastName, String designation) {
+    this.id = id;
+    this.person = new Person(firstName, lastName, designation, null, null);
+  }
+
   public Technician(int personId) {
     this.personId = personId;
   }

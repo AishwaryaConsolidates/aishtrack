@@ -29,6 +29,24 @@ public class CustomerDAOSearchTest extends BaseIntegrationTest {
   }
 
   @Test
+  public void returnsAllCustomersForNullName() throws SQLException {
+    try (Connection connection = getConnection()) {
+      int customerId = createTestCustomer(connection);
+
+      ArrayList<Customer> customers = CustomerDAO.searchFor(connection, null);
+
+      assertEquals(customers.size(), 1);
+      assertEquals(customers.get(0).getId(), customerId);
+      assertEquals(customers.get(0).getName(), "Bajji Corner");
+
+      connection.rollback();
+    } catch (SQLException e) {
+      System.out.println(e);
+      assert (false);
+    }
+  }
+
+  @Test
   public void searchDoesAPartialMatch() throws SQLException {
     try (Connection connection = getConnection()) {
       int customerId = createTestCustomer(connection);
