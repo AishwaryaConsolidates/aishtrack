@@ -1,6 +1,7 @@
 package com.aishtek.aishtrack.dao;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class BaseDAO {
@@ -21,5 +22,13 @@ public class BaseDAO {
       return null;
     }
     return new Date(timestamp.getTime());
+  }
+
+  public static String formatTimestamp(Timestamp timestamp) {
+    return formatDate(dateFor(timestamp));
+  }
+
+  public static String formatDate(Date date) {
+    return (new SimpleDateFormat("dd/MM/yyyy")).format(date);
   }
 }

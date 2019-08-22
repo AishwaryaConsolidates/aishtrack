@@ -22,7 +22,7 @@ public class WorkOrderDAOSearchTest extends BaseIntegrationTest {
       WorkOrder workOrder = new WorkOrder(customerId, type, notes);
       WorkOrderDAO.create(connection, workOrder);
 
-      ArrayList<WorkOrder> workOrders = WorkOrderDAO.searchFor(connection, "Bajji", null);
+      ArrayList<WorkOrder> workOrders = WorkOrderDAO.searchFor(connection, "Bajji", 0, null);
 
       assertEquals(workOrders.size(), 1);
       assertEquals(workOrders.get(0).getCustomerId(), customerId);
@@ -45,7 +45,7 @@ public class WorkOrderDAOSearchTest extends BaseIntegrationTest {
       WorkOrder workOrder = new WorkOrder(customerId, type, notes);
       WorkOrderDAO.create(connection, workOrder);
 
-      ArrayList<WorkOrder> workOrders = WorkOrderDAO.searchFor(connection, "ajj", null);
+      ArrayList<WorkOrder> workOrders = WorkOrderDAO.searchFor(connection, "ajj", 0, null);
 
       assertEquals(workOrders.size(), 1);
       assertEquals(workOrders.get(0).getCustomerId(), customerId);
@@ -68,8 +68,9 @@ public class WorkOrderDAOSearchTest extends BaseIntegrationTest {
       WorkOrder workOrder = new WorkOrder(customerId, type, notes);
       WorkOrderDAO.create(connection, workOrder);
 
+      String[] statuses = {WorkStatus.CREATED_STATUS, WorkStatus.COMPLETED_STATUS};
       ArrayList<WorkOrder> workOrders =
-          WorkOrderDAO.searchFor(connection, "ajj", WorkStatus.CREATED_STATUS);
+          WorkOrderDAO.searchFor(connection, "ajj", 0, statuses);
 
       assertEquals(workOrders.size(), 1);
       assertEquals(workOrder.getStatus(), WorkStatus.CREATED_STATUS);
@@ -88,8 +89,9 @@ public class WorkOrderDAOSearchTest extends BaseIntegrationTest {
       WorkOrder workOrder = new WorkOrder(customerId, type, notes);
       WorkOrderDAO.create(connection, workOrder);
 
+      String[] statuses = {WorkStatus.ASSIGNED_STATUS};
       ArrayList<WorkOrder> workOrders =
-          WorkOrderDAO.searchFor(connection, "ajj", WorkStatus.ASSIGNED_STATUS);
+          WorkOrderDAO.searchFor(connection, "ajj", 0, statuses);
 
       assertEquals(workOrders.size(), 0);
 
@@ -107,7 +109,7 @@ public class WorkOrderDAOSearchTest extends BaseIntegrationTest {
       WorkOrder workOrder = new WorkOrder(customerId, type, notes);
       WorkOrderDAO.create(connection, workOrder);
 
-      ArrayList<WorkOrder> workOrders = WorkOrderDAO.searchFor(connection, "Burgi", null);
+      ArrayList<WorkOrder> workOrders = WorkOrderDAO.searchFor(connection, "Burgi", 0, null);
 
       assertEquals(workOrders.size(), 0);
 

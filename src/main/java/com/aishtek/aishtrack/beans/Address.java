@@ -27,6 +27,10 @@ public class Address extends BaseBean {
     this.deleted = deleted;
   }
 
+  public String getFullAddress() {
+    return street + ", " + area + ", " + city + ", " + state + ", " + pincode;
+  }
+
   public String getStreet() {
     return street;
   }

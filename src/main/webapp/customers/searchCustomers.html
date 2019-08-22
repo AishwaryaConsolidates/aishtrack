@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Search Customers</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/tooplate.css">
+</head>
+
+<body id="reportsPage" class="bg02">
+        <div class="container">
+            <div class="row">
+                <div class="col-12" w3-include-html="../partials/top_nav.html"> </div>
+            </div>
+            <br/>
+            <!-- row -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="bg-white tm-block h-100">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <h2 class="tm-block-title d-inline-block">Customers</h2><input id="customerName" name="customerName" type="text"/>
+                            </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped tm-table-striped-even mt-3">
+                                <thead>
+                                    <tr class="tm-bg-gray">
+                                        <th scope="col" class="text-center">Edit</th>
+                                        <th scope="col">Customer</th>
+                                        <th scope="col">Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="results"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div w3-include-html="../partials/footer.html"> </div>
+        </div>
+    </div>
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/aishtrack.js"></script>
+    <script>    
+        $(function () {
+        	includeHTML();
+        	var timeoutID = null;
+        	
+        	$('#customerName').keyup(function(e) {
+                clearTimeout(timeoutID);
+                timeoutID = setTimeout(() => loadWorkOrders(e.target.value), 500);
+            });
+            
+            function loadWorkOrders(customerName) {
+                $.ajax({
+                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getCustomers?name=" + customerName,
+                    type : "GET",
+                    dataType: "json",
+                    crossDomain: true,
+            		success: function(data) {
+            			jsonArray = JSON.parse(JSON.stringify(data));
+            			listCustomers(jsonArray);
+            		},
+            		error: function(data) {
+            			log("Error fetching customers");
+            		}
+            	});
+              }
+            
+            function listCustomers(jsonArray) {
+            	html = "";
+            	$.each(jsonArray, function(index, jsonObject){
+            		customer = JSON.parse(JSON.stringify(jsonObject));
+            		html+="<tr>";
+            		html+="<td>";
+            		html+="<a href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/customers/updateCustomer.html?customerId=" + customer.id + "\"><i class=\"fas fa-edit\"></i></a>";
+            		html+="</td>";
+            		html+="<td>" + customer.name + "</td>";
+            		html+="<td><i class=\"fas fa-trash-alt tm-trash-icon\"></i></td>";
+            		html+="</tr>";
+            	});
+            	$("#results").html(html);
+            }
+        })
+    </script>
+</body>
+
+</html>

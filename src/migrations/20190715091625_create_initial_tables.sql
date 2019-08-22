@@ -62,7 +62,14 @@ EXECUTE PROCEDURE updated_at_trigger();
 CREATE TABLE work_orders (
   id             SERIAL PRIMARY KEY,
   customer_id    INT NOT NULL,
+  contact_person_id      INT NOT NULL,
   type           VARCHAR(20),
+  category_id    INT,
+  equipment_id   INT,
+  brand          VARCHAR(30),
+  model          VARCHAR(30),
+  serial_number  VARCHAR(30),
+  part_number    VARCHAR(30),
   status         VARCHAR(15),
   status_date    TIMESTAMP,
   notes          TEXT,
@@ -87,9 +94,13 @@ CREATE TABLE service_reports (
   report_date            TIMESTAMP,
   status                 VARCHAR(15),
   status_date            TIMESTAMP,
+  category_id            INT,
+  equipment_id           INT,
   brand                  VARCHAR(30),
   model                  VARCHAR(30),
   serial_number          VARCHAR(30),
+  part_number            VARCHAR(30),
+  signed_by              VARCHAR(30),
   service_rating         INT,
   notes                  TEXT,
   created_at             TIMESTAMP DEFAULT NOW(),
@@ -126,22 +137,22 @@ CREATE INDEX ON service_report_technicians (service_report_id, technician_id);
 
 CREATE TABLE visits (
   id                       SERIAL PRIMARY KEY,
+  service_report_id    INT NOT NULL,
   visit_date               TIMESTAMP,
   complaint                TEXT,
   findings                 TEXT,
   work_done                TEXT,
   customer_remarks         TEXT,
-  deleted                  INT DEFAULT 0 
+  created_at     TIMESTAMP DEFAULT NOW(),
+  updated_at     TIMESTAMP,
+  deleted        INT DEFAULT 0,
+  FOREIGN KEY (service_report_id) REFERENCES service_reports(id)
 );
 
-CREATE TABLE service_report_visits (
-  id                   SERIAL PRIMARY KEY,
-  visit_id             INT NOT NULL,
-  service_report_id    INT NOT NULL,
-  FOREIGN KEY (service_report_id) REFERENCES service_reports(id),
-  FOREIGN KEY (visit_id) REFERENCES visits(id)
-);
-CREATE INDEX ON service_report_visits (service_report_id, visit_id);
+CREATE TRIGGER set_v_updated_at
+BEFORE UPDATE ON visits
+FOR EACH ROW
+EXECUTE PROCEDURE updated_at_trigger();
 
 CREATE TABLE visit_technicians (
   id                   SERIAL PRIMARY KEY,
@@ -248,3 +259,14 @@ CREATE TABLE installation_report_visits (
   FOREIGN KEY (visit_id) REFERENCES visits(id)
 );
 CREATE INDEX ON installation_report_visits (installation_report_id, visit_id);
+
+CREATE TABLE categories (
+  id            SERIAL PRIMARY KEY,
+  name          VARCHAR(30)
+);
+
+CREATE TABLE sub_categories (
+  id            SERIAL PRIMARY KEY,
+  category_id   INT NOT NULL,
+  name          VARCHAR(30)
+);

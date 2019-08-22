@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,8 +30,11 @@ public class CreateServiceReportTest extends BaseIntegrationTest {
 
   private int workOrderId;
   private ArrayList<Integer> technicianIds;
-
+  private String brand = "noBrand";
+  private String model = "modeless";
+  private String serialNumber = "serial";
   private String notes = "This is a note";
+  private Date reportDate = new Date();
   @Mocked
   EmailSenderService emailSenderService;
   @Mocked
@@ -51,7 +55,7 @@ public class CreateServiceReportTest extends BaseIntegrationTest {
       createArtifacts(connection);
 
       int serviceReportId = (new CreateServiceReport()).createServiceReport(connection, workOrderId,
-          notes, technicianIds);
+          notes, brand, model, serialNumber, reportDate, technicianIds);
 
       ServiceReport serviceReport = ServiceReportDAO.findById(connection, serviceReportId);
       WorkOrder workOrder = WorkOrderDAO.findById(connection, workOrderId);
@@ -76,7 +80,7 @@ public class CreateServiceReportTest extends BaseIntegrationTest {
       createArtifacts(connection);
 
       int serviceReportId = (new CreateServiceReport()).createServiceReport(connection, workOrderId,
-          notes, technicianIds);
+          notes, brand, model, serialNumber, reportDate, technicianIds);
 
       ArrayList<Technician> technicians =
           ServiceReportDAO.getTechniciansFor(connection, serviceReportId);
@@ -97,8 +101,8 @@ public class CreateServiceReportTest extends BaseIntegrationTest {
     try (Connection connection = getConnection()) {
       createArtifacts(connection);
 
-      (new CreateServiceReport()).createServiceReport(connection, workOrderId, notes,
-          technicianIds);
+      (new CreateServiceReport()).createServiceReport(connection, workOrderId, notes, brand, model,
+          serialNumber, reportDate, technicianIds);
       WorkOrder workOrder = WorkOrderDAO.findById(connection, workOrderId);
 
       assertEquals(workOrder.getStatus(), WorkStatus.ASSIGNED_STATUS);
@@ -115,8 +119,8 @@ public class CreateServiceReportTest extends BaseIntegrationTest {
     try (Connection connection = getConnection()) {
       createArtifacts(connection);
 
-      (new CreateServiceReport()).createServiceReport(connection, workOrderId, notes,
-          technicianIds);
+      (new CreateServiceReport()).createServiceReport(connection, workOrderId, notes, brand, model,
+          serialNumber, reportDate, technicianIds);
 
       new Verifications() {
         {

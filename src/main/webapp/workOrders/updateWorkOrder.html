@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Create Work order</title>
+    <title>Create Work Order</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
     <link rel="stylesheet" href="../css/fontawesome.min.css">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
@@ -54,7 +54,7 @@
 
                                 <div class="input-group mb-3">
                                     <div class="ml-auto col-xl-8 col-lg-8 col-md-8 col-sm-7 pl-0">
-                                        <button type="submit" class="btn btn-primary" id="submitButton">Create</button>
+                                        <button type="submit" class="btn btn-primary" id="submitButton">Save</button>
                                     </div>
                                 </div>
                             </form>
@@ -62,6 +62,11 @@
                     </div>
                 </div>
             </div>
+        <div class="col-xl-4 col-lg-12 tm-md-12 tm-sm-12 tm-col">
+            <div class="bg-white tm-block h-50" id="createServiceReport">
+                
+            </div>
+        </div>              
         </div>
         <div w3-include-html="../partials/footer.html"> </div>
     </div>
@@ -72,14 +77,14 @@
     <script>
         $(function () {
         	includeHTML();
-        	getCustomersFor("dropdown");
+        	getCustomersFor("dropdown", "checkForUpdate");
         	
         	$("#submitButton").on("click", function (e) {
                 e.preventDefault();
                 $.ajax({
                     url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/createWorkOrder",
                     type : "POST",
-                    data: JSON.stringify(getJSONFormData($('#createWorkOrderForm'))),
+                    data: getJSONFormData($('#createWorkOrderForm')),
                     dataType: "json",
                     contentType: 'application/json',
                     crossDomain: true,
@@ -96,6 +101,68 @@
                 return false;
               });
         })
+        
+        function checkForUpdate() {
+        	urlParams = new URLSearchParams(window.location.search);
+        	workOrderId = urlParams.get('workOrderId');
+        	if(workOrderId != null) {
+        		$("#id").val(workOrderId);
+        		prefillWorkOrderData(workOrderId);
+        		getServiceReports(workOrderId);
+        	}
+        }
+        
+        function prefillWorkOrderData(workOrderId) {
+            $.ajax({
+                url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getWorkOrders?workOrderId=" + workOrderId,
+                type : "GET",
+                dataType: "json",
+                crossDomain: true,
+        		success: function(data) {
+        			workOrder = JSON.parse(JSON.stringify(data));
+        			fillForm(workOrder);
+        		},
+        		error: function(data) {
+        			log("Error fetching customers");
+        		}
+        	});
+          }
+        
+        function fillForm(workOrder) {
+        	$("#customerId").val(workOrder.customerId);
+        	$("#type").val(workOrder.type);
+        	$("#notes").val(workOrder.notes);
+        }
+        
+        function getServiceReports(workOrderId) {
+            $.ajax({
+                url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getServiceReports?workOrderId=" + workOrderId,
+                type : "GET",
+                dataType: "json",
+                crossDomain: true,
+        		success: function(data) {
+        			jsonArray = JSON.parse(JSON.stringify(data));
+        			fillServiceReports(jsonArray);
+        		},
+        		error: function(data) {
+        			log("Error fetching customers");
+        		}
+        	});
+          }
+
+        function fillServiceReports(serviceReports) {
+        	if(serviceReports.length > 0) {
+	        	html = "";
+	        	$.each(serviceReports, function(index, serviceReport){
+	        		html+="<li class=\"tm-list-group-item\">";
+	        		html+="<a href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/serviceReports/viewServiceReport.html?serviceReportCode=" + serviceReport.code + "\">" + serviceReport.status + " " + serviceReport.statusDate + "</a>";
+	        		html+="</li>";
+	        	});
+	        	$("#createServiceReport").html(html);
+        	} else {
+        		$('#createServiceReport').html("<a href=\"../serviceReports/createServiceReport.html?workOrderId=" + workOrderId + "\" class=\"btn btn-small btn-primary\">Create Service Report</a>");
+        	}
+        }
     </script>
 </body>
 

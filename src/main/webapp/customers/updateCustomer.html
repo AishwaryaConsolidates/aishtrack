@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Create Work Order</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/tooplate.css">
+</head>
+
+<body class="bg03">
+    <div class="container">
+        <div class="row">
+            <div class="col-12" w3-include-html="../partials/top_nav.html"> </div>
+        </div>
+        
+        <div class="row tm-content-row tm-mt-big">
+            <div class="tm-col tm-col-big">
+                <div class="bg-white tm-block">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="tm-block-title d-inline-block">Open Work Orders</h2>
+                        </div>
+                    </div>
+                    <ol class="tm-list-group tm-list-group-alternate-color tm-list-group-pad-big">
+                    <div id="workOrders"></</div>
+                    </ol>
+                    
+                    <br/>
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="tm-block-title d-inline-block">Open Service Reports</h2>
+                        </div>
+                    </div>
+                    <ol class="tm-list-group tm-list-group-alternate-color tm-list-group-pad-big">
+                        <div id="serviceReports"></</div>
+                    </ol>
+                    
+                    <button type="submit" class="btn btn-primary" id="addContactPerson">Update Contact</button>
+		                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		            <button type="submit" class="btn btn-primary" id="addAddress">Update Address</button>
+                </div>
+            </div>
+            <div class="tm-col tm-col-big">
+                <div class="bg-white tm-block">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="tm-block-title">Edit Customer</h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+		                    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tm-col tm-col-small">
+                <div class="bg-white tm-block">
+                    <h2 class="tm-block-title">Details</h2>
+			            <div id="name"></div>
+			            <br/>
+			            <div id="nickName"></div>
+			            <br/>
+			            <div id="address"></div>
+			            <br/>
+			            <div id="contactPerson"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div w3-include-html="../partials/footer.html"> </div>
+    </div>
+
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/aishtrack.js"></script>
+    <script>
+        $(function () {
+        	includeHTML();
+        	getCustomerInfo();
+        })
+        
+        function getCustomerInfo() {
+        	urlParams = new URLSearchParams(window.location.search);
+        	customerId = urlParams.get('customerId');
+        	if(customerId != null) {
+        		$("#id").val(customerId);
+        		$('#getOpenServiceReports').html("<a href=\"../serviceReports/createServiceReport.html?workOrderId=" + customerId + "\" class=\"btn btn-small btn-primary\">Open Service Reports</a>");
+        		$('#getOpenWorkOrders').html("<a href=\"../serviceReports/createServiceReport.html?workOrderId=" + customerId + "\" class=\"btn btn-small btn-primary\">Open Service Reports</a>");
+        		prefillCustomerData(customerId);
+        	}
+        }
+        
+        function prefillCustomerData(customerId) {
+            $.ajax({
+                url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getCustomer?customerId=" + customerId,
+                type : "GET",
+                dataType: "json",
+                crossDomain: true,
+        		success: function(data) {
+        			customer = JSON.parse(JSON.stringify(data));
+        			fillForm(customer);
+        			fillWorkOrders(customer);
+        			fillServiceReports(customer);
+        		},
+        		error: function(data) {
+        			log("Error fetching customers");
+        		}
+        	});
+          }
+        
+        function fillForm(customer) {
+        	$("#name").html(customer.name);
+        	$("#nickName").html(customer.nickName);
+        	$("#address").html(customer.address);
+        	$("#contactPerson").html(customer.contactPerson);
+        }
+        
+        function fillWorkOrders(customer) {
+        	html = "";
+        	$.each(customer.workOrders, function(index, workOrder){
+        		html+="<li class=\"tm-list-group-item\">";
+        		html+="<a href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/workOrders/updateWorkOrder.html?workOrderId=" + workOrder.id + "\">" + workOrder.status + " " + workOrder.statusDate + "</a>";
+        		html+="</li>";
+        	});
+        	$("#workOrders").html(html);
+        }
+        
+        function fillServiceReports(customer) {
+        	html = "";
+        	$.each(customer.serviceReports, function(index, serviceReport){
+        		html+="<li class=\"tm-list-group-item\">";
+        		html+="<a href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/serviceReports/viewServiceReport.html?serviceReportCode=" + serviceReport.code + "\">" + serviceReport.status + " " + serviceReport.statusDate + "</a>";
+        		html+="</li>";
+        	});
+        	$("#serviceReports").html(html);
+        }
+    </script>
+</body>
+
+</html>

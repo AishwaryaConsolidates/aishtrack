@@ -27,6 +27,10 @@ public class Person extends BaseBean {
     this.deleted = deleted;
   }
 
+  public String getFullPerson() {
+    return getFullName() + " (" + designation + "), " + email + ", " + phone;
+  }
+
   public String getFullName() {
     return firstName + " " + lastName;
   }

@@ -21,18 +21,44 @@ public class ServiceReport extends BaseBean {
   private int serviceRating;
   private String notes;
 
+  // search fields
+  private String customerName;
 
-  public ServiceReport(Customer customer, String notes) {
+  public ServiceReport(Customer customer, String notes, String brand, String model,
+      String serialNumber, Date reportDate) {
     this.customerId = customer.getId();
     this.addressId = customer.getAddressId();
     this.contactPersonId = customer.getContactPersonId();
     this.notes = notes;
+    this.brand = brand;
+    this.model = model;
+    this.reportDate = reportDate;
+    this.serialNumber = serialNumber;
+
     setStatus(WorkStatus.CREATED_STATUS);
   }
 
   public ServiceReport(int id, String code, int customerId, int addressId, int contactPersonId,
       Date reportDate, String status, Date statusDate, String brand, String model,
       String serialNumber, int serviceRating, String notes, int deleted) {
+
+    this.id = id;
+    this.code = code;
+    this.customerId = customerId;
+    this.addressId = addressId;
+    this.contactPersonId = contactPersonId;
+    this.reportDate = reportDate;
+    this.status = status;
+    this.statusDate = statusDate;
+    this.brand = brand;
+    this.model = model;
+    this.serialNumber = serialNumber;
+    this.serviceRating = serviceRating;
+    this.notes = notes;
+    this.deleted = deleted;
+  }
+
+  public ServiceReport(int id, String code, String status, Date statusDate) {
 
     this.id = id;
     this.code = code;
@@ -159,5 +185,13 @@ public class ServiceReport extends BaseBean {
 
   public void setServiceRating(int serviceRating) {
     this.serviceRating = serviceRating;
+  }
+
+  public String getCustomerName() {
+    return customerName;
+  }
+
+  public void setCustomerName(String customerName) {
+    this.customerName = customerName;
   }
 }

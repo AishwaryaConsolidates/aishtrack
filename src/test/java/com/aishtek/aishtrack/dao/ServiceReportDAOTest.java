@@ -3,6 +3,7 @@ package com.aishtek.aishtrack.dao;
 import static org.junit.Assert.assertEquals;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 import org.junit.Test;
 import com.aishtek.aishtrack.beans.Customer;
 import com.aishtek.aishtrack.beans.ServiceReport;
@@ -13,7 +14,11 @@ import com.aishtek.aishtrack.utils.WorkStatus;
 public class ServiceReportDAOTest extends BaseIntegrationTest {
 
   private int workOrderId;
+  private String brand = "noBrand";
+  private String model = "modeless";
+  private String serialNumber = "serial";
   private String notes = "This is a note";
+  private Date reportDate = new Date();
 
   @Test
   public void createServiceReportSavesTheReport() throws SQLException {
@@ -24,7 +29,8 @@ public class ServiceReportDAOTest extends BaseIntegrationTest {
       Customer customer = CustomerDAO.findById(connection, workOrder.getCustomerId());
 
       int serviceReportId =
-          ServiceReportDAO.create(connection, workOrderId, new ServiceReport(customer, notes));
+          ServiceReportDAO.create(connection, workOrderId,
+              new ServiceReport(customer, notes, brand, model, serialNumber, reportDate));
       ServiceReport serviceReport = ServiceReportDAO.findById(connection, serviceReportId);
 
 

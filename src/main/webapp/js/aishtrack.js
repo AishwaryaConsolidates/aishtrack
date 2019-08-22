@@ -30,7 +30,7 @@ function includeHTML() {
 	}
 }
 
-function getCustomersFor(purpose) {
+function getCustomersFor(purpose, nextFunction=null) {
     $.ajax({
         url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getCustomers",
         type : "GET",
@@ -38,10 +38,12 @@ function getCustomersFor(purpose) {
         crossDomain: true,
 		success: function(data) {
 			if(purpose=="list") {
-			    listCustomers(data.body);
+			    listCustomers(JSON.stringify(data));
 		    } else if (purpose=="dropdown") {
-		    	dropdownCustomers(data.body);
+		    	createDropdown(JSON.stringify(data), "customerId");
 		    }
+	    	functionToRun = window[nextFunction];
+	    	if (typeof functionToRun === "function") functionToRun();
 		},
 		error: function(data) {
 			log("Error fetching customers");
@@ -58,8 +60,9 @@ function listCustomers(json) {
 	$("#customersList").html(html);
 }
 
-function dropdownCustomers(json) {
-	var $customerSelect = $('#customerId');
+function createDropdown(json, fieldName) {
+	dropdown = "#" + fieldName;
+	var $customerSelect = $(dropdown);
 	jsonArray = JSON.parse(json);
 	$.each(jsonArray, function(index, jsonObject) {
 		var $option = $("<option/>", {
@@ -75,8 +78,27 @@ function getJSONFormData(form){
     var indexed_array = {};
 
     $.map(unindexed_array, function(n, i){
-        indexed_array[n['name']] = n['value'];
+    	if(indexed_array[n['name']]) {
+    		indexed_array[n['name']] = indexed_array[n['name']] + "!@#" + n['value'];
+    	} else {
+          indexed_array[n['name']] = n['value'];
+    	}
     });
 
-    return indexed_array;
+    return JSON.stringify(indexed_array);
+}
+
+function getTechnicians() {
+    $.ajax({
+        url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getTechnicians",
+        type : "GET",
+        dataType: "json",
+        crossDomain: true,
+		success: function(data) {
+			createDropdown(JSON.stringify(data), "technicianIds");
+		},
+		error: function(data) {
+			log("Error fetching technicians");
+		}
+	});
 }

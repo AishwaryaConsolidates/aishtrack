@@ -80,5 +80,4 @@ public class WorkOrder extends BaseBean {
   public void setCustomerName(String customerName) {
     this.customerName = customerName;
   }
-
 }

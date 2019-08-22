@@ -1,14 +1,10 @@
 package com.aishtek.aishtrack.function;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import com.aishtek.aishtrack.beans.Customer;
-import com.aishtek.aishtrack.beans.WorkOrder;
+import com.aishtek.aishtrack.beans.NameId;
 import com.aishtek.aishtrack.dao.CustomerDAO;
-import com.aishtek.aishtrack.dao.WorkOrderDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -20,7 +16,7 @@ public class GetCustomers extends BaseFunction
 
   @Override
   public ServerlessOutput handleRequest(ServerlessInput serverlessInput, Context context) {
-    ServerlessOutput output = new ServerlessOutput();
+    ServerlessOutput output;
 
     try (Connection connection = getConnection()) {
       try {
@@ -31,24 +27,17 @@ public class GetCustomers extends BaseFunction
         }
 
         ArrayList<Customer> customers = CustomerDAO.searchFor(connection, customerName);
+        ArrayList<NameId> dropdown = NameId.convertCustomersToNameId(customers);
 
-        output.setStatusCode(200);
-        output.setBody(new Gson().toJson(customers));
+        output = createSuccessOutput();
+        output.setBody(new Gson().toJson(dropdown));
       } catch (Exception e) {
         connection.rollback();
+        output = createFailureOutput(e);
       }
     } catch (Exception e) {
-      output.setStatusCode(500);
-      StringWriter sw = new StringWriter();
-      e.printStackTrace(new PrintWriter(sw));
-      output.setBody(sw.toString());
+      output = createFailureOutput(e);
     }
     return output;
-  }
-
-  public int createWorkOrder(Connection connection, int customerId, String type, String notes)
-      throws SQLException {
-    WorkOrder workOrder = new WorkOrder(customerId, type, notes);
-    return WorkOrderDAO.create(connection, workOrder);
   }
 }

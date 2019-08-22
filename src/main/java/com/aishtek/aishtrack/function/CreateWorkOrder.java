@@ -24,14 +24,14 @@ public class CreateWorkOrder extends BaseFunction
             int workOrderId = createWorkOrder(connection, response.customerId, response.type, response.notes);
             output = createSuccessOutput("" + workOrderId);
         } else {
-          updateWorkOrder(connection, Integer.parseInt(response.id), response.customerId,
+          updateWorkOrder(connection, Util.getInt(response.id), response.customerId,
               response.type, response.notes);
           output = createSuccessOutput("");
         }
         connection.commit();
       } catch (Exception e) {
         connection.rollback();
-        output = createFailureOutput(e);;
+        output = createFailureOutput(e);
       }
     } catch (Exception e) {
       output = createFailureOutput(e);

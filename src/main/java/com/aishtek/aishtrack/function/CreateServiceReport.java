@@ -1,11 +1,11 @@
 package com.aishtek.aishtrack.function;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import com.aishtek.aishtrack.beans.Customer;
 import com.aishtek.aishtrack.beans.Person;
 import com.aishtek.aishtrack.beans.ServiceReport;
@@ -18,6 +18,7 @@ import com.aishtek.aishtrack.dao.WorkOrderDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
 import com.aishtek.aishtrack.services.EmailSenderService;
+import com.aishtek.aishtrack.utils.Util;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.google.gson.Gson;
@@ -30,27 +31,34 @@ public class CreateServiceReport extends BaseFunction
 
   @Override
   public ServerlessOutput handleRequest(ServerlessInput serverlessInput, Context context) {
-    ServerlessOutput output = new ServerlessOutput();
+    ServerlessOutput output;
     try (Connection connection = getConnection()) {
-      Response response = getParams(serverlessInput.getBody());
-
-      int serviceReportId = createServiceReport(connection, response.workOrderId, response.notes,
-          response.technicianIds);
-
-      output.setStatusCode(200);
-      output.setBody(new Gson().toJson(serviceReportId));
+      try {
+        Response response = getParams(serverlessInput.getBody());
+        if (Util.isNullOrEmpty(response.id)) {
+          Date reportDate = new SimpleDateFormat("dd/MM/yyyy").parse(response.reportDate);
+          int serviceReportId = createServiceReport(connection, response.workOrderId,
+              response.notes, response.brand, response.model, response.serialNumber,
+              reportDate, getIntegerList(response.technicianIds));
+          output = createSuccessOutput("" + serviceReportId);
+        } else {
+          updateServiceReport(connection, Integer.parseInt(response.id), response.notes);
+          output = createSuccessOutput("");
+        }
+        connection.commit();
+      } catch (Exception e) {
+        connection.rollback();
+        output = createFailureOutput(e);
+      }
     } catch (Exception e) {
-      output.setStatusCode(500);
-      StringWriter sw = new StringWriter();
-      e.printStackTrace(new PrintWriter(sw));
-      output.setBody(sw.toString());
+      output = createFailureOutput(e);
     }
 
     return output;
   }
 
-  public int createServiceReport(Connection connection, int workOrderId, String notes,
-      ArrayList<Integer> technicianIds)
+  public int createServiceReport(Connection connection, int workOrderId, String notes, String brand,
+      String model, String serialNumber, Date reportDate, ArrayList<Integer> technicianIds)
       throws SQLException {
     WorkOrder workOrder = WorkOrderDAO.findById(connection, workOrderId);
     Customer customer = CustomerDAO.findById(connection, workOrder.getCustomerId());
@@ -58,21 +66,29 @@ public class CreateServiceReport extends BaseFunction
     // create service report
     int serviceReportId = ServiceReportDAO
         .create(connection, workOrder.getId(),
-            new ServiceReport(customer, notes));
+            new ServiceReport(customer, notes, brand, model, serialNumber, reportDate));
 
     // create service report technician
-    ServiceReportDAO.assignTechniciansToServiceReport(connection, serviceReportId, technicianIds);
+    if (technicianIds != null && technicianIds.size() > 0) {
+      ServiceReportDAO.assignTechniciansToServiceReport(connection, serviceReportId, technicianIds);
+
+      // change status of work order
+      WorkOrderDAO.markAsAssigned(connection, workOrder.getId());
+
+      ServiceReport serviceReport = ServiceReportDAO.findById(connection, serviceReportId);
+      // notify technicians
+      sendEmailToTechnicians(connection, serviceReport);
+
+      // notify customer
+      sendEmailToCustomer(connection, serviceReport);
+    }
     
-    // change status of work order
-    WorkOrderDAO.markAsAssigned(connection, workOrder.getId());
-
-    ServiceReport serviceReport = ServiceReportDAO.findById(connection, serviceReportId);
-    // notify technicians
-    sendEmailToTechnicians(connection, serviceReport);
-
-    // notify customer
-    sendEmailToCustomer(connection, serviceReport);
     return serviceReportId;
+  }
+
+  public void updateServiceReport(Connection connection, int serviceReportId, String notes)
+      throws SQLException {
+    ServiceReportDAO.update(connection, serviceReportId, notes);
   }
 
   private void sendEmailToTechnicians(Connection connection, ServiceReport serviceReport)
@@ -91,11 +107,13 @@ public class CreateServiceReport extends BaseFunction
   }
 
   private String[] technicianEmailBodies(String serviceReportCode) {
-    String url = "http://aishtek.aishtrack.com/" + serviceReportCode;
+    String url =
+        "https://aishtek.s3.amazonaws.com/aishtrack/serviceReports/viewServiceReports.html?code="
+            + serviceReportCode;
     String[] emailBodies = new String[2];
     emailBodies[0] =
         "You have been assigned the following service report, please click on the link to start work on it. <a href=\""
-            + url + "\">";
+            + url + "\">" + url + "</a>";
     emailBodies[1] = "You have been assigned the following service report " + url;
     return emailBodies;
   }
@@ -133,8 +151,13 @@ public class CreateServiceReport extends BaseFunction
   }
 
   class Response {
+    private String id;
     private int workOrderId;
     private String notes;
-    private ArrayList<Integer> technicianIds;
+    private String brand;
+    private String model;
+    private String serialNumber;
+    private String reportDate;
+    private String technicianIds;
   }
 }

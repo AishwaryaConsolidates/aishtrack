@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Create Work order</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/tooplate.css">
+    <link rel="stylesheet" href="../vendors/jquery-ui-datepicker/jquery-ui.min.css" type="text/css" />
+</head>
+
+<body class="bg02">
+    <div class="container">
+        <div class="row">
+            <div class="col-12" w3-include-html="../partials/top_nav.html"> </div>
+        </div>
+        <br/>
+        <!-- row -->
+        <div class="row">
+            <div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
+                <div class="bg-white tm-block">
+                    <div class="row">
+                        <div class="col-12">
+                        <div id="notification"></div>
+                            <h2 class="tm-block-title d-inline-block">Service Report</h2>
+                        </div>
+                    </div>
+                    <div class="row mt-4 tm-edit-product-row">
+                        <div class="col-xl-7 col-lg-7 col-md-12">
+                            <form action="" class="tm-edit-product-form" id="createServiceReportForm">
+                               <input type="hidden" id="id" name="id"/>
+                               <input type="hidden" id="workOrderId" name="workOrderId"/>
+                               <div class="input-group mb-3">
+                                    <label for="reportDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Report Date</label>
+                                    <input id="reportDate" name="reportDate" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" data-large-mode="true">
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <label for="brand" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Brand</label>
+                                    <input id="brand" name="brand" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <label for="model" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Model</label>
+                                    <input id="model" name="model" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <label for="serialNumber" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Serial Number</label>
+                                    <input id="serialNumber" name="serialNumber" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <label for="technicians" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Technicians</label>
+                                    <select name="technicianIds" id="technicianIds" multiple="multiple">
+
+                                    </select>
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <label for="description" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 mb-2">Notes</label>
+                                    <textarea name="notes" id = "notes" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" rows="5" placeholder="Notes" required></textarea>
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <div class="ml-auto col-xl-8 col-lg-8 col-md-8 col-sm-7 pl-0">
+                                        <button type="submit" class="btn btn-primary" id="submitButton">Create</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div w3-include-html="../partials/footer.html"> </div>
+    </div>
+
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/aishtrack.js"></script>
+    <script src="../vendors/jquery-ui-datepicker/jquery-ui.min.js"></script>
+    <script>
+        $(function () {
+        	includeHTML();
+        	getTechnicians();
+        	$('#reportDate').datepicker({
+        	    dateFormat: 'dd/mm/yy'
+        	});
+        	urlParams = new URLSearchParams(window.location.search);
+        	workOrderId = urlParams.get('workOrderId');
+        	$("#workOrderId").val(workOrderId);
+        	$("#submitButton").on("click", function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/createServiceReport",
+                    type : "POST",
+                    data: getJSONFormData($('#createServiceReportForm')),
+                    dataType: "json",
+                    contentType: 'application/json',
+                    crossDomain: true,
+            		success: function(data) {
+            			if(!isNaN(data)) {
+            			    $("#id").val(data);
+            			}
+            			$("#notification").html("<center><font color=\"green\">Service Report Updated</font></center>");
+            		},
+            		error: function(data) {
+            			alert("Error creating service report.");
+            		}
+            	});
+                return false;
+              });
+        })
+    </script>
+</body>
+
+</html>

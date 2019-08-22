@@ -1,11 +1,19 @@
 package com.aishtek.aishtrack.beans;
 
+import java.util.ArrayList;
+
 public class Customer extends BaseBean {
 
   private String name;
   private String nickName;
   private int addressId;
   private int contactPersonId;
+
+  // string fields for view
+  private String contactPerson;
+  private String address;
+  private ArrayList<WorkOrder> workOrders;
+  private ArrayList<ServiceReport> serviceReports;
 
   public Customer(int id, String name, String nickName) {
     this.id = id;
@@ -62,4 +70,35 @@ public class Customer extends BaseBean {
     this.contactPersonId = contactPersonId;
   }
 
+  public String getContactPerson() {
+    return contactPerson;
+  }
+
+  public void setContactPerson(Person contactPerson) {
+    this.contactPerson = contactPerson.getFullPerson();
+  }
+
+  public String getAddress() {
+    return address;
+  }
+
+  public void setAddress(Address address) {
+    this.address = address.getFullAddress();
+  }
+
+  public ArrayList<WorkOrder> getWorkOrders() {
+    return workOrders;
+  }
+
+  public void setWorkOrders(ArrayList<WorkOrder> workOrders) {
+    this.workOrders = workOrders;
+  }
+
+  public ArrayList<ServiceReport> getServiceReports() {
+    return serviceReports;
+  }
+
+  public void setServiceReports(ArrayList<ServiceReport> serviceReports) {
+    this.serviceReports = serviceReports;
+  }
 }

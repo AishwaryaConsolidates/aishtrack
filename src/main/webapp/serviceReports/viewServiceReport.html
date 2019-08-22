@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Service Report</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/tooplate.css">
+    <link rel="stylesheet" href="../vendors/jquery-ui-datepicker/jquery-ui.min.css" type="text/css" />
+</head>
+
+<body class="bg02">
+    <div class="container">
+        <div class="row">
+            <div class="col-12" w3-include-html="../partials/top_nav.html"> </div>
+        </div>
+        <br/>    
+
+            <div class="row tm-content-row tm-mt-big">
+            <div class="tm-col tm-col-big">
+                <div class="bg-white tm-block">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="tm-block-title d-inline-block">Service Report</h2>
+                        </div>
+                    </div>
+                        <table class="">
+                        <tr><td>ID:</td><td><div id="reportId"/></td></tr>
+                        <tr><td>Date:</td><td><div id="reportDate"/></td></tr>
+                        <tr><td>Status:</td><td><div id="status"/></td></tr>
+                        <tr><td>Customer:</td><td><div id="customerName"/></td></tr>
+                        
+                        <tr><td>Contact:</td><td><div id="contact"/></td></tr>
+                        <tr><td>Address:</td><td><div id="address"/></td></tr>
+                        
+                        <tr><td>Brand:</td><td><div id="brand"/></td></tr>
+                        <tr><td>Model:</td><td><div id="model"/></td></tr>
+                        <tr><td nowrap>Serial Number:</td><td><div id="serialNumber"/></td></tr>
+                        
+                        <tr><td>Technicians:</td><td><div id="technicians"/></td></tr>
+                        
+                        <tr><td>Notes:</td><td><div id="notes"/></td></tr>
+                        </table>
+                </div>
+            </div>
+            <div class="tm-col tm-col-big">
+                <div class="bg-white tm-block">
+                    <div class="row">
+                        <div class="col-12">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tm-col tm-col-small">
+                <div class="bg-white tm-block">
+                    <a id="visitButton" href="#" class="btn btn-small btn-primary">Create Visit</a>
+                </div>
+            </div>
+        </div>
+        
+        <div w3-include-html="../partials/footer.html"> </div>
+    </div>
+
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/aishtrack.js"></script>
+    <script>
+        $(function () {
+        	includeHTML();
+        	urlParams = new URLSearchParams(window.location.search);
+        	serviceReportCode = urlParams.get('serviceReportCode');
+
+        	getServiceReport(serviceReportCode);
+        	var serviceReportId;
+        	function getServiceReport(serviceReportCode) {
+                $.ajax({
+                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/viewServiceReport?serviceReportCode=" + serviceReportCode,
+                    type : "GET",
+                    dataType: "json",
+                    crossDomain: true,
+            		success: function(data) {
+            			serviceReport = JSON.parse(JSON.stringify(data));
+            			serviceReportId = serviceReport.id;
+            			fillPage(serviceReport);
+            		},
+            		error: function(data) {
+            			log("Error fetching service report");
+            		}
+            	});
+              }
+        	
+        	function fillPage(serviceReport) {
+        		$("#reportId").html(serviceReport.id);
+        		$("#reportDate").html(serviceReport.reportDate);
+        		$("#status").html(serviceReport.status);
+        		$("#customerName").html(serviceReport.customerName);
+        		$("#contact").html(contact(serviceReport));
+        		$("#address").html(address(serviceReport));
+        		$("#brand").html(serviceReport.brand);
+        		$("#model").html(serviceReport.model);
+        		$("#serialNumber").html(serviceReport.serialNumber);
+        		$("#technicians").html(serviceReport.technicians);
+        		$("#notes").html(serviceReport.notes);
+            }
+        	
+        	function address(serviceReport) {
+        		return serviceReport.customerStreet + "<br/>" + serviceReport.customerArea + "<br/>" + serviceReport.customerCity + "<br/>" + serviceReport.customerState + " " + serviceReport.customerPincode; 
+        	}
+        	
+        	function contact(serviceReport) {
+        		return serviceReport.contactFirstName + " " + serviceReport.contactLastName + "  (" + serviceReport.contactDesignation + ")<br/>" + serviceReport.contactEmail + "<br/>" + serviceReport.contactPhone;
+        	}
+        	
+        	$("#visitButton").on("click", function (e) {
+                e.preventDefault();
+                window.open('https://aishtek.s3.amazonaws.com/aishtrack/visits/updateVisit.html?serviceReportId='+serviceReportId,'_visit');   
+        	});
+        })
+    </script>
+</body>
+
+</html>
