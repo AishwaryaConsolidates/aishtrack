@@ -21,11 +21,15 @@ public class CreateWorkOrder extends BaseFunction
       try {
         Response response = getParams(serverlessInput.getBody());
         if (Util.isNullOrEmpty(response.id)) {
-            int workOrderId = createWorkOrder(connection, response.customerId, response.type, response.notes);
+          int workOrderId =
+              createWorkOrder(connection, response.customerId, response.contactPersonId,
+                  response.type, response.notes, response.categoryId, response.equipmentId,
+                  response.brand, response.model, response.serialNumber, response.partNumber);
             output = createSuccessOutput("" + workOrderId);
         } else {
           updateWorkOrder(connection, Util.getInt(response.id), response.customerId,
-              response.type, response.notes);
+              response.type, response.notes, response.categoryId, response.equipmentId,
+              response.brand, response.model, response.serialNumber, response.partNumber);
           output = createSuccessOutput("");
         }
         connection.commit();
@@ -39,18 +43,30 @@ public class CreateWorkOrder extends BaseFunction
     return output;
   }
 
-  public int createWorkOrder(Connection connection, int customerId, String type, String notes)
+  public int createWorkOrder(Connection connection, int customerId, int contactPersonId,
+      String type, String notes,
+      int categoryId, int equipmentId, String brand, String model, String serialNumber,
+      String partNumber)
       throws SQLException {
-    WorkOrder workOrder = new WorkOrder(customerId, type, notes);
+    WorkOrder workOrder =
+        new WorkOrder(customerId, contactPersonId, type, notes, categoryId, equipmentId, brand,
+        model, serialNumber, partNumber);
     return WorkOrderDAO.create(connection, workOrder);
   }
 
   public void updateWorkOrder(Connection connection, int id, int customerId, String type,
-      String notes) throws SQLException {
+      String notes, int categoryId, int equipmentId, String brand, String model,
+      String serialNumber, String partNumber) throws SQLException {
     WorkOrder workOrder = WorkOrderDAO.findById(connection, id);
     workOrder.setCustomerId(customerId);
     workOrder.setType(type);
     workOrder.setNotes(notes);
+    workOrder.setCategoryId(categoryId);
+    workOrder.setEquipmentId(equipmentId);
+    workOrder.setBrand(brand);
+    workOrder.setModel(model);
+    workOrder.setSerialNumber(serialNumber);
+    workOrder.setPartNumber(partNumber);
     WorkOrderDAO.update(connection, workOrder);
   }
 
@@ -61,7 +77,14 @@ public class CreateWorkOrder extends BaseFunction
   class Response {
     public String id;
     public Integer customerId;
+    public Integer contactPersonId;
     public String notes;
     public String type;
+    private Integer categoryId;
+    private Integer equipmentId;
+    private String brand;
+    private String model;
+    private String serialNumber;
+    private String partNumber;
   }
 }

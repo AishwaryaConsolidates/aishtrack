@@ -31,15 +31,15 @@
                     <div class="row mt-4 tm-edit-product-row">
                         <div class="col-xl-7 col-lg-7 col-md-12">
                             <form action="" class="tm-edit-product-form" id="createWorkOrderForm">
-                               <input type="hidden" id="id" name="id"/>
+                               <input type="hidden" id="workOrderId" name="id"/>
                                 <div class="input-group mb-3">
                                     <label for="category" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Customer</label>
                                     <select name="customerId" id="customerId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
 
                                     </select>
                                 </div>
-                                
-                                <div class="input-group mb-3">
+                       
+                               <div class="input-group mb-3">
                                     <label for="category" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Type</label>
                                     <select name="type" id="type" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
                                         <option value="Service" selected>Service</option>
@@ -47,6 +47,47 @@
                                     </select>
                                 </div>
                                 
+                                <div class="input-group mb-3">
+                                    <label for="contactPersonId" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Contact Person</label>
+                                    <select name="contactPersonId" id="contactPersonId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+
+                                    </select>
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <label for="category" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Category</label>
+                                    <select name="categoryId" id="categoryId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+
+                                    </select>
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <label for="equipmentId" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Equipment</label>
+                                    <select name="equipmentId" id="equipmentId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+
+                                    </select>
+                                </div>
+  
+                               <div class="input-group mb-3">
+                                    <label for="brand" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Brand</label>
+                                    <input id="brand" name="brand" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <label for="model" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Model</label>
+                                    <input id="model" name="model" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <label for="serialNumber" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Serial Number</label>
+                                    <input id="serialNumber" name="serialNumber" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <label for="partNumber" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Part Number</label>
+                                    <input id="partNumber" name="partNumber" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+                                                             
                                 <div class="input-group mb-3">
                                     <label for="description" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 mb-2">Notes</label>
                                     <textarea name="notes" id = "notes" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" rows="5" placeholder="Notes" required></textarea>
@@ -77,8 +118,14 @@
     <script>
         $(function () {
         	includeHTML();
-        	getCustomersFor("dropdown", "checkForUpdate");
-        	
+        	getCategories();
+        	getCustomers("checkForUpdate");
+        	$("#categoryId").change(function () {
+        		getEquipments(this.value);
+            });
+        	$("#customerId").change(function () {
+        		getCustomerPersons(this.value);
+            });
         	$("#submitButton").on("click", function (e) {
                 e.preventDefault();
                 $.ajax({
@@ -90,7 +137,7 @@
                     crossDomain: true,
             		success: function(data) {
             			if(!isNaN(data)) {
-            			    $("#id").val(data);
+            			    $("#workOrderId").val(data);
             			}
             			$("#notification").html("<center><font color=\"green\">Work Order Updated</font></center>");
             		},
@@ -106,34 +153,11 @@
         	urlParams = new URLSearchParams(window.location.search);
         	workOrderId = urlParams.get('workOrderId');
         	if(workOrderId != null) {
-        		$("#id").val(workOrderId);
         		prefillWorkOrderData(workOrderId);
         		getServiceReports(workOrderId);
         	}
         }
-        
-        function prefillWorkOrderData(workOrderId) {
-            $.ajax({
-                url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getWorkOrders?workOrderId=" + workOrderId,
-                type : "GET",
-                dataType: "json",
-                crossDomain: true,
-        		success: function(data) {
-        			workOrder = JSON.parse(JSON.stringify(data));
-        			fillForm(workOrder);
-        		},
-        		error: function(data) {
-        			log("Error fetching customers");
-        		}
-        	});
-          }
-        
-        function fillForm(workOrder) {
-        	$("#customerId").val(workOrder.customerId);
-        	$("#type").val(workOrder.type);
-        	$("#notes").val(workOrder.notes);
-        }
-        
+
         function getServiceReports(workOrderId) {
             $.ajax({
                 url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getServiceReports?workOrderId=" + workOrderId,
@@ -157,6 +181,7 @@
 	        		html+="<li class=\"tm-list-group-item\">";
 	        		html+="<a href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/serviceReports/viewServiceReport.html?serviceReportCode=" + serviceReport.code + "\">" + serviceReport.status + " " + serviceReport.statusDate + "</a>";
 	        		html+="</li>";
+	        		html+= "<a href=\"../serviceReports/createServiceReport.html?workOrderId=" + workOrderId + "\" class=\"btn btn-small btn-primary\">Create Service Report</a>";
 	        	});
 	        	$("#createServiceReport").html(html);
         	} else {

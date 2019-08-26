@@ -18,19 +18,22 @@ public class ServiceReportDAO extends BaseDAO {
       ServiceReport serviceReport)
       throws SQLException {
       PreparedStatement preparedStatement = connection.prepareStatement(
-        "insert into service_reports (customer_id, address_id, contact_person_id, status, status_date, notes, brand, model, serial_number, report_date, created_at) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "insert into service_reports (customer_id, address_id, contact_person_id, category_id, equipment_id, status, status_date, notes, brand, model, serial_number, part_number, report_date, created_at) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         PreparedStatement.RETURN_GENERATED_KEYS);
       preparedStatement.setInt(1, serviceReport.getCustomerId());
       preparedStatement.setInt(2, serviceReport.getAddressId());
       preparedStatement.setInt(3, serviceReport.getContactPersonId());
-      preparedStatement.setString(4, serviceReport.getStatus());
-      preparedStatement.setTimestamp(5, timestampFor(serviceReport.getStatusDate()));
-      preparedStatement.setString(6, serviceReport.getNotes());
-    preparedStatement.setString(7, serviceReport.getBrand());
-    preparedStatement.setString(8, serviceReport.getModel());
-    preparedStatement.setString(9, serviceReport.getSerialNumber());
-    preparedStatement.setTimestamp(10, timestampFor(serviceReport.getReportDate()));
-    preparedStatement.setTimestamp(11, currentTimestamp());
+    preparedStatement.setInt(4, serviceReport.getCategoryId());
+    preparedStatement.setInt(5, serviceReport.getEquipmentId());
+    preparedStatement.setString(6, serviceReport.getStatus());
+    preparedStatement.setTimestamp(7, timestampFor(serviceReport.getStatusDate()));
+    preparedStatement.setString(8, serviceReport.getNotes());
+    preparedStatement.setString(9, serviceReport.getBrand());
+    preparedStatement.setString(10, serviceReport.getModel());
+    preparedStatement.setString(11, serviceReport.getSerialNumber());
+    preparedStatement.setString(12, serviceReport.getPartNumber());
+    preparedStatement.setTimestamp(13, timestampFor(serviceReport.getReportDate()));
+    preparedStatement.setTimestamp(14, currentTimestamp());
       preparedStatement.executeUpdate();
 
       ResultSet result = preparedStatement.getGeneratedKeys();
@@ -48,12 +51,18 @@ public class ServiceReportDAO extends BaseDAO {
       }
   }
 
-  public static void update(Connection connection, int serviceReportId, String notes)
+  public static void update(Connection connection, int serviceReportId, int contactPersonId, int categoryId, int equipmentId, String brand, String model, String serialNumber, String partNumber, String notes)
       throws SQLException {
-    PreparedStatement preparedStatement =
-        connection.prepareStatement("update service_reports set notes = ? where id = ?");
-    preparedStatement.setString(1, notes);
-    preparedStatement.setInt(2, serviceReportId);
+    PreparedStatement preparedStatement = connection.prepareStatement("update service_reports set contact_person_id = ?, category_id = ?, equipment_id = ?, brand = ?, model = ?, serial_number = ?, part_number = ?, notes = ? where id = ?");
+    preparedStatement.setInt(1, contactPersonId);
+    preparedStatement.setInt(2, categoryId);
+    preparedStatement.setInt(3, equipmentId);
+    preparedStatement.setString(4, brand);
+    preparedStatement.setString(5, model);
+    preparedStatement.setString(6, serialNumber);
+    preparedStatement.setString(7, partNumber);
+    preparedStatement.setString(8, notes);
+    preparedStatement.setInt(9, serviceReportId);
     preparedStatement.executeUpdate();
   }
 
@@ -82,11 +91,12 @@ public class ServiceReportDAO extends BaseDAO {
   public static HashMap<String, String> findByCode(Connection connection, String serviceReportCode)
       throws SQLException {
     String sql =
-        "SELECT sr.id, sr.report_date, sr.status, sr.status_date, sr.brand, sr.model, sr.serial_number, sr.notes, "
+        "SELECT sr.id, sr.report_date, sr.status, sr.status_date, ct.name, eq.name, sr.brand, sr.model, sr.serial_number, sr.part_number, sr.notes, "
             + " c.name, cp.first_name, cp.last_name, cp.designation, cp.email, cp.phone, "
             + " ca.street, ca.area, ca.city, ca.state, ca.pincode"
-            + " FROM service_reports sr, customers c, addresses ca, persons cp "
-            + " WHERE sr.code = ? and sr.customer_id = c.id and sr.address_id = ca.id and sr.contact_person_id = cp.id ";
+            + " FROM service_reports sr, customers c, addresses ca, persons cp, categories ct, equipments eq "
+            + " WHERE sr.code = ? and sr.customer_id = c.id and sr.address_id = ca.id and sr.contact_person_id = cp.id "
+            + " and sr.category_id = ct.id and sr.equipment_id = eq.id ";
 
     PreparedStatement statement = connection.prepareStatement(sql);
     statement.setObject(1, java.util.UUID.fromString(serviceReportCode));
@@ -99,23 +109,26 @@ public class ServiceReportDAO extends BaseDAO {
       hashMap.put("reportDate", formatTimestamp(result.getTimestamp(2)));
       hashMap.put("status", result.getString(3));
       hashMap.put("statusDate", formatTimestamp(result.getTimestamp(4)));
-      hashMap.put("brand", result.getString(5));
-      hashMap.put("model", result.getString(6));
-      hashMap.put("serialNumber", result.getString(7));
-      hashMap.put("notes", result.getString(8));
+      hashMap.put("category", result.getString(5));
+      hashMap.put("equipment", result.getString(6));
+      hashMap.put("brand", result.getString(7));
+      hashMap.put("model", result.getString(8));
+      hashMap.put("serialNumber", result.getString(9));
+      hashMap.put("partNumber", result.getString(10));
+      hashMap.put("notes", result.getString(11));
 
-      hashMap.put("customerName", result.getString(9));
-      hashMap.put("contactFirstName", result.getString(10));
-      hashMap.put("contactLastName", result.getString(11));
-      hashMap.put("contactDesignation", result.getString(12));
-      hashMap.put("contactEmail", result.getString(13));
-      hashMap.put("contactPhone", result.getString(14));
+      hashMap.put("customerName", result.getString(12));
+      hashMap.put("contactFirstName", result.getString(13));
+      hashMap.put("contactLastName", result.getString(14));
+      hashMap.put("contactDesignation", result.getString(15));
+      hashMap.put("contactEmail", result.getString(16));
+      hashMap.put("contactPhone", result.getString(17));
 
-      hashMap.put("customerStreet", result.getString(15));
-      hashMap.put("customerArea", result.getString(16));
-      hashMap.put("customerCity", result.getString(17));
-      hashMap.put("customerState", result.getString(18));
-      hashMap.put("customerPincode", result.getString(19));
+      hashMap.put("customerStreet", result.getString(18));
+      hashMap.put("customerArea", result.getString(19));
+      hashMap.put("customerCity", result.getString(20));
+      hashMap.put("customerState", result.getString(21));
+      hashMap.put("customerPincode", result.getString(22));
 
       ArrayList<Technician> technicians = getTechniciansFor(connection, serviceReportId);
       String technicianNames = "";

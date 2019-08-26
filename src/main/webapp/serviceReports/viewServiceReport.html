@@ -37,9 +37,12 @@
                         <tr><td>Contact:</td><td><div id="contact"/></td></tr>
                         <tr><td>Address:</td><td><div id="address"/></td></tr>
                         
+                        <tr><td>Category:</td><td><div id="category"/></td></tr>
+                        <tr><td>Equipment:</td><td><div id="equipment"/></td></tr>
                         <tr><td>Brand:</td><td><div id="brand"/></td></tr>
                         <tr><td>Model:</td><td><div id="model"/></td></tr>
                         <tr><td nowrap>Serial Number:</td><td><div id="serialNumber"/></td></tr>
+                        <tr><td nowrap>Part Number:</td><td><div id="partNumber"/></td></tr>
                         
                         <tr><td>Technicians:</td><td><div id="technicians"/></td></tr>
                         
@@ -105,9 +108,12 @@
         		$("#customerName").html(serviceReport.customerName);
         		$("#contact").html(contact(serviceReport));
         		$("#address").html(address(serviceReport));
+        		$("#category").html(serviceReport.category);
+        		$("#equipment").html(serviceReport.equipment);
         		$("#brand").html(serviceReport.brand);
         		$("#model").html(serviceReport.model);
         		$("#serialNumber").html(serviceReport.serialNumber);
+        		$("#partNumber").html(serviceReport.partNumber);
         		$("#technicians").html(serviceReport.technicians);
         		$("#notes").html(serviceReport.notes);
             }

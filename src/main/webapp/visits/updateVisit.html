@@ -32,7 +32,7 @@
                     <div class="row mt-4 tm-edit-product-row">
                         <div class="col-xl-7 col-lg-7 col-md-12">
                             <form action="" class="tm-edit-product-form" id="updateVisitForm">
-                               <input type="hidden" id="id" name="id"/>
+                               <input type="hidden" id="visitId" name="id"/>
                                <input type="hidden" id="serviceReportId" name="serviceReportId"/>
                                 <div class="input-group mb-3">
                                     <label for="visitDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Visit Date</label>
@@ -153,12 +153,12 @@
                         <div class="col-12">
                         <div id="notification"></div>
                             <h2 class="tm-block-title d-inline-block">Visit Files</h2>
-                            <i class="far fa-plus-square" id="replacedSparePart" onclick="addVisitFile()"></i>
+                            <i class="far fa-plus-square" id="replacedSparePart"></i>
                         </div>
                     </div>
                     <div class="row mt-4 tm-edit-product-row">
                         <div class="col-xl-7 col-lg-7 col-md-12">
-                            <form action="" class="tm-edit-product-form" id="uploadVisitFileForm">
+                            <form action="" class="tm-edit-product-form" id="uploadVisitFileForm" enctype="multipart/form-data">
                                <input type="hidden" id="visitId" name="visitId"/>
                                 <div id="visitFiles">
 	                                <div class="input-group mb-3">
@@ -167,23 +167,13 @@
 	                                </div>
 	                                
 	                                <div class="input-group mb-3">
-	                                    <input type="file" name="visitFile" />
+	                                    <input type="file" name="visitFile" id="visitFile"/>
 	                                </div>  
                                 </div>
-                                
-                                <div id="visitFileTemplate" style="display:none">	                                
-	                                <div class="input-group mb-3">
-	                                    <label for="visitFileName" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">File Name</label>
-	                                    <input id="visitFileName" name="visitFileName" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
-	                                </div>
-	                                
-	                                <div class="input-group mb-3">
-	                                    <input type="file" name="visitFile" />
-	                                </div>                                
-                                </div>
+
                                 <div class="input-group mb-3">
                                     <div class="ml-auto col-xl-8 col-lg-8 col-md-8 col-sm-7 pl-0">
-                                        <button type="submit" class="btn btn-primary" id="submitButton">Upload File</button>
+                                        <button type="submit" class="btn btn-primary" id="fileSubmitButton">Upload File</button>
                                     </div>
                                 </div>
                             </form>
@@ -218,6 +208,7 @@
             		success: function(data) {
             			if(!isNaN(data)) {
             			    $("#id").val(data);
+            			    $("#visitId").val(data);
             			}
             			$("#notification").html("<center><font color=\"green\">Visit Updated</font></center>");
             		},
@@ -227,7 +218,48 @@
             	});
                 return false;
               });
+        	
+        	$("#fileSubmitButton").on("click", function (e) {
+                e.preventDefault();
+                var getUrlParams = {};
+                getUrlParams["uploadFileName"] = $('#visitFile')[0].files[0].name;
+                getUrlParams["fileName"] = $("#visitFileName").val();
+                getUrlParams["visitId"] = $("#visitId").val();
+                $.ajax({
+                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/generatePreSignedURL",
+                    type : "POST",
+                    data: JSON.stringify(getUrlParams),
+                    dataType: "json",
+                    contentType: 'application/json',
+                    crossDomain: true,
+            		success: function(data) {
+            	        uploadFile(data);
+            		},
+            		error: function(data) {
+            			alert("Error getting presigned url");
+            		}
+            	});
+                return false;
+              });
         })
+        
+        function uploadFile(fileUploadURL) {
+        	var theFormFile = $('#visitFile')[0].files[0];
+        	$.ajax({
+                url : fileUploadURL,
+                type : "PUT",
+                contentType: theFormFile.type,
+                processData: false,
+                data: theFormFile,
+                crossDomain: true,
+        		success: function(data) {
+        	        alert("file uploaded");
+        		},
+        		error: function(data) {
+        			alert("Error upload failed");
+        		}
+        	});
+        }
         
         function checkForUpdate() {
         	urlParams = new URLSearchParams(window.location.search);
@@ -239,7 +271,7 @@
         	}
         }
         
-        function prefillVisit(visitId) {
+        function prefillVisit(visitId) {	
             $.ajax({
                 url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getVisit?visitId=" + visitId,
                 type : "GET",
@@ -257,6 +289,7 @@
         
         function fillForm(visit) {
         	$("#id").val(visit.id);
+        	$("#visitId").val(visit.id);
         	$("#visitDate").val(visit.visitDate);
         	$("#serviceReportId").val(visit.serviceReportId);
         	$("#complaint").val(visit.complaint);

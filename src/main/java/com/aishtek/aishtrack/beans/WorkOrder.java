@@ -6,30 +6,57 @@ import com.aishtek.aishtrack.utils.WorkStatus;
 public class WorkOrder extends BaseBean {
 
   private int customerId;
+  private int contactPersonId;
   private String type;
   private String status;
   private Date statusDate;
   private String notes;
+  private int categoryId;
+  private int equipmentId;
+  private String brand;
+  private String model;
+  private String serialNumber;
+  private String partNumber;
 
   // search fields
   private String customerName;
+  private String category;
+  private String equipment;
 
-  public WorkOrder(int customerId, String type, String notes) {
+  public WorkOrder(int customerId, int contactPersonId, String type, String notes, int categoryId,
+      int equipmentId,
+      String brand, String model, String serialNumber, String partNumber) {
     this.customerId = customerId;
+    this.contactPersonId = contactPersonId;
     this.type = type;
+    this.categoryId = categoryId;
+    this.equipmentId = equipmentId;
+    this.brand = brand;
+    this.model = model;
+    this.serialNumber = serialNumber;
+    this.partNumber = partNumber;
     this.notes = notes;
     setStatus(WorkStatus.CREATED_STATUS);
   }
 
-  public WorkOrder(int id, int customerId, String type, String status, Date statusDate,
-      String notes, int deleted) {
+  public WorkOrder(int id, int customerId, int contactPersonId, String type, String status,
+      Date statusDate,
+      String notes, int deleted, int categoryId, int equipmentId, String brand, String model,
+      String serialNumber, String partNumber) {
     this.id = id;
     this.customerId = customerId;
+    this.contactPersonId = contactPersonId;
     this.type = type;
     this.notes = notes;
     this.status = status;
     this.statusDate = statusDate;
     this.deleted = deleted;
+    this.categoryId = categoryId;
+    this.equipmentId = equipmentId;
+    this.brand = brand;
+    this.model = model;
+    this.serialNumber = serialNumber;
+    this.partNumber = partNumber;
   }
 
   public int getCustomerId() {
@@ -79,5 +106,77 @@ public class WorkOrder extends BaseBean {
 
   public void setCustomerName(String customerName) {
     this.customerName = customerName;
+  }
+
+  public int getCategoryId() {
+    return categoryId;
+  }
+
+  public void setCategoryId(int categoryId) {
+    this.categoryId = categoryId;
+  }
+
+  public int getEquipmentId() {
+    return equipmentId;
+  }
+
+  public void setEquipmentId(int equipmentId) {
+    this.equipmentId = equipmentId;
+  }
+
+  public String getBrand() {
+    return brand;
+  }
+
+  public void setBrand(String brand) {
+    this.brand = brand;
+  }
+
+  public String getModel() {
+    return model;
+  }
+
+  public void setModel(String model) {
+    this.model = model;
+  }
+
+  public String getSerialNumber() {
+    return serialNumber;
+  }
+
+  public void setSerialNumber(String serialNumber) {
+    this.serialNumber = serialNumber;
+  }
+
+  public String getPartNumber() {
+    return partNumber;
+  }
+
+  public void setPartNumber(String partNumber) {
+    this.partNumber = partNumber;
+  }
+
+  public String getCategory() {
+    return category;
+  }
+
+  public void setCategory(String category) {
+    this.category = category;
+  }
+
+  public String getEquipment() {
+    return equipment;
+  }
+
+  public void setEquipment(String equipment) {
+    this.equipment = equipment;
+  }
+
+  public int getContactPersonId() {
+    return contactPersonId;
+  }
+
+  public void setContactPersonId(int contactPersonId) {
+    this.contactPersonId = contactPersonId;
   }
 }

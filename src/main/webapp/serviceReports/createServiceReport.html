@@ -32,13 +32,34 @@
                     <div class="row mt-4 tm-edit-product-row">
                         <div class="col-xl-7 col-lg-7 col-md-12">
                             <form action="" class="tm-edit-product-form" id="createServiceReportForm">
-                               <input type="hidden" id="id" name="id"/>
+                               <input type="hidden" id="serviceReportId" name="id"/>
                                <input type="hidden" id="workOrderId" name="workOrderId"/>
                                <div class="input-group mb-3">
                                     <label for="reportDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Report Date</label>
                                     <input id="reportDate" name="reportDate" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" data-large-mode="true">
                                 </div>
 
+                                <div class="input-group mb-3">
+                                    <label for="contactPersonId" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Contact Person</label>
+                                    <select name="contactPersonId" id="contactPersonId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+
+                                    </select>
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <label for="category" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Category</label>
+                                    <select name="categoryId" id="categoryId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+
+                                    </select>
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <label for="equipmentId" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Equipment</label>
+                                    <select name="equipmentId" id="equipmentId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+
+                                    </select>
+                                </div>
+                                
                                 <div class="input-group mb-3">
                                     <label for="brand" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Brand</label>
                                     <input id="brand" name="brand" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
@@ -52,6 +73,11 @@
                                 <div class="input-group mb-3">
                                     <label for="serialNumber" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Serial Number</label>
                                     <input id="serialNumber" name="serialNumber" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <label for="partNumber" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Part Number</label>
+                                    <input id="partNumber" name="partNumber" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
                                 </div>
                                 
                                 <div class="input-group mb-3">
@@ -87,12 +113,17 @@
     <script>
         $(function () {
         	includeHTML();
+        	getCategories();
         	getTechnicians();
         	$('#reportDate').datepicker({
         	    dateFormat: 'dd/mm/yy'
         	});
+        	$("#categoryId").change(function () {
+        		getEquipments(this.value)
+            });
         	urlParams = new URLSearchParams(window.location.search);
         	workOrderId = urlParams.get('workOrderId');
+        	prefillWorkOrderData(workOrderId);
         	$("#workOrderId").val(workOrderId);
         	$("#submitButton").on("click", function (e) {
                 e.preventDefault();
@@ -105,7 +136,7 @@
                     crossDomain: true,
             		success: function(data) {
             			if(!isNaN(data)) {
-            			    $("#id").val(data);
+            			    $("#serviceReportId").val(data);
             			}
             			$("#notification").html("<center><font color=\"green\">Service Report Updated</font></center>");
             		},

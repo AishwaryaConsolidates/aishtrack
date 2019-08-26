@@ -12,29 +12,35 @@ public class ServiceReport extends BaseBean {
   private int customerId;
   private int addressId;
   private int contactPersonId;
+  private int categoryId;
+  private int equipmentId;
   private Date reportDate;
   private String status;
   private Date statusDate;
   private String brand;
   private String model;
   private String serialNumber;
+  private String partNumber;
   private int serviceRating;
   private String notes;
 
   // search fields
   private String customerName;
 
-  public ServiceReport(Customer customer, String notes, String brand, String model,
-      String serialNumber, Date reportDate) {
+  public ServiceReport(Customer customer, int contactPersonId, int categoryId, int equipmentId,
+      String notes, String brand, String model, String serialNumber, String partNumber,
+      Date reportDate) {
     this.customerId = customer.getId();
     this.addressId = customer.getAddressId();
-    this.contactPersonId = customer.getContactPersonId();
+    this.contactPersonId = contactPersonId;
+    this.categoryId = categoryId;
+    this.equipmentId = equipmentId;
     this.notes = notes;
     this.brand = brand;
     this.model = model;
     this.reportDate = reportDate;
     this.serialNumber = serialNumber;
-
+    this.partNumber = partNumber;
     setStatus(WorkStatus.CREATED_STATUS);
   }
 
@@ -193,5 +199,29 @@ public class ServiceReport extends BaseBean {
 
   public void setCustomerName(String customerName) {
     this.customerName = customerName;
+  }
+
+  public int getCategoryId() {
+    return categoryId;
+  }
+
+  public void setCategoryId(int categoryId) {
+    this.categoryId = categoryId;
+  }
+
+  public int getEquipmentId() {
+    return equipmentId;
+  }
+
+  public void setEquipmentId(int equipmentId) {
+    this.equipmentId = equipmentId;
+  }
+
+  public String getPartNumber() {
+    return partNumber;
+  }
+
+  public void setPartNumber(String partNumber) {
+    this.partNumber = partNumber;
   }
 }

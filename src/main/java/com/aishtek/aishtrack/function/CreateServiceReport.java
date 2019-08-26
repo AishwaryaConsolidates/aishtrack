@@ -38,11 +38,14 @@ public class CreateServiceReport extends BaseFunction
         if (Util.isNullOrEmpty(response.id)) {
           Date reportDate = new SimpleDateFormat("dd/MM/yyyy").parse(response.reportDate);
           int serviceReportId = createServiceReport(connection, response.workOrderId,
-              response.notes, response.brand, response.model, response.serialNumber,
+              response.contactPersonId, response.categoryId, response.equipmentId, response.notes,
+              response.brand, response.model, response.serialNumber, response.partNumber,
               reportDate, getIntegerList(response.technicianIds));
           output = createSuccessOutput("" + serviceReportId);
         } else {
-          updateServiceReport(connection, Integer.parseInt(response.id), response.notes);
+          updateServiceReport(connection, Integer.parseInt(response.id), response.contactPersonId,
+              response.categoryId, response.equipmentId, response.brand, response.model,
+              response.serialNumber, response.partNumber, response.notes);
           output = createSuccessOutput("");
         }
         connection.commit();
@@ -57,16 +60,17 @@ public class CreateServiceReport extends BaseFunction
     return output;
   }
 
-  public int createServiceReport(Connection connection, int workOrderId, String notes, String brand,
-      String model, String serialNumber, Date reportDate, ArrayList<Integer> technicianIds)
+  public int createServiceReport(Connection connection, int workOrderId, int contactPersonId,
+      int categoryId, int equipmentId, String notes, String brand, String model,
+      String serialNumber, String partNumber, Date reportDate, ArrayList<Integer> technicianIds)
       throws SQLException {
     WorkOrder workOrder = WorkOrderDAO.findById(connection, workOrderId);
     Customer customer = CustomerDAO.findById(connection, workOrder.getCustomerId());
 
     // create service report
-    int serviceReportId = ServiceReportDAO
-        .create(connection, workOrder.getId(),
-            new ServiceReport(customer, notes, brand, model, serialNumber, reportDate));
+    int serviceReportId = ServiceReportDAO.create(connection, workOrder.getId(),
+        new ServiceReport(customer, contactPersonId, categoryId, equipmentId, notes, brand, model,
+            serialNumber, partNumber, reportDate));
 
     // create service report technician
     if (technicianIds != null && technicianIds.size() > 0) {
@@ -86,9 +90,12 @@ public class CreateServiceReport extends BaseFunction
     return serviceReportId;
   }
 
-  public void updateServiceReport(Connection connection, int serviceReportId, String notes)
+  public void updateServiceReport(Connection connection, int serviceReportId, int contactPersonId,
+      int categoryId, int equipmentId, String brand, String model, String serialNumber,
+      String partNumber, String notes)
       throws SQLException {
-    ServiceReportDAO.update(connection, serviceReportId, notes);
+    ServiceReportDAO.update(connection, serviceReportId, contactPersonId, categoryId, equipmentId,
+        brand, model, serialNumber, partNumber, notes);
   }
 
   private void sendEmailToTechnicians(Connection connection, ServiceReport serviceReport)
@@ -153,10 +160,14 @@ public class CreateServiceReport extends BaseFunction
   class Response {
     private String id;
     private int workOrderId;
+    public Integer contactPersonId;
     private String notes;
+    private Integer categoryId;
+    private Integer equipmentId;
     private String brand;
     private String model;
     private String serialNumber;
+    private String partNumber;
     private String reportDate;
     private String technicianIds;
   }

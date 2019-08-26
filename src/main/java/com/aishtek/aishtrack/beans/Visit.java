@@ -4,7 +4,6 @@ import java.util.Date;
 
 public class Visit extends BaseBean {
 
-  private int id;
   private int serviceReportId;
   private Date visitDate;
   private String complaint;
@@ -21,14 +20,6 @@ public class Visit extends BaseBean {
     this.findings = findings;
     this.workDone = workDone;
     this.customerRemarks = customerRemarks;
-  }
-
-  public int getId() {
-    return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
   }
 
   public int getServiceReportId() {

@@ -66,7 +66,7 @@
                 clearTimeout(timeoutID);
                 timeoutID = setTimeout(() => loadWorkOrders(e.target.value), 500);
             });
-            
+        	
             function loadWorkOrders(customerName) {
                 $.ajax({
                     url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getWorkOrders?name=" + customerName,

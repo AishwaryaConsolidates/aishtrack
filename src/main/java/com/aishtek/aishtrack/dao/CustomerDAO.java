@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import com.aishtek.aishtrack.beans.Customer;
+import com.aishtek.aishtrack.beans.NameId;
 import com.aishtek.aishtrack.utils.Util;
 
 public class CustomerDAO extends BaseDAO {
@@ -63,19 +64,20 @@ public class CustomerDAO extends BaseDAO {
     preparedStatement.executeUpdate();
   }
 
-  public static ArrayList<Integer> findCustomerPersons(Connection connection, int customerId)
+  public static ArrayList<NameId> findCustomerPersons(Connection connection, int customerId)
       throws SQLException {
-    String sql = "SELECT person_id FROM customer_persons where customer_id = ?";
+    String sql =
+        "SELECT cp.person_id, p.first_name, p.last_name FROM customer_persons cp, persons p where cp.person_id = p.id and customer_id = ?";
 
     PreparedStatement statement = connection.prepareStatement(sql);
     statement.setInt(1, customerId);
     ResultSet result = statement.executeQuery();
 
-    ArrayList<Integer> personIds = new ArrayList<Integer>();
+    ArrayList<NameId> persons = new ArrayList<NameId>();
     while (result.next()) {
-      personIds.add(result.getInt(1));
+      persons.add(new NameId(result.getInt(1), (result.getString(2) + " " + result.getString(3))));
     }
-    return personIds;
+    return persons;
   }
 
   public static ArrayList<Customer> searchFor(Connection connection, String name)

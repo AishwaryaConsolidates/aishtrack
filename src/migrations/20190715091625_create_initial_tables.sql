@@ -2,6 +2,17 @@ create extension "uuid-ossp";
 
 CREATE OR REPLACE FUNCTION updated_at_trigger() RETURNS TRIGGER AS $$ BEGIN NEW.updated_at = NOW(); RETURN NEW; END; $$ LANGUAGE plpgsql;
 
+CREATE TABLE categories (
+  id            SERIAL PRIMARY KEY,
+  name          VARCHAR(30)
+);
+
+CREATE TABLE equipments (
+  id            SERIAL PRIMARY KEY,
+  category_id   INT NOT NULL,
+  name          VARCHAR(30)
+);
+
 CREATE TABLE persons (
   id            SERIAL PRIMARY KEY,
   first_name    VARCHAR(50),
@@ -76,7 +87,9 @@ CREATE TABLE work_orders (
   created_at     TIMESTAMP DEFAULT NOW(),
   updated_at     TIMESTAMP,
   deleted        INT DEFAULT 0,
-  FOREIGN KEY (customer_id) REFERENCES customers(id)
+  FOREIGN KEY (customer_id) REFERENCES customers(id),
+  FOREIGN KEY (category_id) REFERENCES categories(id),
+  FOREIGN KEY (equipment_id) REFERENCES equipments(id)
 );
 CREATE INDEX ON work_orders(customer_id);
 
@@ -108,7 +121,9 @@ CREATE TABLE service_reports (
   deleted                INT DEFAULT 0,
   FOREIGN KEY (customer_id) REFERENCES customers(id),
   FOREIGN KEY (contact_person_id) REFERENCES persons(id),
-  FOREIGN KEY (address_id) REFERENCES addresses(id)
+  FOREIGN KEY (address_id) REFERENCES addresses(id),
+  FOREIGN KEY (category_id) REFERENCES categories(id),
+  FOREIGN KEY (equipment_id) REFERENCES equipments(id)
 );
 CREATE INDEX ON service_reports(customer_id);
 
@@ -259,14 +274,3 @@ CREATE TABLE installation_report_visits (
   FOREIGN KEY (visit_id) REFERENCES visits(id)
 );
 CREATE INDEX ON installation_report_visits (installation_report_id, visit_id);
-
-CREATE TABLE categories (
-  id            SERIAL PRIMARY KEY,
-  name          VARCHAR(30)
-);
-
-CREATE TABLE sub_categories (
-  id            SERIAL PRIMARY KEY,
-  category_id   INT NOT NULL,
-  name          VARCHAR(30)
-);
