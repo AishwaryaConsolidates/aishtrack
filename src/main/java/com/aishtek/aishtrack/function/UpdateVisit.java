@@ -42,6 +42,15 @@ public class UpdateVisit extends BaseFunction
           Date visitDate = new SimpleDateFormat("dd/MM/yyyy").parse(response.visitDate);
           updateVisit(connection, Util.getInt(response.id), response.serviceReportId, visitDate,
               response.complaint, response.findings, response.workDone, response.customerRemarks);
+
+          createRecommendedSpareParts(connection, Util.getInt(response.id),
+              response.recommendedSparePartNumber, response.recommendedSparePartQuantity,
+              response.recommendedSparePartDescription);
+
+          createReplacedSpareParts(connection, Util.getInt(response.id),
+              response.replacedSparePartNumber, response.replacedSparePartQuantity,
+              response.replacedSparePartDescription);
+
           output = createSuccessOutput("");
         }
         connection.commit();
@@ -85,6 +94,7 @@ public class UpdateVisit extends BaseFunction
     ArrayList<String> recommendedSparePartDescriptions =
         getStringList(recommendedSparePartDescription);
 
+    RecommendedSparePartDAO.deleteFor(connection, visitId);
     for (int i = 0; i < recommendedSparePartNumbers.size(); i++) {
       if (!Util.isNullOrEmpty(recommendedSparePartNumbers.get(i))) {
         RecommendedSparePartDAO.create(connection,
@@ -102,6 +112,7 @@ public class UpdateVisit extends BaseFunction
     ArrayList<String> replacedSparePartQuantitys = getStringList(replacedSparePartQuantity);
     ArrayList<String> replacedSparePartDescriptions = getStringList(replacedSparePartDescription);
 
+    ReplacedSparePartDAO.deleteFor(connection, visitId);
     for (int i = 0; i < replacedSparePartNumbers.size(); i++) {
       if (!Util.isNullOrEmpty(replacedSparePartNumbers.get(i))) {
         ReplacedSparePartDAO.create(connection,

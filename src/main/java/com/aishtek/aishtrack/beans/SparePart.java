@@ -2,7 +2,6 @@ package com.aishtek.aishtrack.beans;
 
 public class SparePart extends BaseBean {
 
-  private int id;
   private int visitId;
   private String partNumber;
   private String description;
@@ -21,14 +20,6 @@ public class SparePart extends BaseBean {
     this.partNumber = partNumber;
     this.description = description;
     this.quantity = quantity;
-  }
-
-  public int getId() {
-    return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
   }
 
   public int getVisitId() {

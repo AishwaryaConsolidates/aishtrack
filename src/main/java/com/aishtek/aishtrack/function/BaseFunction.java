@@ -12,7 +12,7 @@ import java.util.Map;
 import com.aishtek.aishtrack.model.ServerlessOutput;
 import com.google.gson.Gson;
 
-// TODO clean this up, can createSuccessOutput take object
+// TODO clean this up, can createSuccessOutput take object, or atleast consolidate
 public class BaseFunction {
 
   public static final String delimiter = "!@#";
@@ -46,6 +46,16 @@ public class BaseFunction {
   }
 
   protected ServerlessOutput createSuccessOutput(HashMap<String, String> result) {
+    ServerlessOutput output = new ServerlessOutput();
+    output.setStatusCode(200);
+    Map<String, String> headers = new HashMap<String, String>();
+    headers.put("Access-Control-Allow-Origin", "*");
+    output.setHeaders(headers);
+    output.setBody(new Gson().toJson(result));
+    return output;
+  }
+
+  protected ServerlessOutput createSuccessOutput(ArrayList<HashMap<String, String>> result) {
     ServerlessOutput output = new ServerlessOutput();
     output.setStatusCode(200);
     Map<String, String> headers = new HashMap<String, String>();

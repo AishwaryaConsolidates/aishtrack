@@ -200,10 +200,9 @@ CREATE INDEX ON visit_recommended_spare_parts (visit_id);
 
 CREATE TABLE files (
   id                       SERIAL PRIMARY KEY,
-  name                     VARCHAR(30),
+  name                     VARCHAR(50),
   location                 VARCHAR(100),
-  uploaded_by_person_id    INT,
-  upload_date              TIMESTAMP
+  upload_date              TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE visit_files (

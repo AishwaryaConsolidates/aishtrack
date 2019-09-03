@@ -2,7 +2,7 @@ package com.aishtek.aishtrack.function;
 
 import java.sql.Connection;
 import java.util.ArrayList;
-import com.aishtek.aishtrack.beans.ServiceReport;
+import java.util.HashMap;
 import com.aishtek.aishtrack.dao.ServiceReportDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
@@ -24,8 +24,8 @@ public class GetServiceReports extends BaseFunction
 
         String workOrderId = serverlessInput.getQueryStringParameters().get("workOrderId");
 
-        ArrayList<ServiceReport> serviceReports = ServiceReportDAO.searchFor(connection, "", 0,
-            Util.getInt(workOrderId), WorkStatus.openStatuses());
+        ArrayList<HashMap<String, String>> serviceReports = ServiceReportDAO.searchFor(connection,
+            "", 0, Util.getInt(workOrderId), WorkStatus.openStatuses());
 
         output = createSuccessOutput();
         output.setBody(new Gson().toJson(serviceReports));

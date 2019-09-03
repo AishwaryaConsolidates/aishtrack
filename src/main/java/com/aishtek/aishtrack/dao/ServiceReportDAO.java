@@ -18,7 +18,7 @@ public class ServiceReportDAO extends BaseDAO {
       ServiceReport serviceReport)
       throws SQLException {
       PreparedStatement preparedStatement = connection.prepareStatement(
-        "insert into service_reports (customer_id, address_id, contact_person_id, category_id, equipment_id, status, status_date, notes, brand, model, serial_number, part_number, report_date, created_at) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "insert into service_reports (customer_id, address_id, contact_person_id, category_id, equipment_id, status, status_date, notes, brand, model, serial_number, part_number, report_date, created_at) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         PreparedStatement.RETURN_GENERATED_KEYS);
       preparedStatement.setInt(1, serviceReport.getCustomerId());
       preparedStatement.setInt(2, serviceReport.getAddressId());
@@ -188,10 +188,16 @@ public class ServiceReportDAO extends BaseDAO {
     preparedStatement.executeUpdate();
   }
 
-  public static ArrayList<ServiceReport> searchFor(Connection connection, String customerName,
+  public static ArrayList<HashMap<String, String>> searchFor(Connection connection,
+      String customerName,
       int customerId, int workOrderId, String[] statuses) throws SQLException {
     String sql =
-        "SELECT sr.id, sr.code, sr.status, sr.status_date, c.name from service_reports sr, customers c, work_order_service_reports wosr where sr.customer_id = c.id and sr.deleted = 0 and sr.id = wosr.service_report_id ";
+        "SELECT sr.id, sr.code, sr.status, c.name, ct.name, eq.name "
+            + " from service_reports sr inner join customers c on sr.customer_id = c.id "
+            + " inner join work_order_service_reports wosr on sr.id = wosr.service_report_id "
+            + " left join categories ct on sr.category_id = ct.id "
+            + " left join equipments eq on sr.equipment_id = eq.id where sr.deleted = 0 ";
+
     if (!Util.isNullOrEmpty(statuses)) {
       sql += " and sr.status = ANY (?) ";
     }
@@ -231,12 +237,16 @@ public class ServiceReportDAO extends BaseDAO {
 
     ResultSet result = statement.executeQuery();
 
-    ArrayList<ServiceReport> serviceReports = new ArrayList<ServiceReport>();
+    ArrayList<HashMap<String, String>> serviceReports = new ArrayList<HashMap<String, String>>();
     while (result.next()) {
-      ServiceReport serviceReport = new ServiceReport(result.getInt(1), result.getString(2),
-          result.getString(3), dateFor(result.getTimestamp(4)));
-      serviceReport.setCustomerName(result.getString(5));
-      serviceReports.add(serviceReport);
+      HashMap<String, String> hashMap = new HashMap<String, String>();
+      hashMap.put("id", "" + result.getInt(1));
+      hashMap.put("code", result.getString(2));
+      hashMap.put("status", result.getString(3));
+      hashMap.put("customer", result.getString(4));
+      hashMap.put("category", result.getString(5));
+      hashMap.put("equipment", result.getString(6));
+      serviceReports.add(hashMap);
     }
     return serviceReports;
   }

@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../css/fontawesome.min.css">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/tooplate.css">
+    <link rel="stylesheet" type="text/css" href="../vendors/DataTables/dataTables.bootstrap4.css"/>
 </head>
 
 <body class="bg03">
@@ -19,48 +20,63 @@
         </div>
         
         <div class="row tm-content-row tm-mt-big">
-            <div class="tm-col tm-col-big">
-                <div class="bg-white tm-block">
+           <div id="addContactPersonDiv" class="bg-white tm-block col-9">
+           <h2 class="tm-block-title d-inline-block">Add Contact Person</h2>
+           <form id="addContactPersonForm" action="" class="tm-edit-product-form">
+           <input type="hidden" id="customerId" name="customerId"/>
+               <div class="input-group mb-3">
+                   <label for="firstName" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">First name</label>
+                   <input id="firstName" name="firstName" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+               <div class="input-group mb-3">
+                   <label for="lastName" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Last name</label>
+                   <input id="lastName" name="lastName" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div> 
+               <div class="input-group mb-3">
+                   <label for="designation" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Designation</label>
+                   <input id="designation" name="designation" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+               <div class="input-group mb-3">
+                   <label for="phone" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Phone</label>
+                   <input id="phone" name="phone" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+               <div class="input-group mb-3">
+                   <label for="email" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Email</label>
+                   <input id="email" name="email" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+               <div class="input-group mb-3">
+                   <div class="ml-auto col-xl-8 col-lg-8 col-md-8 col-sm-7 pl-0">
+                       <button type="submit" class="btn btn-primary" id="addContactPerson">Save</button>
+                   </div>
+               </div>              
+           </form>
+           </div>
+           </div>
+           <div class="row tm-content-row tm-mt-big">
+            <div class="bg-white tm-block col-9">
                     <div class="row">
                         <div class="col-12">
-                            <h2 class="tm-block-title d-inline-block">Open Work Orders</h2>
+                        <div id="notification"></div>
+                            <h2 class="tm-block-title d-inline-block">Work Orders</h2>
                         </div>
+                        <table id="openWorkOrders" class="table table-striped table-bordered" style="width:100%">
+                          <thead>
+                            <tr>
+                              <th>Edit</th>
+                              <th>Type</th>
+                              <th>Status</th>
+                              <th>Category</th>
+                              <th>Equipment</th>
+                              <th>Brand</th>
+                            </tr>
+                          </thead>
+                          <tbody id="openWorkOrdersBody">
+                          
+                          </tbody>
+                        </table>
                     </div>
-                    <ol class="tm-list-group tm-list-group-alternate-color tm-list-group-pad-big">
-                    <div id="workOrders"></</div>
-                    </ol>
-                    
-                    <br/>
-                    
-                    <div class="row">
-                        <div class="col-12">
-                            <h2 class="tm-block-title d-inline-block">Open Service Reports</h2>
-                        </div>
-                    </div>
-                    <ol class="tm-list-group tm-list-group-alternate-color tm-list-group-pad-big">
-                        <div id="serviceReports"></</div>
-                    </ol>
-                    
-                    <button type="submit" class="btn btn-primary" id="addContactPerson">Update Contact</button>
-		                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		            <button type="submit" class="btn btn-primary" id="addAddress">Update Address</button>
-                </div>
-            </div>
-            <div class="tm-col tm-col-big">
-                <div class="bg-white tm-block">
-                    <div class="row">
-                        <div class="col-12">
-                            <h2 class="tm-block-title">Edit Customer</h2>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-		                    
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="tm-col tm-col-small">
+              </div>
+            <div class="tm-col col-3">
                 <div class="bg-white tm-block">
                     <h2 class="tm-block-title">Details</h2>
 			            <div id="name"></div>
@@ -69,26 +85,89 @@
 			            <br/>
 			            <div id="address"></div>
 			            <br/>
+			            <div>Main Contact Person</div>
 			            <div id="contactPerson"></div>
+			            <br/>
+			            <button id="showAddContactPerson" type="submit" class="btn btn-small btn-primary" id="submitButton">Add Contact</button>
                 </div>
             </div>
         </div>
         
+        <div class="row tm-content-row tm-mt-big">
+              <div class="bg-white tm-block col-9">
+                   <div class="row">
+                        <div class="col-12">
+                            <h2 class="tm-block-title d-inline-block">Contact Persons</h2>
+                        </div>
+                        <table id="contactPersons" class="table table-striped table-bordered" style="width:100%">
+                          <thead>
+                            <tr>
+                              <th>Edit</th>
+                              <th>Name</th>
+                              <th>Designation</th>
+                              <th>Email</th>
+                              <th>Phone</th>
+                            </tr>
+                          </thead>
+                          <tbody id="contactPersonsList">
+                          
+                          </tbody>
+                        </table>
+                    </div>
+              </div>        
+        
+        </div>
         <div w3-include-html="../partials/footer.html"> </div>
     </div>
 
     <script src="../js/jquery-3.3.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/aishtrack.js"></script>
+    <script type="text/javascript" src="../vendors/DataTables/datatables.min.js"></script>
     <script>
         $(function () {
         	includeHTML();
         	getCustomerInfo();
+        	$("#addContactPersonDiv").hide();
         })
+        $("#showAddContactPerson").on("click", function (e) {
+                e.preventDefault();
+                $("#addContactPersonDiv").show();
+                $('#firstName').focus();
+                return false;
+        });       
+        $("#addContactPerson").on("click", function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/createCustomerContactPerson",
+                    type : "POST",
+                    data: getJSONFormData($('#addContactPersonForm')),
+                    dataType: "json",
+                    contentType: 'application/json',
+                    crossDomain: true,
+            		success: function(data) {
+            			html = "";
+            	        $.each(data, function(index, person){
+            	        	html+="<tr>";
+            	        	html+="<td>&nbsp;</td><td>"+person.firstName + " "  + person.lastName + "</td><td>" + person.designation + "</td><td>" + person.email + "</td><td>" + person.phone +"</td>";
+            	        	html+="</tr>";
+            	        });
+            	        $("#contactPersonsList").html(html);
+                    	$('#contactPersons').DataTable();
+            			$("#addContactPersonDiv").hide();
+            			$("#notification").html("<center><font color=\"green\">Contact Person Added</font></center>");
+            		},
+            		error: function(data) {
+            			alert("Error adding contact person.");
+            		}
+            	});
+                return false;
+        });
         
         function getCustomerInfo() {
         	urlParams = new URLSearchParams(window.location.search);
         	customerId = urlParams.get('customerId');
+        	$("#customerId").val(customerId);
         	if(customerId != null) {
         		$("#id").val(customerId);
         		$('#getOpenServiceReports').html("<a href=\"../serviceReports/createServiceReport.html?workOrderId=" + customerId + "\" class=\"btn btn-small btn-primary\">Open Service Reports</a>");
@@ -106,8 +185,9 @@
         		success: function(data) {
         			customer = JSON.parse(JSON.stringify(data));
         			fillForm(customer);
-        			fillWorkOrders(customer);
+        			listWorkOrders(customer.workOrders);
         			fillServiceReports(customer);
+        			fillContactPersons(customer);
         		},
         		error: function(data) {
         			log("Error fetching customers");
@@ -120,6 +200,36 @@
         	$("#nickName").html(customer.nickName);
         	$("#address").html(customer.address);
         	$("#contactPerson").html(customer.contactPerson);
+        }
+        
+        function fillContactPersons(customer) {        	
+        	html = "";
+        	$.each(customer.contactPersons, function(index, person){
+        		html+="<tr>";
+        		html+="<td>&nbsp;</td><td>"+person.firstName + " "  + person.lastName + "</td><td>" + person.designation + "</td><td>" + person.email + "</td><td>" + person.phone +"</td>";
+        		html+="</tr>";
+        	});
+        	$("#contactPersonsList").html(html);
+        	$('#contactPersons').DataTable();
+        }
+        
+        function listWorkOrders(jsonArray) {
+        	html = "";
+        	$.each(jsonArray, function(index, jsonObject){
+        		workOrder = JSON.parse(JSON.stringify(jsonObject));
+        		html+="<tr>";
+        		html+="<td>";
+        		html+="<a href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/workOrders/updateWorkOrder.html?workOrderId=" + workOrder.id + "\"><i class=\"fas fa-edit\"></i></a>";
+        		html+="</td>";
+        		html+="<td class=\"text-center\">" + workOrder.type + "</td>";
+        		html+="<td class=\"text-center\">" + workOrder.status + "</td>";
+        		html+="<td>" + workOrder.category + "</td>";
+        		html+="<td>" + workOrder.equipment + "</td>";
+        		html+="<td>" + workOrder.brand + "</td>";
+        		html+="</tr>";
+        	});
+        	$("#openWorkOrdersBody").html(html);
+        	$('#openWorkOrders').DataTable();
         }
         
         function fillWorkOrders(customer) {

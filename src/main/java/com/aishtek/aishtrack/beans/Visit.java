@@ -1,5 +1,6 @@
 package com.aishtek.aishtrack.beans;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Visit extends BaseBean {
@@ -10,6 +11,9 @@ public class Visit extends BaseBean {
   private String findings;
   private String workDone;
   private String customerRemarks;
+
+  private ArrayList<SparePart> recommendedSpareParts;
+  private ArrayList<SparePart> replacedSpareParts;
 
   public Visit(int id, int serviceReportId, Date visitDate, String complaint, String findings,
       String workDone, String customerRemarks) {
@@ -68,6 +72,22 @@ public class Visit extends BaseBean {
 
   public void setCustomerRemarks(String customerRemarks) {
     this.customerRemarks = customerRemarks;
+  }
+
+  public ArrayList<SparePart> getRecommendedSpareParts() {
+    return recommendedSpareParts;
+  }
+
+  public void setRecommendedSpareParts(ArrayList<SparePart> recommendedSpareParts) {
+    this.recommendedSpareParts = recommendedSpareParts;
+  }
+
+  public ArrayList<SparePart> getReplacedSpareParts() {
+    return replacedSpareParts;
+  }
+
+  public void setReplacedSpareParts(ArrayList<SparePart> replacedSpareParts) {
+    this.replacedSpareParts = replacedSpareParts;
   }
 
 }

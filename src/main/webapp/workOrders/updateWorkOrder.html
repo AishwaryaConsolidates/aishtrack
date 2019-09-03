@@ -104,9 +104,11 @@
                 </div>
             </div>
         <div class="col-xl-4 col-lg-12 tm-md-12 tm-sm-12 tm-col">
-            <div class="bg-white tm-block h-50" id="createServiceReport">
+           <div class="bg-white tm-block h-50" id="serviceReport">
+                <h2 class="tm-block-title d-inline-block">Service Reports</h2>
                 
-            </div>
+                <div id="serviceReportList"></div>
+           </div>
         </div>              
         </div>
         <div w3-include-html="../partials/footer.html"> </div>
@@ -175,18 +177,16 @@
           }
 
         function fillServiceReports(serviceReports) {
+        	html = "<a href=\"../serviceReports/createServiceReport.html?workOrderId=" + workOrderId + "\" class=\"btn btn-small btn-primary\">Create Service Report</a><br/><br/>";
         	if(serviceReports.length > 0) {
-	        	html = "";
+        		html+="Existing Service Reports";
 	        	$.each(serviceReports, function(index, serviceReport){
 	        		html+="<li class=\"tm-list-group-item\">";
-	        		html+="<a href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/serviceReports/viewServiceReport.html?serviceReportCode=" + serviceReport.code + "\">" + serviceReport.status + " " + serviceReport.statusDate + "</a>";
+	        		html+="<a href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/serviceReports/viewServiceReport.html?serviceReportCode=" + serviceReport.code + "\">" + serviceReport.equipment + " (" +serviceReport.status + ")" + "</a>";
 	        		html+="</li>";
-	        		html+= "<a href=\"../serviceReports/createServiceReport.html?workOrderId=" + workOrderId + "\" class=\"btn btn-small btn-primary\">Create Service Report</a>";
 	        	});
-	        	$("#createServiceReport").html(html);
-        	} else {
-        		$('#createServiceReport').html("<a href=\"../serviceReports/createServiceReport.html?workOrderId=" + workOrderId + "\" class=\"btn btn-small btn-primary\">Create Service Report</a>");
         	}
+        	$("#serviceReportList").html(html);
         }
     </script>
 </body>

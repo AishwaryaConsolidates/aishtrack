@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import com.aishtek.aishtrack.beans.Visit;
 
 public class VisitDAO extends BaseDAO {
@@ -55,5 +57,46 @@ public class VisitDAO extends BaseDAO {
     } else {
       throw new SQLException("No visit found, ID does not exist");
     }
+  }
+
+  public static ArrayList<HashMap<String, String>> getVisits(Connection connection,
+      int serviceReportId) throws SQLException {
+    String sql =
+        "SELECT id, visit_date from visits where service_report_id = ? order by visit_date desc ";
+
+    PreparedStatement statement = connection.prepareStatement(sql);
+    statement.setInt(1, serviceReportId);
+
+    ResultSet result = statement.executeQuery();
+
+    ArrayList<HashMap<String, String>> visits = new ArrayList<HashMap<String, String>>();
+    while (result.next()) {
+      HashMap<String, String> hashMap = new HashMap<String, String>();
+      hashMap.put("id", "" + result.getInt(1));
+      hashMap.put("visitDate", formatTimestamp(result.getTimestamp(2)));
+      visits.add(hashMap);
+    }
+    return visits;
+  }
+
+  public static ArrayList<HashMap<String, String>> getVisitFiles(Connection connection, int visitId)
+      throws SQLException {
+    String sql =
+        "SELECT vf.id, f.name, f.location from files f, visit_files vf where f.id = vf.file_id and vf.visit_id = ? order by f.upload_date desc ";
+
+    PreparedStatement statement = connection.prepareStatement(sql);
+    statement.setInt(1, visitId);
+
+    ResultSet result = statement.executeQuery();
+
+    ArrayList<HashMap<String, String>> files = new ArrayList<HashMap<String, String>>();
+    while (result.next()) {
+      HashMap<String, String> hashMap = new HashMap<String, String>();
+      hashMap.put("id", "" + result.getInt(1));
+      hashMap.put("name", result.getString(2));
+      hashMap.put("location", result.getString(3));
+      files.add(hashMap);
+    }
+    return files;
   }
 }

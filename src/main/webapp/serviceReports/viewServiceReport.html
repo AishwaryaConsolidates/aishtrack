@@ -67,6 +67,9 @@
                 <div class="bg-white tm-block">
                     <a id="visitButton" href="#" class="btn btn-small btn-primary">Create Visit</a>
                 </div>
+                <div id="visits" class="bg-white tm-block">
+                    
+                </div>
             </div>
         </div>
         
@@ -94,6 +97,7 @@
             			serviceReport = JSON.parse(JSON.stringify(data));
             			serviceReportId = serviceReport.id;
             			fillPage(serviceReport);
+            			loadVisits(serviceReportId);
             		},
             		error: function(data) {
             			log("Error fetching service report");
@@ -130,6 +134,33 @@
                 e.preventDefault();
                 window.open('https://aishtek.s3.amazonaws.com/aishtrack/visits/updateVisit.html?serviceReportId='+serviceReportId,'_visit');   
         	});
+        	
+        	function loadVisits(serviceReportId) {
+                $.ajax({
+                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getVisits?serviceReportId=" + serviceReportId,
+                    type : "GET",
+                    dataType: "json",
+                    crossDomain: true,
+            		success: function(data) {
+            			jsonArray = JSON.parse(JSON.stringify(data));
+            			listVisits(jsonArray);
+            		},
+            		error: function(data) {
+            			console.log("Error fetching visits" + data);
+            		}
+            	});
+              }
+        	
+        	function listVisits(visits) {
+            	html = "Visits";
+            	$.each(visits, function(index, visit){
+            		customer = JSON.parse(JSON.stringify(visit));
+            		html+="<li>";
+            		html+="<a href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/visits/updateVisit.html?visitId=" + visit.id + "\">" + visit.visitDate +"</i></a>";
+            		html+="<//li>";
+            	});
+            	$("#visits").html(html);
+            }
         })
     </script>
 </body>

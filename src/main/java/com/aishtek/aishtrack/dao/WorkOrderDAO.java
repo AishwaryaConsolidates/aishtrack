@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import com.aishtek.aishtrack.beans.WorkOrder;
 import com.aishtek.aishtrack.utils.Util;
 import com.aishtek.aishtrack.utils.WorkStatus;
@@ -84,10 +85,11 @@ public class WorkOrderDAO extends BaseDAO {
     preparedStatement.executeUpdate();
   }
 
-  public static ArrayList<WorkOrder> searchFor(Connection connection, String customerName,
+  public static ArrayList<HashMap<String, String>> searchFor(Connection connection,
+      String customerName,
       int customerId, String[] statuses) throws SQLException {
     String sql =
-        "SELECT wo.id, wo.customer_id, wo.contact_person_id, wo.type, wo.status, wo.status_date, wo.notes, wo.deleted, wo.brand, wo.model, wo.serial_number, wo.part_number, c.name, ct.name, eq.name "
+        "SELECT wo.id, wo.type, wo.status, c.name, ct.name, eq.name, wo.brand "
             + "from work_orders wo inner join customers c on wo.customer_id = c.id "
             + "left join categories ct on wo.category_id = ct.id "
             + "left join equipments eq on wo.equipment_id = eq.id where wo.deleted = 0 ";
@@ -123,16 +125,17 @@ public class WorkOrderDAO extends BaseDAO {
 
     ResultSet result = statement.executeQuery();
 
-    ArrayList<WorkOrder> workOrders = new ArrayList<WorkOrder>();
+    ArrayList<HashMap<String, String>> workOrders = new ArrayList<HashMap<String, String>>();
     while (result.next()) {
-      WorkOrder workOrder = new WorkOrder(result.getInt(1), result.getInt(2), result.getInt(3),
-          result.getString(4), result.getString(5), dateFor(result.getTimestamp(6)),
-          result.getString(7), result.getInt(8), 0, 0, result.getString(9), result.getString(10),
-          result.getString(11), result.getString(12));
-      workOrder.setCustomerName(result.getString(13));
-      workOrder.setCategory(result.getString(14));
-      workOrder.setEquipment(result.getString(15));
-      workOrders.add(workOrder);
+      HashMap<String, String> hashMap = new HashMap<String, String>();
+      hashMap.put("id", "" + result.getInt(1));
+      hashMap.put("type", result.getString(2));
+      hashMap.put("status", result.getString(3));
+      hashMap.put("customer", result.getString(4));
+      hashMap.put("category", result.getString(5));
+      hashMap.put("equipment", result.getString(6));
+      hashMap.put("brand", result.getString(7));
+      workOrders.add(hashMap);
     }
     return workOrders;
   }

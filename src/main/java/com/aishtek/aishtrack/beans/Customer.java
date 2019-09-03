@@ -1,6 +1,7 @@
 package com.aishtek.aishtrack.beans;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Customer extends BaseBean {
 
@@ -12,8 +13,8 @@ public class Customer extends BaseBean {
   // string fields for view
   private String contactPerson;
   private String address;
-  private ArrayList<WorkOrder> workOrders;
-  private ArrayList<ServiceReport> serviceReports;
+  private ArrayList<HashMap<String, String>> workOrders;
+  private ArrayList<HashMap<String, String>> contactPersons;
 
   public Customer(int id, String name, String nickName) {
     this.id = id;
@@ -86,19 +87,19 @@ public class Customer extends BaseBean {
     this.address = address.getFullAddress();
   }
 
-  public ArrayList<WorkOrder> getWorkOrders() {
+  public ArrayList<HashMap<String, String>> getWorkOrders() {
     return workOrders;
   }
 
-  public void setWorkOrders(ArrayList<WorkOrder> workOrders) {
+  public void setWorkOrders(ArrayList<HashMap<String, String>> workOrders) {
     this.workOrders = workOrders;
   }
 
-  public ArrayList<ServiceReport> getServiceReports() {
-    return serviceReports;
+  public ArrayList<HashMap<String, String>> getContactPersons() {
+    return contactPersons;
   }
 
-  public void setServiceReports(ArrayList<ServiceReport> serviceReports) {
-    this.serviceReports = serviceReports;
+  public void setContactPersons(ArrayList<HashMap<String, String>> contactPersons) {
+    this.contactPersons = contactPersons;
   }
 }

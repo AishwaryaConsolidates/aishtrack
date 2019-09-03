@@ -18,11 +18,6 @@ public class WorkOrder extends BaseBean {
   private String serialNumber;
   private String partNumber;
 
-  // search fields
-  private String customerName;
-  private String category;
-  private String equipment;
-
   public WorkOrder(int customerId, int contactPersonId, String type, String notes, int categoryId,
       int equipmentId,
       String brand, String model, String serialNumber, String partNumber) {
@@ -100,14 +95,6 @@ public class WorkOrder extends BaseBean {
     this.notes = notes;
   }
 
-  public String getCustomerName() {
-    return customerName;
-  }
-
-  public void setCustomerName(String customerName) {
-    this.customerName = customerName;
-  }
-
   public int getCategoryId() {
     return categoryId;
   }
@@ -154,22 +141,6 @@ public class WorkOrder extends BaseBean {
 
   public void setPartNumber(String partNumber) {
     this.partNumber = partNumber;
-  }
-
-  public String getCategory() {
-    return category;
-  }
-
-  public void setCategory(String category) {
-    this.category = category;
-  }
-
-  public String getEquipment() {
-    return equipment;
-  }
-
-  public void setEquipment(String equipment) {
-    this.equipment = equipment;
   }
 
   public int getContactPersonId() {

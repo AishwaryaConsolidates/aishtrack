@@ -3,11 +3,13 @@ package com.aishtek.aishtrack.function;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import com.aishtek.aishtrack.beans.WorkOrder;
 import com.aishtek.aishtrack.dao.WorkOrderDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
 import com.aishtek.aishtrack.utils.Util;
+import com.aishtek.aishtrack.utils.WorkStatus;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.google.gson.Gson;
@@ -28,8 +30,12 @@ public class GetWorkOrders extends BaseFunction
 
         String[] statuses = null;
         if (!Util.isNullOrEmpty(status)) {
-          statuses = new String[1];
-          statuses[0] = status;
+          if (status.compareTo("all_open") == 0) {
+            statuses = WorkStatus.openStatuses();
+          } else {
+            statuses = new String[1];
+            statuses[0] = status;
+          }
         }
         
         if (Util.isNullOrEmpty(workOrderId)) {
@@ -50,7 +56,7 @@ public class GetWorkOrders extends BaseFunction
   private ServerlessOutput searchWorkOrders(Connection connection, String customerName,
       String customerId, String[] status) throws SQLException {
     ServerlessOutput output;
-    ArrayList<WorkOrder> workOrders =
+    ArrayList<HashMap<String, String>> workOrders =
         WorkOrderDAO.searchFor(connection, customerName, Util.getInt(customerId), status);
 
     output = createSuccessOutput();

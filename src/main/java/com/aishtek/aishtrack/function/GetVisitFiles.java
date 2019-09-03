@@ -1,9 +1,8 @@
 package com.aishtek.aishtrack.function;
 
 import java.sql.Connection;
-import com.aishtek.aishtrack.beans.Visit;
-import com.aishtek.aishtrack.dao.RecommendedSparePartDAO;
-import com.aishtek.aishtrack.dao.ReplacedSparePartDAO;
+import java.util.ArrayList;
+import java.util.HashMap;
 import com.aishtek.aishtrack.dao.VisitDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
@@ -12,7 +11,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.google.gson.Gson;
 
-public class GetVisit extends BaseFunction
+public class GetVisitFiles extends BaseFunction
     implements RequestHandler<ServerlessInput, ServerlessOutput> {
 
   @Override
@@ -21,16 +20,11 @@ public class GetVisit extends BaseFunction
 
     try (Connection connection = getConnection()) {
       try {
-
         int visitId = Util.getInt(serverlessInput.getQueryStringParameters().get("visitId"));
-
-        // get visit
-        Visit visit = VisitDAO.findById(connection, visitId);
-        visit.setRecommendedSpareParts(RecommendedSparePartDAO.findByVisitId(connection, visitId));
-        visit.setReplacedSpareParts(ReplacedSparePartDAO.findByVisitId(connection, visitId));
+        ArrayList<HashMap<String, String>> visitFiles = VisitDAO.getVisitFiles(connection, visitId);
 
         output = createSuccessOutput();
-        output.setBody(new Gson().toJson(visit));
+        output.setBody(new Gson().toJson(visitFiles));
       } catch (Exception e) {
         connection.rollback();
         output = createFailureOutput(e);

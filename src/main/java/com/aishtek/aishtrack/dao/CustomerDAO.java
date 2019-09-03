@@ -5,8 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import com.aishtek.aishtrack.beans.Customer;
 import com.aishtek.aishtrack.beans.NameId;
+import com.aishtek.aishtrack.beans.Person;
 import com.aishtek.aishtrack.utils.Util;
 
 public class CustomerDAO extends BaseDAO {
@@ -102,5 +104,43 @@ public class CustomerDAO extends BaseDAO {
       customers.add(new Customer(result.getInt(1), result.getString(2), result.getString(3)));
     }
     return customers;
+  }
+
+  public static int createContactPerson(Connection connection, int customerId, Person person)
+      throws SQLException {
+
+    int personId = PersonDAO.create(connection, person);
+    PreparedStatement preparedStatement = connection
+        .prepareStatement("insert into customer_persons (customer_id, person_id) values(?, ?)");
+    preparedStatement.setInt(1, customerId);
+    preparedStatement.setInt(2, personId);
+    preparedStatement.executeUpdate();
+
+    return personId;
+  }
+
+  public static ArrayList<HashMap<String, String>> getContactPersons(Connection connection,
+      int customerId) throws SQLException {
+    String sql = "SELECT cp.id, p.first_name, p.last_name, p.designation, p.phone, p.email "
+        + " from customer_persons cp inner join persons p on cp.person_id = p.id "
+        + " where cp.customer_id = ? " + " order by p.last_name, p.first_name";
+
+    PreparedStatement statement = connection.prepareStatement(sql);
+    statement.setInt(1, customerId);
+
+    ResultSet result = statement.executeQuery();
+
+    ArrayList<HashMap<String, String>> contactPersons = new ArrayList<HashMap<String, String>>();
+    while (result.next()) {
+      HashMap<String, String> hashMap = new HashMap<String, String>();
+      hashMap.put("id", "" + result.getInt(1));
+      hashMap.put("firstName", result.getString(2));
+      hashMap.put("lastName", result.getString(3));
+      hashMap.put("designation", result.getString(4));
+      hashMap.put("phone", result.getString(5));
+      hashMap.put("email", result.getString(6));
+      contactPersons.add(hashMap);
+    }
+    return contactPersons;
   }
 }

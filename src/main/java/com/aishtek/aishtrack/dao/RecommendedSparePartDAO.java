@@ -29,13 +29,10 @@ public class RecommendedSparePartDAO extends BaseDAO {
       }
   }
 
-  public static void update(Connection connection, SparePart sparePart) throws SQLException {
+  public static void deleteFor(Connection connection, int visitId) throws SQLException {
     PreparedStatement preparedStatement = connection.prepareStatement(
-        "update visit_recommended_spare_parts set part_number = ?, description =?, quantity =? where id = ?");
-    preparedStatement.setString(1, sparePart.getPartNumber());
-    preparedStatement.setString(2, sparePart.getDescription());
-    preparedStatement.setInt(3, sparePart.getQuantity());
-    preparedStatement.setInt(3, sparePart.getId());
+        "delete from visit_recommended_spare_parts where visit_id = ?");
+    preparedStatement.setInt(1, visitId);
     preparedStatement.executeUpdate();
   }
 
