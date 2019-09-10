@@ -192,7 +192,7 @@ public class ServiceReportDAO extends BaseDAO {
       String customerName,
       int customerId, int workOrderId, String[] statuses) throws SQLException {
     String sql =
-        "SELECT sr.id, sr.code, sr.status, c.name, ct.name, eq.name "
+        "SELECT sr.id, sr.code, sr.status, c.name, ct.name, eq.name, sr.brand, sr.model "
             + " from service_reports sr inner join customers c on sr.customer_id = c.id "
             + " inner join work_order_service_reports wosr on sr.id = wosr.service_report_id "
             + " left join categories ct on sr.category_id = ct.id "
@@ -240,14 +240,24 @@ public class ServiceReportDAO extends BaseDAO {
     ArrayList<HashMap<String, String>> serviceReports = new ArrayList<HashMap<String, String>>();
     while (result.next()) {
       HashMap<String, String> hashMap = new HashMap<String, String>();
-      hashMap.put("id", "" + result.getInt(1));
+      int serviceReportId = result.getInt(1);
+      hashMap.put("id", "" + serviceReportId);
       hashMap.put("code", result.getString(2));
       hashMap.put("status", result.getString(3));
       hashMap.put("customer", result.getString(4));
       hashMap.put("category", result.getString(5));
       hashMap.put("equipment", result.getString(6));
+      hashMap.put("brand", result.getString(7));
+      hashMap.put("model", result.getString(8));
+      hashMap.put("technicians", getTechnicians(connection, serviceReportId));
       serviceReports.add(hashMap);
     }
     return serviceReports;
+  }
+
+  public static String getTechnicians(Connection connection, int serviceReportId)
+      throws SQLException {
+    ArrayList<String> technicians = TechnicianDAO.getTechniciansFor(connection, 0, serviceReportId);
+    return technicians.size() > 0 ? String.join(", ", technicians) : "";
   }
 }

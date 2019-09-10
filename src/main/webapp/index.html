@@ -34,7 +34,7 @@
             </div>
             <!-- row -->
             <div class="row tm-content-row tm-mt-big">
-              <div class="col-xl-9 col-lg-10 col-md-12 col-sm-12">
+              <div class="col-xl-12 col-lg-10 col-md-12 col-sm-12">
                 <div class="bg-white tm-block">
                     <div class="row">
                         <div class="col-12">
@@ -50,6 +50,7 @@
                               <th>Status</th>
                               <th>Category</th>
                               <th>Equipment</th>
+                              <th>Technicians</th>
                             </tr>
                           </thead>
                           <tbody id="openWorkOrdersBody">
@@ -59,23 +60,6 @@
                     </div>
                  </div>
                </div>
-                
-                <div class="tm-col tm-col-small">
-                    <div class="bg-white tm-block h-75">
-                        <h2 class="tm-block-title">Todo</h2>
-                        <ol class="tm-list-group tm-list-group-alternate-color tm-list-group-pad-big">
-                            <li class="tm-list-group-item">
-                                Donec eget libero
-                            </li>
-                            <li class="tm-list-group-item">
-                                Nunc luctus suscipit elementum
-                            </li>
-                            <li class="tm-list-group-item">
-                                Maecenas eu justo maximus
-                            </li>
-                        </ol>
-                    </div>
-                </div>
             </div>
             <div w3-include-html="partials/footer.html"> </div>
         </div>
@@ -90,10 +74,18 @@
     <script src="js/tooplate-scripts.js"></script>
     <script src="js/aishtrack.js"></script>
     <script type="text/javascript" src="vendors/DataTables/datatables.min.js"></script>
+    <script src="js/amazon-cognito-auth.min.js"></script>
+    <!-- <script src="js/amazon-cognito-identity.min.js"></script> -->
     <script>
         $(function () {
+        	var auth = initCognitoSDK();
+        	var curUrl = window.location.href;
+        	auth.parseCognitoWebResponse(curUrl);
+        	
+        	/* verifySignin(); */
+        	
         	includeHTML();
-        	loadOpenWorkOrders();
+      	    loadOpenWorkOrders();
         	
         	function loadOpenWorkOrders() {
                 $.ajax({
@@ -124,6 +116,7 @@
             		html+="<td class=\"text-center\">" + workOrder.status + "</td>";
             		html+="<td>" + workOrder.category + "</td>";
             		html+="<td>" + workOrder.equipment + "</td>";
+            		html+="<td>" + workOrder.technicians + "</td>";
             		html+="</tr>";
             	});
             	$("#openWorkOrdersBody").html(html);

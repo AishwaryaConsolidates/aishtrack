@@ -66,4 +66,37 @@ public class TechnicianDAO extends BaseDAO {
     preparedStatement.setInt(1, technicianId);
     preparedStatement.executeUpdate();
   }
+
+  public static ArrayList<String> getTechniciansFor(Connection connection, int workOrderId,
+      int serviceReportId) throws SQLException {
+    String sql =
+        "SELECT p.first_name, p.last_name FROM technicians t, persons p, work_orders wo, work_order_service_reports wosr, service_reports sr, service_report_technicians srt "
+            + " where t.person_id = p.id and t.deleted = 0 "
+            + " and wo.id = wosr.work_order_id and wosr.service_report_id = sr.id "
+            + " and sr.id = srt.service_report_id and srt.technician_id = t.id ";
+
+    if (workOrderId > 0) {
+      sql = sql + " and wo.id = ?";
+    }
+    if (serviceReportId > 0) {
+      sql = sql + " and sr.id = ?";
+    }
+
+    PreparedStatement statement = connection.prepareStatement(sql);
+
+    if (workOrderId > 0) {
+      statement.setInt(1, workOrderId);
+    }
+    if (serviceReportId > 0) {
+      statement.setInt(1, serviceReportId);
+    }
+
+    ResultSet result = statement.executeQuery();
+
+    ArrayList<String> technicians = new ArrayList<String>();
+    while (result.next()) {
+      technicians.add(result.getString(1) + " " + result.getString(2));
+    }
+    return technicians;
+  }
 }

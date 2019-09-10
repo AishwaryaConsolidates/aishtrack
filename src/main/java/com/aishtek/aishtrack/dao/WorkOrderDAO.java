@@ -128,15 +128,22 @@ public class WorkOrderDAO extends BaseDAO {
     ArrayList<HashMap<String, String>> workOrders = new ArrayList<HashMap<String, String>>();
     while (result.next()) {
       HashMap<String, String> hashMap = new HashMap<String, String>();
-      hashMap.put("id", "" + result.getInt(1));
+      int workOrderId = result.getInt(1);
+      hashMap.put("id", "" + workOrderId);
       hashMap.put("type", result.getString(2));
       hashMap.put("status", result.getString(3));
       hashMap.put("customer", result.getString(4));
       hashMap.put("category", result.getString(5));
       hashMap.put("equipment", result.getString(6));
       hashMap.put("brand", result.getString(7));
+      hashMap.put("technicians", getTechnicians(connection, workOrderId));
       workOrders.add(hashMap);
     }
     return workOrders;
+  }
+
+  public static String getTechnicians(Connection connection, int workOrderId) throws SQLException {
+    ArrayList<String> technicians = TechnicianDAO.getTechniciansFor(connection, workOrderId, 0);
+    return technicians.size() > 0 ? String.join(", ", technicians) : "";
   }
 }

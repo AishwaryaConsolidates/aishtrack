@@ -99,4 +99,25 @@ public class VisitDAO extends BaseDAO {
     }
     return files;
   }
+
+  public static ArrayList<HashMap<String, String>> getScoutingReportFiles(Connection connection,
+      int scoutingReportId) throws SQLException {
+    String sql =
+        "SELECT vf.id, f.name, f.location from files f, visit_files vf, visits v where f.id = vf.file_id and vf.visit_id = v.id and v.scouting_report_id = ? order by f.upload_date desc ";
+
+    PreparedStatement statement = connection.prepareStatement(sql);
+    statement.setInt(1, scoutingReportId);
+
+    ResultSet result = statement.executeQuery();
+
+    ArrayList<HashMap<String, String>> files = new ArrayList<HashMap<String, String>>();
+    while (result.next()) {
+      HashMap<String, String> hashMap = new HashMap<String, String>();
+      hashMap.put("id", "" + result.getInt(1));
+      hashMap.put("name", result.getString(2));
+      hashMap.put("location", result.getString(3));
+      files.add(hashMap);
+    }
+    return files;
+  }
 }

@@ -175,3 +175,56 @@ function fillWorkOrderForm(workOrder) {
 	$("#partNumber").val(workOrder.partNumber);
 	
 }
+
+//Initialize a cognito auth object.
+function initCognitoSDK() {
+	var authData = {
+			ClientId : '33i51jtcqrisallfq09ddfoc1e', // Your client id here
+			AppWebDomain : 'aishtek.auth.ap-south-1.amazoncognito.com',
+			TokenScopesArray : ['email', 'openid', 'phone'], // e.g.['phone', 'email', 'profile','openid', 'aws.cognito.signin.user.admin'],
+			RedirectUriSignIn : 'https://aishtek.s3.amazonaws.com/aishtrack/index.html',
+			RedirectUriSignOut : 'https://aishtek.s3.amazonaws.com/aishtrack/products.html',
+/*         	IdentityProvider : '<TODO: add identity provider you want to specify>', // e.g. 'Facebook', */
+			UserPoolId : 'ap-south-1_jiWBJIz70', // Your user pool id here
+			AdvancedSecurityDataCollectionFlag : 'false', // e.g. true
+		    //Storage: 'LocalStorage' // OPTIONAL e.g. new CookieStorage(), to use the specified storage provided
+		};
+	var auth = new AmazonCognitoIdentity.CognitoAuth(authData);
+	// You can also set state parameter 
+	// auth.setState(<state parameter>);  
+	auth.userhandler = {
+		onSuccess: function(result) {
+			console.log("Sign in success");
+			return true;
+		},
+		onFailure: function(err) {
+			alert("You need to log into access the application");
+			window.location.href = "https://aishtek.s3.amazonaws.com/aishtrack/login.html";
+		}
+	};
+	// The default response_type is "token", uncomment the next line will make it be "code".
+	// auth.useCodeGrantFlow();
+	return auth;
+}
+
+function verifySignin() {
+		var data = { 
+			UserPoolId : 'ap-south-1_jiWBJIz70',
+	        ClientId : '33i51jtcqrisallfq09ddfoc1e'
+	    };
+	    var userPool = new AmazonCognitoIdentity.CognitoUserPool(data);
+	    var cognitoUser = userPool.getCurrentUser();
+	    
+	    if (cognitoUser != null) {
+	        cognitoUser.getSession(function(err, session) {
+	            if (err) {
+	            	alert("Your session has expired, please log in again.");
+	    			window.location.href = "https://aishtek.s3.amazonaws.com/aishtrack/login.html";
+	            }
+	            console.log('session validity: ' + session.isValid());
+	        });
+	    } else {
+	    	alert("You need to log into access the application");
+			window.location.href = "https://aishtek.s3.amazonaws.com/aishtrack/login.html";
+	    }
+}

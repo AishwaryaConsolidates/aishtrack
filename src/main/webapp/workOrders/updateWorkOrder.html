@@ -117,8 +117,10 @@
     <script src="../js/jquery-3.3.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/aishtrack.js"></script>
+    <script src="../js/amazon-cognito-identity.min.js"></script>
     <script>
         $(function () {
+        	verifySignin();
         	includeHTML();
         	getCategories();
         	getCustomers("checkForUpdate");
@@ -177,7 +179,7 @@
           }
 
         function fillServiceReports(serviceReports) {
-        	html = "<a href=\"../serviceReports/createServiceReport.html?workOrderId=" + workOrderId + "\" class=\"btn btn-small btn-primary\">Create Service Report</a><br/><br/>";
+        	html = "<a href=\"../serviceReports/createServiceReport.html?workOrderId=" + workOrderId + "\" class=\"btn btn-small btn-primary\">Assign Service Report</a><br/><br/>";
         	if(serviceReports.length > 0) {
         		html+="Existing Service Reports";
 	        	$.each(serviceReports, function(index, serviceReport){

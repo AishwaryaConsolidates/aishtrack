@@ -66,9 +66,9 @@ insert into customers (name, nick_name, address_id, contact_person_id) values ('
 insert into customer_persons (customer_id, person_id) values (2, 1);
 
 insert into persons (first_name, last_name, designation, phone, email) 
-values ('Technician', 'Jack', 'Technician', '9880482508', 'simpleboy007@hotmail.com');
+values ('Technician', 'Jack', 'Technician', '9880482508', 'info@aishwaryaconsolidates.com');
 insert into persons (first_name, last_name, designation, phone, email) 
-values ('Technician', 'Jill', 'Technician', '9880482508', 'adarshadarsh@live.com');
+values ('Technician', 'Jill', 'Technician', '9880482508', 'service@aishwaryaconsolidates.com');
 
 insert into technicians (person_id) values (5);
 insert into technicians (person_id) values (6);

@@ -67,12 +67,13 @@
                 <div class="bg-white tm-block">
                     <a id="visitButton" href="#" class="btn btn-small btn-primary">Create Visit</a>
                 </div>
-                <div id="visits" class="bg-white tm-block">
-                    
-                </div>
+                
+                 <div id="visits" class="bg-white tm-block"></div>
+                 
+                 <div id="visitFilesList" class="bg-white tm-block"></div>
             </div>
         </div>
-        
+
         <div w3-include-html="../partials/footer.html"> </div>
     </div>
 
@@ -98,6 +99,7 @@
             			serviceReportId = serviceReport.id;
             			fillPage(serviceReport);
             			loadVisits(serviceReportId);
+            			loadVisitFiles(serviceReportId)
             		},
             		error: function(data) {
             			log("Error fetching service report");
@@ -160,6 +162,35 @@
             		html+="<//li>";
             	});
             	$("#visits").html(html);
+            }
+        	
+        	function loadVisitFiles(serviceReportId) {
+                $.ajax({
+                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getVisitFiles?serviceReportId=" + serviceReportId,
+                    type : "GET",
+                    dataType: "json",
+                    crossDomain: true,
+            		success: function(data) {
+            			jsonArray = JSON.parse(JSON.stringify(data));
+            			listVisitFiles(jsonArray);
+            		},
+            		error: function(data) {
+            			console.log("Error fetching visit files" + data);
+            		}
+            	});
+            }
+            
+            function listVisitFiles(visitFiles) {
+            	if(visitFiles.length > 0) {
+            		html = "Visit Files";
+    	        	$.each(visitFiles, function(index, visitFile) {
+    	        		html+="<li class=\"tm-list-group-item\">";
+    	        		html+="<a target = \"_" + index +"\" href=\"" + visitFile.location + "\">" + visitFile.name + "</a>";
+    	        		html+="</li>";
+    	        	});
+    	        	html+="</br>";
+    	        	$("#visitFilesList").html(html);
+            	}
             }
         })
     </script>

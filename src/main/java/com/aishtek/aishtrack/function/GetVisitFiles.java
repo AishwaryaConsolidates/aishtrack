@@ -21,7 +21,15 @@ public class GetVisitFiles extends BaseFunction
     try (Connection connection = getConnection()) {
       try {
         int visitId = Util.getInt(serverlessInput.getQueryStringParameters().get("visitId"));
-        ArrayList<HashMap<String, String>> visitFiles = VisitDAO.getVisitFiles(connection, visitId);
+        int serviceReportId =
+            Util.getInt(serverlessInput.getQueryStringParameters().get("serviceReportId"));
+
+        ArrayList<HashMap<String, String>> visitFiles = new ArrayList<HashMap<String, String>>();
+        if (visitId > 0) {
+          visitFiles = VisitDAO.getVisitFiles(connection, visitId);
+        } else if (serviceReportId > 0) {
+          visitFiles = VisitDAO.getScoutingReportFiles(connection, visitId);
+        }
 
         output = createSuccessOutput();
         output.setBody(new Gson().toJson(visitFiles));
