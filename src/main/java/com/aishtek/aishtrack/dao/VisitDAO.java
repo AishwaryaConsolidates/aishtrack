@@ -79,6 +79,30 @@ public class VisitDAO extends BaseDAO {
     return visits;
   }
 
+  public static ArrayList<Visit> getVisitsDetails(Connection connection,
+      int serviceReportId) throws SQLException {
+    String sql =
+        "SELECT id, service_report_id, visit_date, complaint, findings, work_done, customer_remarks from visits where service_report_id = ? and deleted = 0 order by visit_date desc ";
+
+    PreparedStatement statement = connection.prepareStatement(sql);
+    statement.setInt(1, serviceReportId);
+
+    ResultSet result = statement.executeQuery();
+
+    ArrayList<Visit> visits = new ArrayList<Visit>();
+    while (result.next()) {
+      Visit visit = new Visit(result.getInt(1), result.getInt(2), dateFor(result.getTimestamp(3)),
+          result.getString(4), result.getString(5), result.getString(6), result.getString(7));
+
+      visit.setRecommendedSpareParts(
+          RecommendedSparePartDAO.findByVisitId(connection, visit.getId()));
+      visit.setReplacedSpareParts(ReplacedSparePartDAO.findByVisitId(connection, visit.getId()));
+
+      visits.add(visit);
+    }
+    return visits;
+  }
+
   public static ArrayList<HashMap<String, String>> getVisitFiles(Connection connection, int visitId)
       throws SQLException {
     String sql =

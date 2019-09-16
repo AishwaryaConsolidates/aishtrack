@@ -8,12 +8,10 @@ import java.util.Date;
 import com.aishtek.aishtrack.beans.Address;
 import com.aishtek.aishtrack.beans.Customer;
 import com.aishtek.aishtrack.beans.Person;
-import com.aishtek.aishtrack.beans.WorkOrder;
 import com.aishtek.aishtrack.dao.AddressDAO;
 import com.aishtek.aishtrack.dao.CustomerDAO;
 import com.aishtek.aishtrack.dao.PersonDAO;
 import com.aishtek.aishtrack.dao.TechnicianDAO;
-import com.aishtek.aishtrack.dao.WorkOrderDAO;
 
 public class BaseIntegrationTest {
 
@@ -41,10 +39,10 @@ public class BaseIntegrationTest {
             createTestPerson(connection)));
   }
 
-  public int createTestWorkOrder(Connection connection) throws SQLException {
-    return WorkOrderDAO.create(connection,
-        new WorkOrder(createTestCustomer(connection), "Type 2", "Notify this"));
-  }
+  // public int createTestWorkOrder(Connection connection) throws SQLException {
+  // return WorkOrderDAO.create(connection,
+  // new WorkOrder(createTestCustomer(connection), "Type 2", "Notify this"));
+  // }
 
   public int createTestTechnician(Connection connection) throws SQLException {
     return TechnicianDAO.create(connection, createTestPerson(connection));

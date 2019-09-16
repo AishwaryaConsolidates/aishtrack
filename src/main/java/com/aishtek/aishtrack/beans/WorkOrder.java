@@ -6,6 +6,7 @@ import com.aishtek.aishtrack.utils.WorkStatus;
 public class WorkOrder extends BaseBean {
 
   private int customerId;
+  private int addressId;
   private int contactPersonId;
   private String type;
   private String status;
@@ -20,7 +21,7 @@ public class WorkOrder extends BaseBean {
 
   public WorkOrder(int customerId, int contactPersonId, String type, String notes, int categoryId,
       int equipmentId,
-      String brand, String model, String serialNumber, String partNumber) {
+      String brand, String model, String serialNumber, String partNumber, int addressId) {
     this.customerId = customerId;
     this.contactPersonId = contactPersonId;
     this.type = type;
@@ -31,15 +32,18 @@ public class WorkOrder extends BaseBean {
     this.serialNumber = serialNumber;
     this.partNumber = partNumber;
     this.notes = notes;
+    this.addressId = addressId;
     setStatus(WorkStatus.CREATED_STATUS);
   }
 
-  public WorkOrder(int id, int customerId, int contactPersonId, String type, String status,
+  public WorkOrder(int id, int customerId, int addressId, int contactPersonId, String type,
+      String status,
       Date statusDate,
       String notes, int deleted, int categoryId, int equipmentId, String brand, String model,
       String serialNumber, String partNumber) {
     this.id = id;
     this.customerId = customerId;
+    this.addressId = addressId;
     this.contactPersonId = contactPersonId;
     this.type = type;
     this.notes = notes;
@@ -149,5 +153,13 @@ public class WorkOrder extends BaseBean {
 
   public void setContactPersonId(int contactPersonId) {
     this.contactPersonId = contactPersonId;
+  }
+
+  public int getAddressId() {
+    return addressId;
+  }
+
+  public void setAddressId(int addressId) {
+    this.addressId = addressId;
   }
 }

@@ -56,13 +56,13 @@ insert into persons (first_name, last_name, designation, phone, email) values ('
 insert into addresses (street, area, city, state, pincode) values ('Ghoul Street', 'Forrest', 'Transylvania', 'Night', '60611');
 insert into addresses (street, area, city, state, pincode) values ('South End Road', 'Basavanagudi', 'Bangalore', 'Karnataka', '560004');
 
-insert into customers (name, nick_name, address_id, contact_person_id) values ('Hotel Transylvania', 'Transylvania', 1, 1);
+insert into customers (name, nick_name, address_id, contact_person_id) values ('Hotel Transylvania', 'hotel transylvania', 1, 1);
 
 insert into customer_persons (customer_id, person_id) values (1, 1);
 insert into customer_persons (customer_id, person_id) values (1, 2);
 insert into customer_persons (customer_id, person_id) values (1, 3);
 
-insert into customers (name, nick_name, address_id, contact_person_id) values ('Military Hotel', 'Military', 2, 1);
+insert into customers (name, nick_name, address_id, contact_person_id) values ('Military Hotel', 'military hotel', 2, 1);
 insert into customer_persons (customer_id, person_id) values (2, 1);
 
 insert into persons (first_name, last_name, designation, phone, email) 

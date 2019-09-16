@@ -93,10 +93,10 @@ public class ServiceReportDAO extends BaseDAO {
     String sql =
         "SELECT sr.id, sr.report_date, sr.status, sr.status_date, ct.name, eq.name, sr.brand, sr.model, sr.serial_number, sr.part_number, sr.notes, "
             + " c.name, cp.first_name, cp.last_name, cp.designation, cp.email, cp.phone, "
-            + " ca.street, ca.area, ca.city, ca.state, ca.pincode"
-            + " FROM service_reports sr, customers c, addresses ca, persons cp, categories ct, equipments eq "
+            + " ca.street, ca.area, ca.city, ca.state, ca.pincode, wosr.work_order_id,  wo.created_at "
+            + " FROM service_reports sr, customers c, addresses ca, persons cp, categories ct, equipments eq, work_order_service_reports wosr, work_orders wo "
             + " WHERE sr.code = ? and sr.customer_id = c.id and sr.address_id = ca.id and sr.contact_person_id = cp.id "
-            + " and sr.category_id = ct.id and sr.equipment_id = eq.id ";
+            + " and sr.category_id = ct.id and sr.equipment_id = eq.id and sr.id = wosr.service_report_id and wosr.work_order_id = wo.id ";
 
     PreparedStatement statement = connection.prepareStatement(sql);
     statement.setObject(1, java.util.UUID.fromString(serviceReportCode));
@@ -129,13 +129,10 @@ public class ServiceReportDAO extends BaseDAO {
       hashMap.put("customerCity", result.getString(20));
       hashMap.put("customerState", result.getString(21));
       hashMap.put("customerPincode", result.getString(22));
+      hashMap.put("workOrderId", "" + result.getInt(23));
+      hashMap.put("workOrderDate", formatTimestamp(result.getTimestamp(24)));
 
-      ArrayList<Technician> technicians = getTechniciansFor(connection, serviceReportId);
-      String technicianNames = "";
-      for (Technician technician : technicians) {
-        technicianNames = technicianNames + ", " + technician.getPerson().getFullName();
-      }
-      hashMap.put("technicians", technicianNames);
+      hashMap.put("technicians", getTechnicians(connection, serviceReportId));
       return hashMap;
     } else {
       throw new SQLException("No Service Report found, code does not exist");

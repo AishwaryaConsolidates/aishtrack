@@ -2,13 +2,14 @@ package com.aishtek.aishtrack.function;
 
 import java.sql.Connection;
 import java.util.HashMap;
-import com.aishtek.aishtrack.dao.ServiceReportDAO;
+import com.aishtek.aishtrack.dao.WorkOrderDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
+import com.aishtek.aishtrack.utils.Util;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 
-public class ViewServiceReport extends BaseFunction
+public class ViewWorkOrder extends BaseFunction
     implements RequestHandler<ServerlessInput, ServerlessOutput> {
 
   @Override
@@ -16,12 +17,11 @@ public class ViewServiceReport extends BaseFunction
     ServerlessOutput output;
     try (Connection connection = getConnection()) {
       try {
-        String serviceReporCode =
-            serverlessInput.getQueryStringParameters().get("serviceReportCode");
+        int workOrderId =
+            Util.getInt(serverlessInput.getQueryStringParameters().get("id"));
 
-        HashMap<String, String> serviceReport =
-            ServiceReportDAO.findByCode(connection, serviceReporCode);
-        output = createSuccessOutput(serviceReport);
+        HashMap<String, String> workOrder = WorkOrderDAO.findForView(connection, workOrderId);
+        output = createSuccessOutput(workOrder);
       } catch (Exception e) {
         output = createFailureOutput(e);
       }

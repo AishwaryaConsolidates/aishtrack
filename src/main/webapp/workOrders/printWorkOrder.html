@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Work Order</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+
+<body>
+<table width="95%" align="center">
+<tr>
+<td colspan="4" align="center"><h1>Aishwarya Consolidates Pvt Ltd.,</h1></td>
+</tr>
+<tr>
+<td colspan="4" align="center">#19, First Floor , 10th B Main , 27th Cross Third Block-Jayanagar, Bengaluru 560 011, India</td>
+</tr>
+<tr>
+<td colspan="4" align="center"><h1>Work Order</h1></td>
+</tr>
+
+<tr>
+<td>Work Order Nr</td><td><div id="workOrderId"/></td>
+<td>Date</td><td><div id="workOrderDate"/></td>
+</tr>
+
+<tr>
+<td>Customer Name</td><td><div id="customerName"/></td>
+<td>Equipment</td><td><div id="equipment"/></td>
+</tr>
+
+<tr>
+<td>Address</td><td><div id="customerStreet"/></td>
+<td>Brand</td><td><div id="brand"/></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td><td><div id="customerArea"/></td>
+<td>Model</td><td><div id="model"/></td>
+</tr>
+
+<tr>
+<td>City</td><td><div id="customerCity"/></td>
+<td>M/c Serial No.</td><td><div id="serialNumber"/></td>
+</tr>
+
+<tr>
+<td>State</td><td><div id="customerState"/></td>
+<td>Contact Person</td><td><div id="contactName"/></td>
+</tr>
+
+<tr>
+<td>Pincode</td><td><div id="customerPincode"/></td>
+<td>Designation</td><td><div id="contactDesignation"/></td>
+</tr>
+
+<tr>
+<td>Technician(s)</td><td><div id="technicians"/></td>
+<td>Phone Number</td><td><div id="contactPhone"/></td>
+</tr>
+
+<tr>
+<td>Status</td><td><div id="status"/></td>
+<td>Status Date</td><td><div id="statusDate"/></td>
+</tr>
+
+<tr>
+<td colspan="4">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="4" class="font-weight-bold">Nature of complaint</td>
+</tr>
+
+<tr>
+<td colspan="4" class="text-wrap"><div id="notes" class="text-wrap"/></td>
+</tr>
+
+<tr>
+<td colspan="4">&nbsp;</td>
+</tr>
+
+</table>
+
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/aishtrack.js"></script>
+    <script>
+        $(function () {
+        	urlParams = new URLSearchParams(window.location.search);
+        	workOrderId = urlParams.get('workOrderId');
+
+        	getWorkOrder(workOrderId);
+        	
+        	function getWorkOrder(workOrderId) {
+                $.ajax({
+                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/viewWorkOrder?id=" + workOrderId,
+                    type : "GET",
+                    dataType: "json",
+                    crossDomain: true,
+            		success: function(data) {
+            			workOrder = JSON.parse(JSON.stringify(data));
+            			loadWorkOrder(workOrder);
+            		},
+            		error: function(data) {
+            			log("Error fetching work order");
+            		}
+            	});
+              }
+        	
+        	function loadWorkOrder(workOrder) {
+        		$("#workOrderId").html(workOrder.id);
+        		$("#workOrderDate").html(workOrder.workOrderDate);
+        		$("#status").html(workOrder.status);
+        		$("#statusDate").html(workOrder.statusDate);
+        		$("#customerName").html(workOrder.customerName);
+        		
+        		$("#contactName").html(workOrder.contactFirstName + ' ' + workOrder.contactLastName);
+        		$("#contactDesignation").html(workOrder.contactDesignation);
+        		$("#contactPhone").html(workOrder.contactPhone);
+        		
+        		$("#customerStreet").html(workOrder.customerStreet);
+        		$("#customerArea").html(workOrder.customerArea);
+        		$("#customerCity").html(workOrder.customerCity);
+        		$("#customerState").html(workOrder.customerState);
+        		$("#customerPincode").html(workOrder.customerPincode);
+        		
+        		$("#category").html(workOrder.category);
+        		$("#equipment").html(workOrder.equipment);
+        		$("#brand").html(workOrder.brand);
+        		$("#model").html(workOrder.model);
+        		$("#serialNumber").html(workOrder.serialNumber);
+        		$("#partNumber").html(workOrder.partNumber);
+        		$("#technicians").html(workOrder.technicians);
+        		$("#notes").html(workOrder.notes);
+            }
+        })
+    </script>
+</body>
+
+</html>

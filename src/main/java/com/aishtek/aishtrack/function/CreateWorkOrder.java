@@ -2,7 +2,9 @@ package com.aishtek.aishtrack.function;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import com.aishtek.aishtrack.beans.Customer;
 import com.aishtek.aishtrack.beans.WorkOrder;
+import com.aishtek.aishtrack.dao.CustomerDAO;
 import com.aishtek.aishtrack.dao.WorkOrderDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
@@ -21,10 +23,12 @@ public class CreateWorkOrder extends BaseFunction
       try {
         Response response = getParams(serverlessInput.getBody());
         if (Util.isNullOrEmpty(response.id)) {
+          Customer customer = CustomerDAO.findById(connection, response.customerId);
           int workOrderId =
               createWorkOrder(connection, response.customerId, response.contactPersonId,
                   response.type, response.notes, response.categoryId, response.equipmentId,
-                  response.brand, response.model, response.serialNumber, response.partNumber);
+                  response.brand, response.model, response.serialNumber, response.partNumber,
+                  customer.getAddressId());
             output = createSuccessOutput("" + workOrderId);
         } else {
           updateWorkOrder(connection, Util.getInt(response.id), response.customerId,
@@ -46,11 +50,11 @@ public class CreateWorkOrder extends BaseFunction
   public int createWorkOrder(Connection connection, int customerId, int contactPersonId,
       String type, String notes,
       int categoryId, int equipmentId, String brand, String model, String serialNumber,
-      String partNumber)
+      String partNumber, int addressId)
       throws SQLException {
     WorkOrder workOrder =
         new WorkOrder(customerId, contactPersonId, type, notes, categoryId, equipmentId, brand,
-        model, serialNumber, partNumber);
+            model, serialNumber, partNumber, addressId);
     return WorkOrderDAO.create(connection, workOrder);
   }
 

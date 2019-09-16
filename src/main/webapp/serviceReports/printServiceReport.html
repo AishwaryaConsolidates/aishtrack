@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Service Report</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+
+<body>
+<table width="95%" align="center">
+<tr>
+<td colspan="4" align="center"><h1>Aishwarya Consolidates Pvt Ltd.,</h1></td>
+</tr>
+<tr>
+<td colspan="4" align="center">#19, First Floor , 10th B Main , 27th Cross Third Block-Jayanagar, Bengaluru 560 011, India</td>
+</tr>
+<tr>
+<td colspan="4" align="center"><h1>Service Report</h1></td>
+</tr>
+
+<tr>
+<td>ACPL Complaint Nr</td><td><div id="reportId"/></td>
+<td>Date</td><td><div id="reportDate"/></td>
+</tr>
+
+<tr>
+<td>Work Order Nr</td><td><div id="workOrderId"/></td>
+<td>Date</td><td><div id="workOrderDate"/></td>
+</tr>
+
+<tr>
+<td>Customer Name</td><td><div id="customerName"/></td>
+<td>Equipment</td><td><div id="equipment"/></td>
+</tr>
+
+<tr>
+<td>Address</td><td><div id="customerStreet"/></td>
+<td>Brand</td><td><div id="brand"/></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td><td><div id="customerArea"/></td>
+<td>Model</td><td><div id="model"/></td>
+</tr>
+
+<tr>
+<td>City</td><td><div id="customerCity"/></td>
+<td>M/c Serial No.</td><td><div id="serialNumber"/></td>
+</tr>
+
+<tr>
+<td>State</td><td><div id="customerState"/></td>
+<td>Contact Person</td><td><div id="contactName"/></td>
+</tr>
+
+<tr>
+<td>Pincode</td><td><div id="customerPincode"/></td>
+<td>Designation</td><td><div id="contactDesignation"/></td>
+</tr>
+
+<tr>
+<td>Technician(s)</td><td><div id="technicians"/></td>
+<td>Phone Number</td><td><div id="contactPhone"/></td>
+</tr>
+
+<tr>
+<td colspan="4">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="4" class="font-weight-bold">Nature of complaint</td>
+</tr>
+
+<tr>
+<td colspan="4" class="text-wrap"><div id="notes" class="text-wrap"/></td>
+</tr>
+
+<tr>
+<td colspan="4">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="4"><div id="visits"/></td>
+</tr>
+
+<tr>
+<td colspan="4"><div id="recommendedSpareParts"/></td>
+</tr>
+
+<tr>
+<td colspan="4">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="4"><div id="replacedSpareParts"/></td>
+</tr>
+</table>
+
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/aishtrack.js"></script>
+    <script>
+        $(function () {
+        	urlParams = new URLSearchParams(window.location.search);
+        	serviceReportCode = urlParams.get('serviceReportCode');
+
+        	getServiceReport(serviceReportCode);
+        	var serviceReportId;
+        	
+        	function getServiceReport(serviceReportCode) {
+                $.ajax({
+                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/viewServiceReport?serviceReportCode=" + serviceReportCode,
+                    type : "GET",
+                    dataType: "json",
+                    crossDomain: true,
+            		success: function(data) {
+            			serviceReport = JSON.parse(JSON.stringify(data));
+            			serviceReportId = serviceReport.id;
+            			loadServiceReport(serviceReport);
+            			loadVisits(serviceReportId);
+            		},
+            		error: function(data) {
+            			log("Error fetching service report");
+            		}
+            	});
+              }
+        	
+        	function loadServiceReport(serviceReport) {
+        		$("#reportId").html(serviceReport.id);
+        		$("#workOrderId").html(serviceReport.workOrderId);
+        		$("#reportDate").html(serviceReport.reportDate);
+        		$("#workOrderDate").html(serviceReport.workOrderDate);
+        		$("#status").html(serviceReport.status);
+        		$("#customerName").html(serviceReport.customerName);
+        		
+        		$("#contactName").html(serviceReport.contactFirstName + ' ' + serviceReport.contactLastName);
+        		$("#contactDesignation").html(serviceReport.contactDesignation);
+        		$("#contactPhone").html(serviceReport.contactPhone);
+        		
+        		$("#customerStreet").html(serviceReport.customerStreet);
+        		$("#customerArea").html(serviceReport.customerArea);
+        		$("#customerCity").html(serviceReport.customerCity);
+        		$("#customerState").html(serviceReport.customerState);
+        		$("#customerPincode").html(serviceReport.customerPincode);
+        		
+        		$("#category").html(serviceReport.category);
+        		$("#equipment").html(serviceReport.equipment);
+        		$("#brand").html(serviceReport.brand);
+        		$("#model").html(serviceReport.model);
+        		$("#serialNumber").html(serviceReport.serialNumber);
+        		$("#partNumber").html(serviceReport.partNumber);
+        		$("#technicians").html(serviceReport.technicians);
+        		$("#notes").html(serviceReport.notes);
+            }
+        	
+        	function loadVisits(serviceReportId) {
+                $.ajax({
+                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getVisits?details=true&serviceReportId=" + serviceReportId,
+                    type : "GET",
+                    dataType: "json",
+                    crossDomain: true,
+            		success: function(data) {
+            			jsonArray = JSON.parse(JSON.stringify(data));
+            			listVisits(jsonArray);
+            		},
+            		error: function(data) {
+            			console.log("Error fetching visits" + data);
+            		}
+            	});
+              }
+        	
+        	function listVisits(visits) {
+            	html = "<table width=\"100%\">";
+            	recommendedPartsHtml = "<table border=1 width=\"100%\"><tr><td colspan=\"4\" class=\"font-weight-bold\">Recommended Spare Parts</td></tr>";
+            	recommendedPartsHtml += "<tr><td>Date</td><td>part Nr</td><td>Description</td><td>Quantity</td></tr>";
+            	replacedPartsHtml = "<table border=1 width=\"100%\"><tr><td colspan=\"4\" class=\"font-weight-bold\">Replaced Spare Parts</td></tr>";
+            	replacedPartsHtml += "<tr><td>Date</td><td>part Nr</td><td>Description</td><td>Quantity</td></tr>";
+            	$.each(visits, function(index, visit){
+            		html+="<tr><td><table width=\"100%\" frame=\"box\">";
+            		html+="<tr><td colspan=\"4\" class=\"font-weight-bold\">Visit Date: " + visit.visitDate.substr(0, 12) +"</td></tr>";
+            		
+            		html+="<tr><td colspan=\"4\" class=\"font-weight-bold\">Complaint</td></tr>";
+            		html+="<tr><td colspan=\"4\" class=\"text-wrap\">" + visit.complaint +"</td></tr>";
+            		
+            		html+="<tr><td colspan=\"4\" class=\"font-weight-bold\">Findings</td></tr>";
+            		html+="<tr><td colspan=\"4\" class=\"text-wrap\">" + visit.findings +"</td></tr>";
+            		
+            		html+="<tr><td colspan=\"4\" class=\"font-weight-bold\">Work Done</td></tr>";
+            		html+="<tr><td colspan=\"4\" class=\"text-wrap\">" + visit.workDone +"</td></tr>";
+            		
+            		html+="<tr><td colspan=\"4\" class=\"font-weight-bold\">Customer Remarks</td></tr>";
+            		html+="<tr><td colspan=\"4\" class=\"text-wrap\">" + visit.customerRemarks +"</td></tr>";
+            		
+            		html+="</table></td></tr>";
+            		html+="<tr><td colspan=\"4\">&nbsp;</td></tr>";
+            		$.each(visit.recommendedSpareParts, function(index, sparePart){
+            			recommendedPartsHtml += "<tr><td>" + visit.visitDate.substr(0, 12) + "</td><td>" + sparePart.partNumber + "</td><td>" + sparePart.description + "</td><td>" + sparePart.quantity + "</td></tr>";
+                    });
+            		
+            		$.each(visit.replacedSpareParts, function(index, sparePart){
+            			replacedPartsHtml += "<tr><td>" + visit.visitDate.substr(0, 12) + "</td><td>" + sparePart.partNumber + "</td><td>" + sparePart.description + "</td><td>" + sparePart.quantity + "</td></tr>";
+                    });
+            	});
+            	recommendedPartsHtml += "</table>";
+            	replacedPartsHtml += "</table>";
+            	html+="</table>";
+            	$("#visits").html(html);
+            	$("#recommendedSpareParts").html(recommendedPartsHtml);
+            	$("#replacedSpareParts").html(replacedPartsHtml);
+            }
+        })
+    </script>
+</body>
+
+</html>

@@ -108,7 +108,6 @@ public class CreateServiceReport extends BaseFunction
         EmailSenderService.sendEmail(to, technicianEmailSubject, emailBodies[0], emailBodies[1]);
       }
     } catch (Exception e) {
-      System.out.println(e);
       e.printStackTrace();
     }
   }
@@ -142,11 +141,7 @@ public class CreateServiceReport extends BaseFunction
       throws SQLException {
     String[] emailBodies = new String[2];
     emailBodies[0] = "The Following Technician(s) have been assigned to address your problem ";
-    String technicians = "";
-    for (Technician technician : ServiceReportDAO.getTechniciansFor(connection,
-        serviceReport.getId())) {
-      technicians = technicians + technician.getPerson().getFullName();
-    }
+    String technicians = ServiceReportDAO.getTechnicians(connection, serviceReport.getId());
 
     emailBodies[0] = "You have been assigned the following service report " + technicians;
     emailBodies[1] = "You have been assigned the following service report " + technicians;

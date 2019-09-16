@@ -94,6 +94,7 @@
             		html+="<tr>";
             		html+="<td>";
             		html+="<a href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/workOrders/updateWorkOrder.html?workOrderId=" + workOrder.id + "\"><i class=\"fas fa-edit\"></i></a>";
+            		html+="<a target = \"_" + index +"\" href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/workOrders/printWorkOrder.html?workOrderId=" + workOrder.id + "\"><i class=\"fas fa-print\"></i></a>";
             		html+="</td>";
             		html+="<td>" + workOrder.customer + "</td>";
             		html+="<td class=\"text-center\">" + workOrder.type + "</td>";

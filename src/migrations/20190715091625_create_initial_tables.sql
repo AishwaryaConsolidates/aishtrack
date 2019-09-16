@@ -73,6 +73,7 @@ EXECUTE PROCEDURE updated_at_trigger();
 CREATE TABLE work_orders (
   id             SERIAL PRIMARY KEY,
   customer_id    INT NOT NULL,
+  address_id     INT NOT NULL,
   contact_person_id      INT NOT NULL,
   type           VARCHAR(20),
   category_id    INT,
