@@ -122,14 +122,16 @@
         $(function () {
         	verifySignin();
         	includeHTML();
-        	getCategories();
+
         	$("#categoryId").change(function () {
         		getEquipments(this.value);
             });
         	$("#customerId").change(function () {
         		getCustomerPersons(this.value);
             });
-        	getCustomers("checkForUpdate");
+
+        	getAllInfoForPage();
+
         	$("#submitButton").on("click", function (e) {
         		$("#submitButton").attr("disabled", true);
                 e.preventDefault();
@@ -196,6 +198,14 @@
 	        	});
         	}
         	$("#serviceReportList").html(html);
+        }
+
+        function getAllInfoForPage() {
+        	$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+        	$.when(getCategories(), getCustomers()).done(function() {
+        	    checkForUpdate();
+        	});
+        	$("#notification").html("");
         }
     </script>
 </body>

@@ -111,26 +111,21 @@
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/aishtrack.js"></script>
     <script src="../vendors/jquery-ui-datepicker/jquery-ui.min.js"></script>
+    <script src="../js/amazon-cognito-identity.min.js"></script>
     <script>
         $(function () {
         	verifySignin();
         	includeHTML();
-        	getCategories();
-        	getTechnicians();
+
         	$('#reportDate').datepicker({
         	    dateFormat: 'dd/mm/yy'
         	});
         	$("#categoryId").change(function () {
         		getEquipments(this.value)
             });
-        	urlParams = new URLSearchParams(window.location.search);
-        	workOrderId = urlParams.get('workOrderId');
-        	prefillWorkOrderData(workOrderId);
-        	type = urlParams.get('type');
-        	if(type) {
-        	  $("#serviceReportType").val(type);
-        	}
-        	$("#workOrderId").val(workOrderId);
+
+        	getAllInfoForPage();
+
         	$("#submitButton").on("click", function (e) {
         		$("#submitButton").attr("disabled", true);
                 e.preventDefault();
@@ -159,6 +154,27 @@
                 return false;
               });
         })
+
+        function checkForWorkOrder() {
+        	urlParams = new URLSearchParams(window.location.search);
+        	workOrderId = urlParams.get('workOrderId');
+        	if(workOrderId != null) {
+        		$("#workOrderId").val(workOrderId);
+        		prefillWorkOrderData(workOrderId);
+        	}
+        	type = urlParams.get('type');
+        	if(type) {
+        	  $("#serviceReportType").val(type);
+        	}
+        }
+
+        function getAllInfoForPage() {
+        	$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+        	$.when(getCategories(), getTechnicians()).done(function() {
+        		checkForWorkOrder();
+        	});
+        	$("#notification").html("");
+        }
     </script>
 </body>
 

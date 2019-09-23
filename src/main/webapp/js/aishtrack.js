@@ -40,7 +40,7 @@ function includeHTML() {
 }
 
 function getCustomers(nextFunction=null) {
-    $.ajax({
+    return $.ajax({
         url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getCustomers",
         type : "GET",
         dataType: "json",
@@ -93,7 +93,7 @@ function getJSONFormData(form){
 }
 
 function getTechnicians() {
-    $.ajax({
+    return $.ajax({
         url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getTechnicians",
         type : "GET",
         dataType: "json",
@@ -108,7 +108,7 @@ function getTechnicians() {
 }
 
 function getCategories() {
-    $.ajax({
+    return $.ajax({
         url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getCategories",
         type : "GET",
         dataType: "json",
@@ -123,7 +123,7 @@ function getCategories() {
 }
 
 function getEquipments(categoryId, nextFunction=null) {
-    $.ajax({
+    return $.ajax({
         url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getEquipments?categoryId=" + categoryId,
         type : "GET",
         dataType: "json",
@@ -140,7 +140,7 @@ function getEquipments(categoryId, nextFunction=null) {
 }
 
 function getCustomerPersons(customerId) {
-    $.ajax({
+    return $.ajax({
         url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getCustomerPersons?customerId=" + customerId,
         type : "GET",
         dataType: "json",
@@ -162,9 +162,9 @@ function prefillWorkOrderData(workOrderId) {
         crossDomain: true,
 		success: function(data) {
 			workOrder = JSON.parse(JSON.stringify(data));
-			getEquipments(workOrder.categoryId);
-			getCustomerPersons(workOrder.customerId);
-			fillWorkOrderForm(workOrder);
+			$.when(getEquipments(workOrder.categoryId), getCustomerPersons(workOrder.customerId)).done(function() {
+				fillWorkOrderForm(workOrder);
+        	});
 		},
 		error: function(data) {
 			log("Error fetching customers");
