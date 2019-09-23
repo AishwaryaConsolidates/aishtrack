@@ -26,6 +26,7 @@ public class GetVisit extends BaseFunction
 
         // get visit
         Visit visit = VisitDAO.findById(connection, visitId);
+        visit.setVisitDateString(Util.formatDate(visit.getVisitDate()));
         visit.setRecommendedSpareParts(RecommendedSparePartDAO.findByVisitId(connection, visitId));
         visit.setReplacedSpareParts(ReplacedSparePartDAO.findByVisitId(connection, visitId));
 

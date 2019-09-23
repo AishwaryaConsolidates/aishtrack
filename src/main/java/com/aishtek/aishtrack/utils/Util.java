@@ -1,5 +1,8 @@
 package com.aishtek.aishtrack.utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Util {
 
   public static boolean isNullOrEmpty(String str) {
@@ -20,5 +23,9 @@ public class Util {
     } catch (NumberFormatException e) {
       return 0;
     }
+  }
+
+  public static String formatDate(Date date) {
+    return (new SimpleDateFormat("dd/MM/yyyy")).format(date);
   }
 }

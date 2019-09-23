@@ -1,3 +1,12 @@
+var installationDetails = {
+		"Gas": ["Gas Pressure", "Gas Regulator", "Gas Pressure Gauge", "Gas Pipe Leak Test", "Burner Flame Color"],
+		"Steam": ["Type Of Steam", "Steam Pressure", "Steam Regulator", "Steam Pressure Gauge", "Steam Pipe Leak Test", "Condensation Water Drain"],
+		"Refrigeration": ["Type Of Ref Gas", "Compressor Details", "Chiller/Freezer", "Condensing Fan", "Dryer-Filter", "Cooling Fan"],
+		"Plumbing": ["Type Of Water", "Hot/Cold Water", "Water Pressure", "Water Regulator", "Water Pressure Gauge", "Water Pipe Leak Test", "Water Drain Connection"],
+		"Electrical": ["Voltage" ,"AMPS", "Hz", "Phase", "Heating Element", "Motor", "Programing Circuit Board"]
+};
+//var installationHeadings = ["Gas", "Steam", "Refrigeration", "Plumbing", "Electrical"]
+
 function includeHTML() {
 	var z, i, elmnt, file, xhttp;
 	/* Loop through a collection of all HTML elements: */
@@ -113,7 +122,7 @@ function getCategories() {
 	});
 }
 
-function getEquipments(categoryId) {
+function getEquipments(categoryId, nextFunction=null) {
     $.ajax({
         url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getEquipments?categoryId=" + categoryId,
         type : "GET",
@@ -121,6 +130,8 @@ function getEquipments(categoryId) {
         crossDomain: true,
 		success: function(data) {
 			createDropdown(JSON.stringify(data), "equipmentId");
+			functionToRun = window[nextFunction];
+	    	if (typeof functionToRun === "function") functionToRun();
 		},
 		error: function(data) {
 			log("Error fetching equipments");
@@ -227,4 +238,16 @@ function verifySignin() {
 	    	alert("You need to log into access the application");
 			window.location.href = "https://aishtek.s3.amazonaws.com/aishtrack/login.html";
 	    }
+}
+
+function showJSON(obj) {
+    var result = "";
+	for (var p in obj) {
+	    if( obj.hasOwnProperty(p) ) {
+	    	if (obj[p]) {
+	            result += p + ": " + obj[p] + "<br/>";
+	        }
+	    }
+	  }              
+    return result;
 }

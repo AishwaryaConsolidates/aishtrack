@@ -51,17 +51,37 @@
                 </div>
             </div>
             <div class="tm-col tm-col-big">
-                <div class="bg-white tm-block">
-                    <div class="row">
-                        <div class="col-12">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-
-                        </div>
-                    </div>
+              <form action="" class="tm-edit-product-form" id="addInstallationDetailForm">
+                <div id="installationDetailsBlock" class="bg-white tm-block">
+                    <h2 class="tm-block-title d-inline-block">Installation Details</h2><br/>
+                    <input type="checkbox" aria-label="Checkbox" name="equipmentDamaged"> &nbsp; Equipment Damaged</br></br>
+                    <div id="previousInstallationDetails"></div>
+                    <input type="radio" id="idetail" name="idetail" aria-label="Radio" value="Gas">Gas &nbsp;&nbsp;
+                    <input type="radio" id="idetail" name="idetail" aria-label="Radio" value="Steam">Steam &nbsp;&nbsp;
+                    <input type="radio" id="idetail" name="idetail" aria-label="Radio" value="Electrical">Electrical<br/>
+                    <input type="radio" id="idetail" name="idetail" aria-label="Radio" value="Refrigeration">Refrigeration&nbsp;&nbsp;
+                    <input type="radio" id="idetail" name="idetail" aria-label="Radio" value="Plumbing">Plumbing<br/>
+                    <a id ="addInstallationDetailButton" href="#" class="btn btn-primary">Add Detail</a>
                 </div>
+                
+                <div id="installationDetail" style="display:none">
+                <br/>
+                <div id="installationDetailSection" class="bg-white tm-block">
+                    
+                    <input type="hidden" id="serviceReportId" name="serviceReportId"/>
+                    <input type="hidden" id="detail" name="detail"/>
+                    <h2 class="tm-block-title d-inline-block" id="installationDetailHeading"></h2><br/>
+
+                     <div id="installationDetailElements">
+                     
+                     </div>
+                     <div class="input-group mb-3">
+                         <a id ="addInstallationDetail" href="#" class="btn btn-primary">Add Installation Detail</a>
+                     </div>
+                     
+                </div>
+                </div>
+                </form>
             </div>
             <div class="tm-col tm-col-small">
                 <div class="bg-white tm-block">
@@ -74,6 +94,11 @@
             </div>
         </div>
 
+                    <div id="installationDetailElement"  style="display:none">
+                         <input name="key" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" value="SOME_VALUE" readonly>
+                         <input name="value" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                     </div>
+                     
         <div w3-include-html="../partials/footer.html"> </div>
     </div>
 
@@ -86,6 +111,20 @@
         	urlParams = new URLSearchParams(window.location.search);
         	serviceReportCode = urlParams.get('serviceReportCode');
 
+        	$("#addInstallationDetailButton").click(function (e) {
+        		e.preventDefault();
+        		$("#installationDetailElements").empty();
+        		document.getElementById("installationDetailHeading").innerHTML = document.querySelector('input[name="idetail"]:checked').value;
+        		$("#detail").val(document.querySelector('input[name="idetail"]:checked').value);
+        		installationDetails[document.querySelector('input[name="idetail"]:checked').value].forEach(function(detail){
+        			var newdiv = document.createElement('div');
+                    divHTML = document.getElementById("installationDetailElement").innerHTML;
+                    newdiv.innerHTML = divHTML.replace(/SOME_VALUE/g, detail);
+                    document.getElementById("installationDetailElements").appendChild(newdiv);
+        		});
+        		document.getElementById("installationDetail").style.display = "block";
+        	});
+        	
         	getServiceReport(serviceReportCode);
         	var serviceReportId;
         	function getServiceReport(serviceReportCode) {
@@ -97,6 +136,7 @@
             		success: function(data) {
             			serviceReport = JSON.parse(JSON.stringify(data));
             			serviceReportId = serviceReport.id;
+            			$("#serviceReportId").val(serviceReportId);
             			fillPage(serviceReport);
             			loadVisits(serviceReportId);
             			loadVisitFiles(serviceReportId)
@@ -109,6 +149,7 @@
         	
         	function fillPage(serviceReport) {
         		$("#reportId").html(serviceReport.id);
+        		$("#reportType").html(serviceReport.type);
         		$("#reportDate").html(serviceReport.reportDate);
         		$("#status").html(serviceReport.status);
         		$("#customerName").html(serviceReport.customerName);
@@ -122,8 +163,22 @@
         		$("#partNumber").html(serviceReport.partNumber);
         		$("#technicians").html(serviceReport.technicians);
         		$("#notes").html(serviceReport.notes);
+        		
+        		if (serviceReport.type === "installation") {
+        			html = "";
+           		    var detailJSON = JSON.parse(serviceReport.installationDetails);
+        		    Object.keys(detailJSON).forEach(function(key) {
+        		    	html = html + "<b>" + key + "</b>";
+        		    	html+= "<br/>";
+        		    	html+= showJSON(detailJSON[key])
+        		    });
+        		    $("#previousInstallationDetails").html(html);
+        		    document.getElementById("installationDetailsBlock").style.display = "block";
+      		    } else {
+      		    	document.getElementById("installationDetailsBlock").style.display = "none";
+      		    }
             }
-        	
+
         	function address(serviceReport) {
         		return serviceReport.customerStreet + "<br/>" + serviceReport.customerArea + "<br/>" + serviceReport.customerCity + "<br/>" + serviceReport.customerState + " " + serviceReport.customerPincode; 
         	}
@@ -192,6 +247,27 @@
     	        	$("#visitFilesList").html(html);
             	}
             }
+            
+            $("#addInstallationDetail").click(function (e) {
+        		e.preventDefault();
+        		$.ajax({
+                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/createInstallationDetail",
+                    type : "POST",
+                    data: getJSONFormData($('#addInstallationDetailForm')),
+                    dataType: "json",
+                    contentType: 'application/json',
+                    crossDomain: true,
+            		success: function(data) {
+            			$("#installationDetailElements").empty();
+            			document.getElementById("installationDetail").style.display = "none";
+            			$("#notification").html("<center><font color=\"green\">Installation Detail Added</font></center>");
+            		},
+            		error: function(data) {
+            			alert("Error adding installation detail, please try again.");
+            		}
+            	});
+                return false;
+        	});
         })
     </script>
 </body>

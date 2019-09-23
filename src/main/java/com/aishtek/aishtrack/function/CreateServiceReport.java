@@ -40,7 +40,7 @@ public class CreateServiceReport extends BaseFunction
           int serviceReportId = createServiceReport(connection, response.workOrderId,
               response.contactPersonId, response.categoryId, response.equipmentId, response.notes,
               response.brand, response.model, response.serialNumber, response.partNumber,
-              reportDate, getIntegerList(response.technicianIds));
+              reportDate, getIntegerList(response.technicianIds), response.type);
           output = createSuccessOutput("" + serviceReportId);
         } else {
           updateServiceReport(connection, Integer.parseInt(response.id), response.contactPersonId,
@@ -62,7 +62,8 @@ public class CreateServiceReport extends BaseFunction
 
   public int createServiceReport(Connection connection, int workOrderId, int contactPersonId,
       int categoryId, int equipmentId, String notes, String brand, String model,
-      String serialNumber, String partNumber, Date reportDate, ArrayList<Integer> technicianIds)
+      String serialNumber, String partNumber, Date reportDate, ArrayList<Integer> technicianIds,
+      String type)
       throws SQLException {
     WorkOrder workOrder = WorkOrderDAO.findById(connection, workOrderId);
     Customer customer = CustomerDAO.findById(connection, workOrder.getCustomerId());
@@ -70,7 +71,7 @@ public class CreateServiceReport extends BaseFunction
     // create service report
     int serviceReportId = ServiceReportDAO.create(connection, workOrder.getId(),
         new ServiceReport(customer, contactPersonId, categoryId, equipmentId, notes, brand, model,
-            serialNumber, partNumber, reportDate));
+            serialNumber, partNumber, reportDate, type));
 
     // create service report technician
     if (technicianIds != null && technicianIds.size() > 0) {
@@ -154,6 +155,7 @@ public class CreateServiceReport extends BaseFunction
 
   class Response {
     private String id;
+    private String type;
     private int workOrderId;
     public Integer contactPersonId;
     private String notes;

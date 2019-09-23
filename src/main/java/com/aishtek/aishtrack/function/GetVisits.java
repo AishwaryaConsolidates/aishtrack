@@ -25,7 +25,7 @@ public class GetVisits extends BaseFunction
         String serviceReportId = serverlessInput.getQueryStringParameters().get("serviceReportId");
         String details = serverlessInput.getQueryStringParameters().get("details");
 
-        if (details.compareTo("true") == 0) {
+        if (details != null && details.compareTo("true") == 0) {
           ArrayList<Visit> visits =
               VisitDAO.getVisitsDetails(connection, Util.getInt(serviceReportId));
           output = createSuccessOutputForVisits(visits);

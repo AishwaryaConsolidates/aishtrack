@@ -123,15 +123,18 @@
         	verifySignin();
         	includeHTML();
         	getCategories();
-        	getCustomers("checkForUpdate");
         	$("#categoryId").change(function () {
         		getEquipments(this.value);
             });
         	$("#customerId").change(function () {
         		getCustomerPersons(this.value);
             });
+        	getCustomers("checkForUpdate");
         	$("#submitButton").on("click", function (e) {
+        		$("#submitButton").attr("disabled", true);
                 e.preventDefault();
+                window.scrollTo(0,0);
+                $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
                 $.ajax({
                     url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/createWorkOrder",
                     type : "POST",
@@ -147,6 +150,9 @@
             		},
             		error: function(data) {
             			alert("Error creating work order.");
+            		},
+            		complete: function(data) {
+            			$("#submitButton").attr("disabled", false);
             		}
             	});
                 return false;
@@ -173,13 +179,14 @@
         			fillServiceReports(jsonArray);
         		},
         		error: function(data) {
-        			log("Error fetching customers");
+        			log("Error fetching service reports");
         		}
         	});
           }
 
         function fillServiceReports(serviceReports) {
-        	html = "<a href=\"../serviceReports/createServiceReport.html?workOrderId=" + workOrderId + "\" class=\"btn btn-small btn-primary\">Assign Service Report</a><br/><br/>";
+        	html = "<a href=\"../serviceReports/createServiceReport.html?type=service&workOrderId=" + workOrderId + "\" class=\"btn btn-small btn-primary\">Assign Service Report</a><br/><br/>";
+        	html += "<a href=\"../serviceReports/createServiceReport.html?type=installation&workOrderId=" + workOrderId + "\" class=\"btn btn-small btn-primary\">Assign Installation Report</a><br/><br/>";
         	if(serviceReports.length > 0) {
         		html+="Existing Service Reports";
 	        	$.each(serviceReports, function(index, serviceReport){

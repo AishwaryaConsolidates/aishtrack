@@ -11,6 +11,7 @@ import com.aishtek.aishtrack.beans.ServiceReport;
 import com.aishtek.aishtrack.beans.Technician;
 import com.aishtek.aishtrack.beans.WorkOrder;
 import com.aishtek.aishtrack.utils.Util;
+import com.google.gson.Gson;
 
 public class ServiceReportDAO extends BaseDAO {
 
@@ -18,7 +19,7 @@ public class ServiceReportDAO extends BaseDAO {
       ServiceReport serviceReport)
       throws SQLException {
       PreparedStatement preparedStatement = connection.prepareStatement(
-        "insert into service_reports (customer_id, address_id, contact_person_id, category_id, equipment_id, status, status_date, notes, brand, model, serial_number, part_number, report_date, created_at) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "insert into service_reports (customer_id, address_id, contact_person_id, category_id, equipment_id, status, status_date, notes, brand, model, serial_number, part_number, report_date, created_at, type) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         PreparedStatement.RETURN_GENERATED_KEYS);
       preparedStatement.setInt(1, serviceReport.getCustomerId());
       preparedStatement.setInt(2, serviceReport.getAddressId());
@@ -34,6 +35,7 @@ public class ServiceReportDAO extends BaseDAO {
     preparedStatement.setString(12, serviceReport.getPartNumber());
     preparedStatement.setTimestamp(13, timestampFor(serviceReport.getReportDate()));
     preparedStatement.setTimestamp(14, currentTimestamp());
+    preparedStatement.setString(15, serviceReport.getType());
       preparedStatement.executeUpdate();
 
       ResultSet result = preparedStatement.getGeneratedKeys();
@@ -69,7 +71,7 @@ public class ServiceReportDAO extends BaseDAO {
   public static ServiceReport findById(Connection connection, int serviceReportId)
       throws SQLException {
     String sql =
-        "SELECT id, code, customer_id, address_id, contact_person_id, report_date, status, status_date, brand, model, serial_number, service_rating, notes, deleted FROM service_reports where id = ?";
+        "SELECT id, code, customer_id, address_id, contact_person_id, report_date, status, status_date, brand, model, serial_number, service_rating, notes, deleted, type FROM service_reports where id = ?";
 
     PreparedStatement statement = connection.prepareStatement(sql);
     statement.setInt(1, serviceReportId);
@@ -80,7 +82,7 @@ public class ServiceReportDAO extends BaseDAO {
           result.getInt(3), result.getInt(4), result.getInt(5), dateFor(result.getTimestamp(6)),
           result.getString(7), dateFor(result.getTimestamp(8)), result.getString(9),
           result.getString(10), result.getString(11), result.getInt(12), result.getString(13),
-          result.getInt(14));
+          result.getInt(14), result.getString(15));
 
       return serviceReport;
     } else {
@@ -93,7 +95,7 @@ public class ServiceReportDAO extends BaseDAO {
     String sql =
         "SELECT sr.id, sr.report_date, sr.status, sr.status_date, ct.name, eq.name, sr.brand, sr.model, sr.serial_number, sr.part_number, sr.notes, "
             + " c.name, cp.first_name, cp.last_name, cp.designation, cp.email, cp.phone, "
-            + " ca.street, ca.area, ca.city, ca.state, ca.pincode, wosr.work_order_id,  wo.created_at "
+            + " ca.street, ca.area, ca.city, ca.state, ca.pincode, wosr.work_order_id,  wo.created_at, sr.type, sr.installation_details "
             + " FROM service_reports sr, customers c, addresses ca, persons cp, categories ct, equipments eq, work_order_service_reports wosr, work_orders wo "
             + " WHERE sr.code = ? and sr.customer_id = c.id and sr.address_id = ca.id and sr.contact_person_id = cp.id "
             + " and sr.category_id = ct.id and sr.equipment_id = eq.id and sr.id = wosr.service_report_id and wosr.work_order_id = wo.id ";
@@ -131,6 +133,8 @@ public class ServiceReportDAO extends BaseDAO {
       hashMap.put("customerPincode", result.getString(22));
       hashMap.put("workOrderId", "" + result.getInt(23));
       hashMap.put("workOrderDate", formatTimestamp(result.getTimestamp(24)));
+      hashMap.put("type", result.getString(25));
+      hashMap.put("installationDetails", result.getString(26));
 
       hashMap.put("technicians", getTechnicians(connection, serviceReportId));
       return hashMap;
@@ -256,5 +260,46 @@ public class ServiceReportDAO extends BaseDAO {
       throws SQLException {
     ArrayList<String> technicians = TechnicianDAO.getTechniciansFor(connection, 0, serviceReportId);
     return technicians.size() > 0 ? String.join(", ", technicians) : "";
+  }
+
+  public static void updateEquipmentDamaged(Connection connection, int serviceReportId,
+      boolean equipmentDamaged) throws SQLException {
+    PreparedStatement preparedStatement =
+        connection
+            .prepareStatement("update service_reports set equipment_damaged = ? where id = ?");
+    preparedStatement.setBoolean(1, equipmentDamaged);
+    preparedStatement.setInt(2, serviceReportId);
+    preparedStatement.executeUpdate();
+  }
+
+  public static HashMap<String, HashMap<String, String>> addInstallationDetail(
+      Connection connection, int serviceReportId, String detail, String[] keys, String[] values)
+      throws SQLException {
+    PreparedStatement statement = connection.prepareStatement("select installation_details from service_reports where id = ?");
+    statement.setInt(1, serviceReportId);
+    ResultSet result = statement.executeQuery();
+
+    HashMap<String, String> keyValues = new HashMap<String, String>();
+    for (int i = 0; i < keys.length; i++) {
+      keyValues.put(keys[i], values[i]);
+    }
+
+    if (result.next()) {
+      String installationDetails = result.getString(1);
+      HashMap<String, HashMap<String, String>> hashMap = new HashMap<String, HashMap<String, String>>();
+      if (!Util.isNullOrEmpty(installationDetails)) {
+        hashMap = new Gson().fromJson(result.getString(1), hashMap.getClass());
+      }
+      hashMap.put(detail, keyValues);
+
+      statement = connection.prepareStatement(
+          "update service_reports set installation_details = ?::JSON where id = ?");
+      statement.setObject(1, new Gson().toJson(hashMap));
+      statement.setInt(2, serviceReportId);
+      statement.executeUpdate();
+      return hashMap;
+    } else {
+      throw new SQLException();
+    }
   }
 }

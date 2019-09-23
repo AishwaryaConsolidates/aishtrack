@@ -226,9 +226,14 @@
                 		}
                 	});
         		}
+        	} else {
+        		localStorage.removeItem('localVisitForm');
         	}
         	$("#submitButton").on("click", function (e) {
+        		$("#submitButton").attr("disabled", true);
                 e.preventDefault();
+                window.scrollTo(0,0);
+                $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
                 localStorage.removeItem('localVisitForm');
                 $.ajax({
                     url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/updateVisit",
@@ -248,13 +253,19 @@
             		error: function(data) {
             			localStorage.setItem('localVisitForm', getJSONFormData($('#updateVisitForm')));
             			alert("Error updating visit, form stored locally, come back to this page later.");
+            		},
+            		complete: function(data) {
+            			$("#submitButton").attr("disabled", false);
             		}
             	});
                 return false;
               });
         	
         	$("#fileSubmitButton").on("click", function (e) {
+        		$("#fileSubmitButton").attr("disabled", true);
                 e.preventDefault();
+                window.scrollTo(0,0);
+                $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
                 var getUrlParams = {};
                 getUrlParams["uploadFileName"] = $('#visitFile')[0].files[0].name;
                 getUrlParams["fileName"] = $("#visitFileName").val();
@@ -271,6 +282,9 @@
             		},
             		error: function(data) {
             			alert("Error getting presigned url");
+            		},
+            		complete: function(data) {
+            			$("#fileSubmitButton").attr("disabled", false);
             		}
             	});
                 return false;
@@ -287,7 +301,7 @@
                 data: theFormFile,
                 crossDomain: true,
         		success: function(data) {
-        	        alert("file uploaded");
+        			$("#notification").html("<center><font color=\"green\">Visit Updated</font></center>");
         		},
         		error: function(data) {
         			alert("Error upload failed");
@@ -327,7 +341,7 @@
         function fillForm(visit) {
         	$("#id").val(visit.id);
         	$("#visitId").val(visit.id);
-        	$("#visitDate").val(visit.visitDate);
+        	$("#visitDate").val(visit.visitDateString);
         	$("#serviceReportId").val(visit.serviceReportId);
         	$("#complaint").val(visit.complaint);
         	$("#findings").val(visit.findings);

@@ -15,6 +15,9 @@ public class Visit extends BaseBean {
   private ArrayList<SparePart> recommendedSpareParts;
   private ArrayList<SparePart> replacedSpareParts;
 
+  // for display
+  private String visitDateString;
+
   public Visit(int id, int serviceReportId, Date visitDate, String complaint, String findings,
       String workDone, String customerRemarks) {
     this.id = id;
@@ -88,6 +91,14 @@ public class Visit extends BaseBean {
 
   public void setReplacedSpareParts(ArrayList<SparePart> replacedSpareParts) {
     this.replacedSpareParts = replacedSpareParts;
+  }
+
+  public String getVisitDateString() {
+    return visitDateString;
+  }
+
+  public void setVisitDateString(String visitDateString) {
+    this.visitDateString = visitDateString;
   }
 
 }

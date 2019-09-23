@@ -8,6 +8,7 @@ import com.aishtek.aishtrack.utils.WorkStatus;
 
 public class ServiceReport extends BaseBean {
 
+  private String type;
   private String code;
   private int customerId;
   private int addressId;
@@ -24,12 +25,17 @@ public class ServiceReport extends BaseBean {
   private int serviceRating;
   private String notes;
 
+  // installation fields
+  private boolean equipmentDamaged;
+  private int ratingCardFileId;
+  private String installationDetails;
+
   // search fields
   private String customerName;
 
   public ServiceReport(Customer customer, int contactPersonId, int categoryId, int equipmentId,
       String notes, String brand, String model, String serialNumber, String partNumber,
-      Date reportDate) {
+      Date reportDate, String type) {
     this.customerId = customer.getId();
     this.addressId = customer.getAddressId();
     this.contactPersonId = contactPersonId;
@@ -41,12 +47,13 @@ public class ServiceReport extends BaseBean {
     this.reportDate = reportDate;
     this.serialNumber = serialNumber;
     this.partNumber = partNumber;
+    this.type = type;
     setStatus(WorkStatus.CREATED_STATUS);
   }
 
   public ServiceReport(int id, String code, int customerId, int addressId, int contactPersonId,
       Date reportDate, String status, Date statusDate, String brand, String model,
-      String serialNumber, int serviceRating, String notes, int deleted) {
+      String serialNumber, int serviceRating, String notes, int deleted, String type) {
 
     this.id = id;
     this.code = code;
@@ -62,6 +69,7 @@ public class ServiceReport extends BaseBean {
     this.serviceRating = serviceRating;
     this.notes = notes;
     this.deleted = deleted;
+    this.type = type;
   }
 
   public ServiceReport(int id, String code, String status, Date statusDate) {
@@ -223,5 +231,37 @@ public class ServiceReport extends BaseBean {
 
   public void setPartNumber(String partNumber) {
     this.partNumber = partNumber;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  public boolean isEquipmentDamaged() {
+    return equipmentDamaged;
+  }
+
+  public void setEquipmentDamaged(boolean equipmentDamaged) {
+    this.equipmentDamaged = equipmentDamaged;
+  }
+
+  public int getRatingCardFileId() {
+    return ratingCardFileId;
+  }
+
+  public void setRatingCardFileId(int ratingCardFileId) {
+    this.ratingCardFileId = ratingCardFileId;
+  }
+
+  public String getInstallationDetails() {
+    return installationDetails;
+  }
+
+  public void setInstallationDetails(String installationDetails) {
+    this.installationDetails = installationDetails;
   }
 }

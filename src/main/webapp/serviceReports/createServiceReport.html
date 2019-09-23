@@ -34,6 +34,7 @@
                             <form action="" class="tm-edit-product-form" id="createServiceReportForm">
                                <input type="hidden" id="serviceReportId" name="id"/>
                                <input type="hidden" id="workOrderId" name="workOrderId"/>
+                               <input type="hidden" id="serviceReportType" name="type"/>
                                <div class="input-group mb-3">
                                     <label for="reportDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Report Date</label>
                                     <input id="reportDate" name="reportDate" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" data-large-mode="true">
@@ -112,6 +113,7 @@
     <script src="../vendors/jquery-ui-datepicker/jquery-ui.min.js"></script>
     <script>
         $(function () {
+        	verifySignin();
         	includeHTML();
         	getCategories();
         	getTechnicians();
@@ -124,9 +126,16 @@
         	urlParams = new URLSearchParams(window.location.search);
         	workOrderId = urlParams.get('workOrderId');
         	prefillWorkOrderData(workOrderId);
+        	type = urlParams.get('type');
+        	if(type) {
+        	  $("#serviceReportType").val(type);
+        	}
         	$("#workOrderId").val(workOrderId);
         	$("#submitButton").on("click", function (e) {
+        		$("#submitButton").attr("disabled", true);
                 e.preventDefault();
+                window.scrollTo(0,0);
+                $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
                 $.ajax({
                     url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/createServiceReport",
                     type : "POST",
@@ -142,6 +151,9 @@
             		},
             		error: function(data) {
             			alert("Error creating service report.");
+            		},
+            		complete: function(data) {
+            			$("#submitButton").attr("disabled", false);
             		}
             	});
                 return false;

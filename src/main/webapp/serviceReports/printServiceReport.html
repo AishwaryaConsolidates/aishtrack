@@ -84,6 +84,20 @@
 <td colspan="4">&nbsp;</td>
 </tr>
 
+<div id="installationDetailsBlock" style="display:none">
+	<tr>
+	<td colspan="4" class="font-weight-bold">Installation Details</td>
+	</tr>
+	
+	<tr>
+	<td colspan="4" class="text-wrap"><div id="installationDetails" class="text-wrap"/></td>
+	</tr>
+	
+	<tr>
+	<td colspan="4">&nbsp;</td>
+	</tr>
+</div>
+
 <tr>
 <td colspan="4"><div id="visits"/></td>
 </tr>
@@ -156,6 +170,18 @@
         		$("#partNumber").html(serviceReport.partNumber);
         		$("#technicians").html(serviceReport.technicians);
         		$("#notes").html(serviceReport.notes);
+        		
+        		if (serviceReport.type === "installation") {
+        			html = "";
+           		    var detailJSON = JSON.parse(serviceReport.installationDetails);
+        		    Object.keys(detailJSON).forEach(function(key) {
+        		    	html = html + "<b>" + key + "</b>";
+        		    	html+= "<br/>";
+        		    	html+= showJSON(detailJSON[key])
+        		    });
+        		    $("#installationDetails").html(html);
+        		    document.getElementById("installationDetailsBlock").style.display = "block";
+      		    }
             }
         	
         	function loadVisits(serviceReportId) {

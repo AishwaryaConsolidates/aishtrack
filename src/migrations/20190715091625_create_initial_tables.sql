@@ -101,6 +101,7 @@ EXECUTE PROCEDURE updated_at_trigger();
 
 CREATE TABLE service_reports (
   id                     SERIAL PRIMARY KEY,
+  type                   VARCHAR(20),
   code                   UUID DEFAULT uuid_generate_v4(),
   customer_id            INT NOT NULL,
   address_id             INT NOT NULL,
@@ -120,6 +121,9 @@ CREATE TABLE service_reports (
   created_at             TIMESTAMP DEFAULT NOW(),
   updated_at             TIMESTAMP,
   deleted                INT DEFAULT 0,
+  equipment_damaged      BOOLEAN,
+  rating_card_file_id    INT,
+  installation_details   JSON,
   FOREIGN KEY (customer_id) REFERENCES customers(id),
   FOREIGN KEY (contact_person_id) REFERENCES persons(id),
   FOREIGN KEY (address_id) REFERENCES addresses(id),
@@ -215,62 +219,3 @@ CREATE TABLE visit_files (
   FOREIGN KEY (file_id) REFERENCES files(id)
 );
 CREATE INDEX ON visit_files (visit_id, file_id);
-
-CREATE TABLE installation_reports (
-  id                     SERIAL PRIMARY KEY,
-  code                   UUID DEFAULT uuid_generate_v4(),
-  customer_id            INT NOT NULL,
-  address_id             INT NOT NULL,
-  contact_person_id      INT NOT NULL,
-  installation_date      TIMESTAMP,
-  status                 VARCHAR(15),
-  status_date            TIMESTAMP,
-  brand                  VARCHAR(30),
-  model                  VARCHAR(30),
-  serial_number          VARCHAR(30),
-  equipment_damaged      BOOLEAN,
-  rating_card_file_id    INT,
-  installation_details   JSON,
-  service_rating         INT,
-  notes                  TEXT,
-  created_at             TIMESTAMP DEFAULT NOW(),
-  updated_at             TIMESTAMP,
-  deleted                INT DEFAULT 0,
-  FOREIGN KEY (customer_id) REFERENCES customers(id),
-  FOREIGN KEY (contact_person_id) REFERENCES persons(id),
-  FOREIGN KEY (address_id) REFERENCES addresses(id),
-  FOREIGN KEY (rating_card_file_id) REFERENCES files(id)
-);
-CREATE INDEX ON installation_reports(customer_id);
-
-CREATE TRIGGER set_ir_updated_at
-BEFORE UPDATE ON installation_reports
-FOR EACH ROW
-EXECUTE PROCEDURE updated_at_trigger();
-
-CREATE TABLE work_order_installation_reports (
-  id                        SERIAL PRIMARY KEY,
-  work_order_id             INT NOT NULL,
-  installation_report_id    INT NOT NULL,
-  FOREIGN KEY (installation_report_id) REFERENCES installation_reports(id),
-  FOREIGN KEY (work_order_id) REFERENCES work_orders(id)
-);
-CREATE INDEX ON work_order_installation_reports(work_order_id, installation_report_id);
-
-CREATE TABLE installation_report_technicians (
-  id                        SERIAL PRIMARY KEY,
-  installation_report_id    INT NOT NULL,
-  technician_id             INT NOT NULL,
-  FOREIGN KEY (installation_report_id) REFERENCES installation_reports(id),
-  FOREIGN KEY (technician_id) REFERENCES technicians(id)
-);
-CREATE INDEX ON installation_report_technicians (installation_report_id, technician_id);
-
-CREATE TABLE installation_report_visits (
-  id                            SERIAL PRIMARY KEY,
-  visit_id                      INT NOT NULL,
-  installation_report_id        INT NOT NULL,
-  FOREIGN KEY (installation_report_id) REFERENCES installation_reports(id),
-  FOREIGN KEY (visit_id) REFERENCES visits(id)
-);
-CREATE INDEX ON installation_report_visits (installation_report_id, visit_id);

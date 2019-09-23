@@ -127,7 +127,7 @@ public class VisitDAO extends BaseDAO {
   public static ArrayList<HashMap<String, String>> getScoutingReportFiles(Connection connection,
       int scoutingReportId) throws SQLException {
     String sql =
-        "SELECT vf.id, f.name, f.location from files f, visit_files vf, visits v where f.id = vf.file_id and vf.visit_id = v.id and v.scouting_report_id = ? order by f.upload_date desc ";
+        "SELECT vf.id, f.name, f.location from files f, visit_files vf, visits v where f.id = vf.file_id and vf.visit_id = v.id and v.service_report_id = ? order by f.upload_date desc ";
 
     PreparedStatement statement = connection.prepareStatement(sql);
     statement.setInt(1, scoutingReportId);

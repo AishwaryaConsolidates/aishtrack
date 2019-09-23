@@ -21,8 +21,8 @@ import com.google.gson.Gson;
 public class GeneratePreSignedURL extends BaseFunction
     implements RequestHandler<ServerlessInput, ServerlessOutput> {
 
-  private static final String bucketName = "aishtrackfiles";
-  private static final String fileBaseURL = "https://aishtrackfiles.s3.ap-south-1.amazonaws.com/";
+  private static final String bucketName = "aishtrackfiles"; // aishtrackuploadedfiles
+  private static final String fileBaseURL = "https://aishtrackfiles.s3.ap-south-1.amazonaws.com/"; // http://aishtrackuploadedfiles.s3-website.ap-south-1.amazonaws.com
 
   @Override
   public ServerlessOutput handleRequest(ServerlessInput serverlessInput, Context context) {
