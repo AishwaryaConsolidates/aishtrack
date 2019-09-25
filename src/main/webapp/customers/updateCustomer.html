@@ -122,6 +122,7 @@
 
     <script src="../js/jquery-3.3.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/config.js"></script>
     <script src="../js/aishtrack.js"></script>
     <script type="text/javascript" src="../vendors/DataTables/datatables.min.js"></script>
     <script>
@@ -139,7 +140,7 @@
         $("#addContactPerson").on("click", function (e) {
                 e.preventDefault();
                 $.ajax({
-                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/createCustomerContactPerson",
+                    url : apiURLBase + "/createCustomerContactPerson",
                     type : "POST",
                     data: getJSONFormData($('#addContactPersonForm')),
                     dataType: "json",
@@ -178,7 +179,7 @@
         
         function prefillCustomerData(customerId) {
             $.ajax({
-                url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getCustomer?customerId=" + customerId,
+                url : apiURLBase + "/getCustomer?customerId=" + customerId,
                 type : "GET",
                 dataType: "json",
                 crossDomain: true,
@@ -219,7 +220,7 @@
         		workOrder = JSON.parse(JSON.stringify(jsonObject));
         		html+="<tr>";
         		html+="<td>";
-        		html+="<a href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/workOrders/updateWorkOrder.html?workOrderId=" + workOrder.id + "\"><i class=\"fas fa-edit\"></i></a>";
+        		html+="<a href=\"" + htmlURLBase + "/workOrders/updateWorkOrder.html?workOrderId=" + workOrder.id + "\"><i class=\"fas fa-edit\"></i></a>";
         		html+="</td>";
         		html+="<td class=\"text-center\">" + workOrder.type + "</td>";
         		html+="<td class=\"text-center\">" + workOrder.status + "</td>";
@@ -236,7 +237,7 @@
         	html = "";
         	$.each(customer.workOrders, function(index, workOrder){
         		html+="<li class=\"tm-list-group-item\">";
-        		html+="<a href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/workOrders/updateWorkOrder.html?workOrderId=" + workOrder.id + "\">" + workOrder.status + " " + workOrder.statusDate + "</a>";
+        		html+="<a href=\"" + htmlURLBase + "/workOrders/updateWorkOrder.html?workOrderId=" + workOrder.id + "\">" + workOrder.status + " " + workOrder.statusDate + "</a>";
         		html+="</li>";
         	});
         	$("#workOrders").html(html);
@@ -246,7 +247,7 @@
         	html = "";
         	$.each(customer.serviceReports, function(index, serviceReport){
         		html+="<li class=\"tm-list-group-item\">";
-        		html+="<a href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/serviceReports/viewServiceReport.html?serviceReportCode=" + serviceReport.code + "\">" + serviceReport.status + " " + serviceReport.statusDate + "</a>";
+        		html+="<a href=\"" + htmlURLBase + "/serviceReports/viewServiceReport.html?serviceReportCode=" + serviceReport.code + "\">" + serviceReport.status + " " + serviceReport.statusDate + "</a>";
         		html+="</li>";
         	});
         	$("#serviceReports").html(html);

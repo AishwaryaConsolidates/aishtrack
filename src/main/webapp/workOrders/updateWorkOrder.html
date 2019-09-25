@@ -116,6 +116,7 @@
 
     <script src="../js/jquery-3.3.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/config.js"></script>
     <script src="../js/aishtrack.js"></script>
     <script src="../js/amazon-cognito-identity.min.js"></script>
     <script>
@@ -138,7 +139,7 @@
                 window.scrollTo(0,0);
                 $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
                 $.ajax({
-                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/createWorkOrder",
+                    url : apiURLBase + "/createWorkOrder",
                     type : "POST",
                     data: getJSONFormData($('#createWorkOrderForm')),
                     dataType: "json",
@@ -172,7 +173,7 @@
 
         function getServiceReports(workOrderId) {
             $.ajax({
-                url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getServiceReports?workOrderId=" + workOrderId,
+                url : apiURLBase + "/getServiceReports?workOrderId=" + workOrderId,
                 type : "GET",
                 dataType: "json",
                 crossDomain: true,
@@ -193,7 +194,7 @@
         		html+="Existing Service Reports";
 	        	$.each(serviceReports, function(index, serviceReport){
 	        		html+="<li class=\"tm-list-group-item\">";
-	        		html+="<a href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/serviceReports/viewServiceReport.html?serviceReportCode=" + serviceReport.code + "\">" + serviceReport.equipment + " (" +serviceReport.status + ")" + "</a>";
+	        		html+="<a href=\"" + htmlURLBase + "/serviceReports/viewServiceReport.html?serviceReportCode=" + serviceReport.code + "\">" + serviceReport.equipment + " (" +serviceReport.status + ")" + "</a>";
 	        		html+="</li>";
 	        	});
         	}

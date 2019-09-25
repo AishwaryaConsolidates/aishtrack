@@ -72,6 +72,7 @@
     <script src="js/bootstrap.min.js"></script>
     <!-- https://getbootstrap.com/ -->
     <script src="js/tooplate-scripts.js"></script>
+    <script src="js/config.js"></script>
     <script src="js/aishtrack.js"></script>
     <script type="text/javascript" src="vendors/DataTables/datatables.min.js"></script>
     <script src="js/amazon-cognito-auth.min.js"></script>
@@ -89,7 +90,7 @@
         	
         	function loadOpenWorkOrders() {
                 $.ajax({
-                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getWorkOrders?status=all_open",
+                    url : apiURLBase + "/getWorkOrders?status=all_open",
                     type : "GET",
                     dataType: "json",
                     crossDomain: true,
@@ -109,7 +110,7 @@
             		workOrder = JSON.parse(JSON.stringify(jsonObject));
             		html+="<tr>";
             		html+="<td>";
-            		html+="<a href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/workOrders/updateWorkOrder.html?workOrderId=" + workOrder.id + "\"><i class=\"fas fa-edit\"></i></a>";
+            		html+="<a href=\"" + htmlURLBase + "/workOrders/updateWorkOrder.html?workOrderId=" + workOrder.id + "\"><i class=\"fas fa-edit\"></i></a>";
             		html+="</td>";
             		html+="<td>" + workOrder.customer + "</td>";
             		html+="<td class=\"text-center\">" + workOrder.type + "</td>";

@@ -109,6 +109,7 @@
 
     <script src="../js/jquery-3.3.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/config.js"></script>
     <script src="../js/aishtrack.js"></script>
     <script src="../vendors/jquery-ui-datepicker/jquery-ui.min.js"></script>
     <script src="../js/amazon-cognito-identity.min.js"></script>
@@ -132,7 +133,7 @@
                 window.scrollTo(0,0);
                 $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
                 $.ajax({
-                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/createServiceReport",
+                    url : apiURLBase + "/createServiceReport",
                     type : "POST",
                     data: getJSONFormData($('#createServiceReportForm')),
                     dataType: "json",

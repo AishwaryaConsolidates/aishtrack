@@ -104,6 +104,7 @@
 
     <script src="../js/jquery-3.3.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/config.js"></script>
     <script src="../js/aishtrack.js"></script>
     <script>
         $(function () {
@@ -129,7 +130,7 @@
         	var serviceReportId;
         	function getServiceReport(serviceReportCode) {
                 $.ajax({
-                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/viewServiceReport?serviceReportCode=" + serviceReportCode,
+                    url : apiURLBase + "/viewServiceReport?serviceReportCode=" + serviceReportCode,
                     type : "GET",
                     dataType: "json",
                     crossDomain: true,
@@ -189,12 +190,12 @@
         	
         	$("#visitButton").on("click", function (e) {
                 e.preventDefault();
-                window.open('https://aishtek.s3.amazonaws.com/aishtrack/visits/updateVisit.html?serviceReportId='+serviceReportId,'_visit');   
+                window.open(htmlURLBase + '/visits/updateVisit.html?serviceReportId='+serviceReportId,'_visit');   
         	});
         	
         	function loadVisits(serviceReportId) {
                 $.ajax({
-                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getVisits?serviceReportId=" + serviceReportId,
+                    url : apiURLBase + "/getVisits?serviceReportId=" + serviceReportId,
                     type : "GET",
                     dataType: "json",
                     crossDomain: true,
@@ -213,7 +214,7 @@
             	$.each(visits, function(index, visit){
             		customer = JSON.parse(JSON.stringify(visit));
             		html+="<li>";
-            		html+="<a href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/visits/updateVisit.html?visitId=" + visit.id + "\">" + visit.visitDate +"</i></a>";
+            		html+="<a href=\"" + htmlURLBase + "/visits/updateVisit.html?visitId=" + visit.id + "\">" + visit.visitDate +"</i></a>";
             		html+="<//li>";
             	});
             	$("#visits").html(html);
@@ -221,7 +222,7 @@
         	
         	function loadVisitFiles(serviceReportId) {
                 $.ajax({
-                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getVisitFiles?serviceReportId=" + serviceReportId,
+                    url : apiURLBase + "/getVisitFiles?serviceReportId=" + serviceReportId,
                     type : "GET",
                     dataType: "json",
                     crossDomain: true,
@@ -251,7 +252,7 @@
             $("#addInstallationDetail").click(function (e) {
         		e.preventDefault();
         		$.ajax({
-                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/createInstallationDetail",
+                    url : apiURLBase + "/createInstallationDetail",
                     type : "POST",
                     data: getJSONFormData($('#addInstallationDetailForm')),
                     dataType: "json",

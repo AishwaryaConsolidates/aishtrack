@@ -1,12 +1,3 @@
-var installationDetails = {
-		"Gas": ["Gas Pressure", "Gas Regulator", "Gas Pressure Gauge", "Gas Pipe Leak Test", "Burner Flame Color"],
-		"Steam": ["Type Of Steam", "Steam Pressure", "Steam Regulator", "Steam Pressure Gauge", "Steam Pipe Leak Test", "Condensation Water Drain"],
-		"Refrigeration": ["Type Of Ref Gas", "Compressor Details", "Chiller/Freezer", "Condensing Fan", "Dryer-Filter", "Cooling Fan"],
-		"Plumbing": ["Type Of Water", "Hot/Cold Water", "Water Pressure", "Water Regulator", "Water Pressure Gauge", "Water Pipe Leak Test", "Water Drain Connection"],
-		"Electrical": ["Voltage" ,"AMPS", "Hz", "Phase", "Heating Element", "Motor", "Programing Circuit Board"]
-};
-//var installationHeadings = ["Gas", "Steam", "Refrigeration", "Plumbing", "Electrical"]
-
 function includeHTML() {
 	var z, i, elmnt, file, xhttp;
 	/* Loop through a collection of all HTML elements: */
@@ -41,7 +32,7 @@ function includeHTML() {
 
 function getCustomers(nextFunction=null) {
     return $.ajax({
-        url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getCustomers",
+        url : apiURLBase + "/getCustomers",
         type : "GET",
         dataType: "json",
         crossDomain: true,
@@ -94,7 +85,7 @@ function getJSONFormData(form){
 
 function getTechnicians() {
     return $.ajax({
-        url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getTechnicians",
+        url : apiURLBase + "/getTechnicians",
         type : "GET",
         dataType: "json",
         crossDomain: true,
@@ -109,7 +100,7 @@ function getTechnicians() {
 
 function getCategories() {
     return $.ajax({
-        url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getCategories",
+        url : apiURLBase + "/getCategories",
         type : "GET",
         dataType: "json",
         crossDomain: true,
@@ -124,7 +115,7 @@ function getCategories() {
 
 function getEquipments(categoryId, nextFunction=null) {
     return $.ajax({
-        url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getEquipments?categoryId=" + categoryId,
+        url : apiURLBase + "/getEquipments?categoryId=" + categoryId,
         type : "GET",
         dataType: "json",
         crossDomain: true,
@@ -141,7 +132,7 @@ function getEquipments(categoryId, nextFunction=null) {
 
 function getCustomerPersons(customerId) {
     return $.ajax({
-        url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getCustomerPersons?customerId=" + customerId,
+        url : apiURLBase + "/getCustomerPersons?customerId=" + customerId,
         type : "GET",
         dataType: "json",
         crossDomain: true,
@@ -156,7 +147,7 @@ function getCustomerPersons(customerId) {
 
 function prefillWorkOrderData(workOrderId) {
     $.ajax({
-        url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getWorkOrders?workOrderId=" + workOrderId,
+        url : apiURLBase + "/getWorkOrders?workOrderId=" + workOrderId,
         type : "GET",
         dataType: "json",
         crossDomain: true,
@@ -193,7 +184,7 @@ function initCognitoSDK() {
 			ClientId : '33i51jtcqrisallfq09ddfoc1e', // Your client id here
 			AppWebDomain : 'aishtek.auth.ap-south-1.amazoncognito.com',
 			TokenScopesArray : ['email', 'openid', 'phone'], // e.g.['phone', 'email', 'profile','openid', 'aws.cognito.signin.user.admin'],
-			RedirectUriSignIn : 'https://aishtek.s3.amazonaws.com/aishtrack/index.html',
+			RedirectUriSignIn : htmlURLBase + '/index.html',
 			RedirectUriSignOut : 'https://aishtek.s3.amazonaws.com/aishtrack/products.html',
 /*         	IdentityProvider : '<TODO: add identity provider you want to specify>', // e.g. 'Facebook', */
 			UserPoolId : 'ap-south-1_jiWBJIz70', // Your user pool id here
@@ -210,7 +201,7 @@ function initCognitoSDK() {
 		},
 		onFailure: function(err) {
 			alert("You need to log into access the application");
-			window.location.href = "https://aishtek.s3.amazonaws.com/aishtrack/login.html";
+			window.location.href = htmlURLBase + "/login.html";
 		}
 	};
 	// The default response_type is "token", uncomment the next line will make it be "code".
@@ -230,13 +221,13 @@ function verifySignin() {
 	        cognitoUser.getSession(function(err, session) {
 	            if (err) {
 	            	alert("Your session has expired, please log in again.");
-	    			window.location.href = "https://aishtek.s3.amazonaws.com/aishtrack/login.html";
+	    			window.location.href = htmlURLBase + "/login.html";
 	            }
 	            console.log('session validity: ' + session.isValid());
 	        });
 	    } else {
 	    	alert("You need to log into access the application");
-			window.location.href = "https://aishtek.s3.amazonaws.com/aishtrack/login.html";
+			window.location.href = htmlURLBase + "/login.html";
 	    }
 }
 

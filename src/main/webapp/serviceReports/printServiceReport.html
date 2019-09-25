@@ -122,6 +122,7 @@
 
     <script src="../js/jquery-3.3.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/config.js"></script>
     <script src="../js/aishtrack.js"></script>
     <script>
         $(function () {
@@ -133,7 +134,7 @@
         	
         	function getServiceReport(serviceReportCode) {
                 $.ajax({
-                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/viewServiceReport?serviceReportCode=" + serviceReportCode,
+                    url : apiURLBase + "/viewServiceReport?serviceReportCode=" + serviceReportCode,
                     type : "GET",
                     dataType: "json",
                     crossDomain: true,
@@ -191,7 +192,7 @@
         	
         	function loadVisits(serviceReportId) {
                 $.ajax({
-                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getVisits?details=true&serviceReportId=" + serviceReportId,
+                    url : apiURLBase + "/getVisits?details=true&serviceReportId=" + serviceReportId,
                     type : "GET",
                     dataType: "json",
                     crossDomain: true,

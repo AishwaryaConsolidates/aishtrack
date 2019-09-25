@@ -59,6 +59,7 @@
     </div>
     <script src="../js/jquery-3.3.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/config.js"></script>
     <script src="../js/aishtrack.js"></script>
     <script type="text/javascript" src="../vendors/DataTables/datatables.min.js"></script>
     <script>    
@@ -73,7 +74,7 @@
         	
             function loadServiceReports(customerName) {
                 $.ajax({
-                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getServiceReports?customerName=" + customerName,
+                    url : apiURLBase + "/getServiceReports?customerName=" + customerName,
                     type : "GET",
                     dataType: "json",
                     crossDomain: true,
@@ -88,14 +89,13 @@
               }
             
             function listServiceReports(jsonArray) {
-            	/* html = "<tr><td>Edit</td><td>Customer</td><td>Type</td><td>status</td><td>Category</td><td>Equipment</td></tr>"; */
             	html="";
             	$.each(jsonArray, function(index, jsonObject){
             		serviceReport = JSON.parse(JSON.stringify(jsonObject));
             		html+="<tr>";
             		html+="<td>";
-            		html+="<a target = \"_" + index +"\" href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/serviceReports/viewServiceReport.html?serviceReportCode=" + serviceReport.code + "\"><i class=\"fas fa-edit\"></i></a>";
-            		html+="<a target = \"_" + index +"\" href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/serviceReports/printServiceReport.html?serviceReportCode=" + serviceReport.code + "\"><i class=\"fas fa-print\"></i></a>";
+            		html+="<a target = \"_" + index +"\" href=\"" + htmlURLBase + "/serviceReports/viewServiceReport.html?serviceReportCode=" + serviceReport.code + "\"><i class=\"fas fa-edit\"></i></a>";
+            		html+="<a target = \"_" + index +"\" href=\"" + htmlURLBase + "/serviceReports/printServiceReport.html?serviceReportCode=" + serviceReport.code + "\"><i class=\"fas fa-print\"></i></a>";
             		html+="</td>";
             		html+="<td>" + serviceReport.customer + "</td>";
               		html+="<td class=\"text-center\">" + serviceReport.status + "</td>";

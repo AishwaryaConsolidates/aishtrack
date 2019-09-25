@@ -46,6 +46,7 @@
     </div>
     <script src="../js/jquery-3.3.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/config.js"></script>
     <script src="../js/aishtrack.js"></script>
     <script>    
         $(function () {
@@ -59,7 +60,7 @@
             
             function loadWorkOrders(customerName) {
                 $.ajax({
-                    url : "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod/getCustomers?name=" + customerName,
+                    url : apiURLBase + "/getCustomers?name=" + customerName,
                     type : "GET",
                     dataType: "json",
                     crossDomain: true,
@@ -79,7 +80,7 @@
             		customer = JSON.parse(JSON.stringify(jsonObject));
             		html+="<tr>";
             		html+="<td>";
-            		html+="<a href=\"" + "https://aishtek.s3.amazonaws.com/aishtrack/customers/updateCustomer.html?customerId=" + customer.id + "\"><i class=\"fas fa-edit\"></i></a>";
+            		html+="<a href=\"" + htmlURLBase + "/customers/updateCustomer.html?customerId=" + customer.id + "\"><i class=\"fas fa-edit\"></i></a>";
             		html+="</td>";
             		html+="<td>" + customer.name + "</td>";
             		html+="<td><i class=\"fas fa-trash-alt tm-trash-icon\"></i></td>";
