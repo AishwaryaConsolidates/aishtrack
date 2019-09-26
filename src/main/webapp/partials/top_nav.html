@@ -12,17 +12,17 @@
 
 	<div class="collapse navbar-collapse" id="navbarSupportedContent">
 		<ul class="navbar-nav mx-auto">
-			<li class="nav-item"><a class="nav-link" href="https://aishtek.s3.amazonaws.com/aishtrack/serviceReports/searchServiceReports.html">Service Reports</a></li>
+			<li class="nav-item"><a class="nav-link" href="#" onclick="navigateTo('/serviceReports/searchServiceReports.html');">Service Reports</a></li>
 			<li class="nav-item dropdown"><a
 				class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
 				role="button" data-toggle="dropdown" aria-haspopup="true"
 				aria-expanded="false"> Work Orders </a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-					<a class="dropdown-item" href="https://aishtek.s3.amazonaws.com/aishtrack/workOrders/updateWorkOrder.html">Create</a>
-					<a class="dropdown-item" href="https://aishtek.s3.amazonaws.com/aishtrack/workOrders/searchWorkOrders.html">Search</a>
+					<a class="dropdown-item" href="#" onclick="navigateTo('/workOrders/updateWorkOrder.html');">Create</a>
+					<a class="dropdown-item" href="#" onclick="navigateTo('/workOrders/searchWorkOrders.html');">Search</a>
 				</div></li>
 			<li class="nav-item">
-			    <a class="nav-link" href="https://aishtek.s3.amazonaws.com/aishtrack/customers/searchCustomers.html">Customers</a>
+			    <a class="nav-link" href="#" onclick="navigateTo('/customers/searchCustomers.html');">Customers</a>
 			</li>
 			<li class="nav-item dropdown"><a
 				class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
@@ -34,8 +34,8 @@
 				</div></li>
 		</ul>
 		<ul class="navbar-nav">
-			<li class="nav-item"><a class="nav-link d-flex"
-				href="login.html"> <i class="far fa-user mr-2 tm-logout-icon"></i>
+			<li class="nav-item"><a onclick='signout();' class="nav-link d-flex"
+				href="#"> <i class="far fa-user mr-2 tm-logout-icon"></i>
 					<span>Logout</span>
 			</a></li>
 		</ul>

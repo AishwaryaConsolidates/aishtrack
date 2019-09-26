@@ -1,8 +1,5 @@
 package com.aishtek.aishtrack.beans;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -12,12 +9,6 @@ public class BaseBean {
   protected Date createdAt;
   protected Date updatedAt;
   protected int deleted = 0;
-
-  protected static Connection getConnection() throws SQLException {
-    return DriverManager.getConnection(
-        "jdbc:postgresql://aishtek.cufbjsmbrpfk.ap-south-1.rds.amazonaws.com/aishtek", "aishtek",
-        "a1shwarya");
-  }
 
   public int getId() {
     return id;

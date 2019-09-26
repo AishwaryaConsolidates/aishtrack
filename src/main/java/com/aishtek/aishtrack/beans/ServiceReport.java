@@ -1,8 +1,5 @@
 package com.aishtek.aishtrack.beans;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Date;
 import com.aishtek.aishtrack.utils.WorkStatus;
 
@@ -88,20 +85,6 @@ public class ServiceReport extends BaseBean {
     this.serviceRating = serviceRating;
     this.notes = notes;
     this.deleted = deleted;
-  }
-
-  public void markAsAssigned() throws SQLException {
-    status = WorkStatus.ASSIGNED_STATUS;
-    try (Connection connection = getConnection()) {
-      PreparedStatement preparedStatement = connection
-          .prepareStatement("update work_orders set status =?, status_date = ? where id = ?");
-      preparedStatement.setString(1, status);
-      preparedStatement.setTimestamp(2, currentTimestamp());
-      preparedStatement.setInt(3, id);
-      preparedStatement.executeUpdate();
-    } catch (SQLException sqle) {
-      throw sqle;
-    }
   }
 
   public int getCustomerId() {

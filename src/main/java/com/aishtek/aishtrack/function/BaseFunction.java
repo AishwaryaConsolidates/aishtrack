@@ -16,11 +16,15 @@ import com.google.gson.Gson;
 public class BaseFunction {
 
   public static final String delimiter = "!@#";
+  // TODO move this somewhere, secretsmanager costs money, environment variables in not tenable as
+  // its at function level
+  private static final String dbConnectURL =
+      "jdbc:postgresql://aishtek.c5z8niycvgrg.ap-south-1.rds.amazonaws.com/aishtek"; // "aishtek.c5z8niycvgrg.ap-south-1.rds.amazonaws.com"
+  private static final String dbUsername = "aishtek"; // aishtek
+  private static final String dbPassword = "a1sht3k.com"; // a1sht3k.com
 
   protected Connection getConnection() throws SQLException {
-    Connection connection = DriverManager.getConnection(
-        "jdbc:postgresql://aishtek.cufbjsmbrpfk.ap-south-1.rds.amazonaws.com/aishtek", "aishtek",
-        "a1shwarya");
+    Connection connection = DriverManager.getConnection(dbConnectURL, dbUsername, dbPassword);
     connection.setAutoCommit(false);
     return connection;
   }

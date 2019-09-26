@@ -1,3 +1,5 @@
+var cognitoUser;
+
 function includeHTML() {
 	var z, i, elmnt, file, xhttp;
 	/* Loop through a collection of all HTML elements: */
@@ -215,7 +217,7 @@ function verifySignin() {
 	        ClientId : '33i51jtcqrisallfq09ddfoc1e'
 	    };
 	    var userPool = new AmazonCognitoIdentity.CognitoUserPool(data);
-	    var cognitoUser = userPool.getCurrentUser();
+	    cognitoUser = userPool.getCurrentUser();
 	    
 	    if (cognitoUser != null) {
 	        cognitoUser.getSession(function(err, session) {
@@ -241,4 +243,21 @@ function showJSON(obj) {
 	    }
 	  }              
     return result;
+}
+
+function signout() {
+	var data = {
+	    UserPoolId : 'ap-south-1_jiWBJIz70',
+	    ClientId : '33i51jtcqrisallfq09ddfoc1e'
+	};
+	var userPool = new AmazonCognitoIdentity.CognitoUserPool(data);
+	cognitoUser = userPool.getCurrentUser();
+    if (cognitoUser != null) {
+	    cognitoUser.signOut();
+	}
+	window.location.href = htmlURLBase + "/login.html";
+}
+
+function navigateTo(page) {
+	window.location.href = htmlURLBase + page;
 }
