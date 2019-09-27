@@ -163,7 +163,7 @@ public class ServiceReportDAO extends BaseDAO {
   public static ArrayList<Technician> getTechniciansFor(Connection connection, int serviceReportId)
       throws SQLException {
     String sql =
-        "SELECT t.person_id, p.first_name, p.last_name, p.designation, p.phone, p.email FROM technicians t, persons p, service_report_technicians srt where srt.technician_id = t.id and t.person_id = p.id and srt.service_report_id = ?";
+        "SELECT t.person_id, p.first_name, p.last_name, p.designation, p.phone, p.email, p.mobile FROM technicians t, persons p, service_report_technicians srt where srt.technician_id = t.id and t.person_id = p.id and srt.service_report_id = ?";
 
     PreparedStatement statement = connection.prepareStatement(sql);
     statement.setInt(1, serviceReportId);
@@ -173,7 +173,7 @@ public class ServiceReportDAO extends BaseDAO {
     while (result.next()) {
       Technician technician = new Technician(result.getInt(1));
       technician.setPerson(new Person(result.getString(2), result.getString(3), result.getString(4),
-          result.getString(5), result.getString(6)));
+          result.getString(5), result.getString(6), result.getString(7), null));
       technicians.add(technician);
     }
     return technicians;
@@ -203,7 +203,7 @@ public class ServiceReportDAO extends BaseDAO {
       sql += " and sr.status = ANY (?) ";
     }
     if (!Util.isNullOrEmpty(customerName)) {
-      sql += " and (c.name like ? or c.nick_name like ?) ";
+      sql += " and (c.name ilike ? or c.nick_name ilike ?) ";
     }
     if (customerId > 0) {
       sql += " and c.id = ? ";

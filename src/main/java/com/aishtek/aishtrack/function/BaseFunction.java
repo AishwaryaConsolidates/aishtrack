@@ -19,9 +19,14 @@ public class BaseFunction {
   // TODO move this somewhere, secretsmanager costs money, environment variables in not tenable as
   // its at function level
   private static final String dbConnectURL =
-      "jdbc:postgresql://aishtek.c5z8niycvgrg.ap-south-1.rds.amazonaws.com/aishtek"; // "aishtek.c5z8niycvgrg.ap-south-1.rds.amazonaws.com"
-  private static final String dbUsername = "aishtek"; // aishtek
-  private static final String dbPassword = "a1sht3k.com"; // a1sht3k.com
+      "jdbc:postgresql://aishtek.cufbjsmbrpfk.ap-south-1.rds.amazonaws.com/aishtek";
+  private static final String dbUsername = "aishtek";
+  private static final String dbPassword = "a1shwarya";
+
+  // private static final String dbConnectURL =
+  // "jdbc:postgresql://aishtek.c5z8niycvgrg.ap-south-1.rds.amazonaws.com/aishtek";
+  // private static final String dbUsername = "aishtek";
+  // private static final String dbPassword = "a1sht3k.com";
 
   protected Connection getConnection() throws SQLException {
     Connection connection = DriverManager.getConnection(dbConnectURL, dbUsername, dbPassword);

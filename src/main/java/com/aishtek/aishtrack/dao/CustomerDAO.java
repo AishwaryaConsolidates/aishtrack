@@ -14,7 +14,7 @@ import com.aishtek.aishtrack.utils.Util;
 public class CustomerDAO extends BaseDAO {
   public static Customer findById(Connection connection, int customerId) throws SQLException {
       String sql =
-          "SELECT id, name, nick_name, address_id, contact_person_id, deleted FROM customers where id = ?";
+        "SELECT id, name, nick_name, address_id, contact_person_id, deleted, gst_in FROM customers where id = ?";
 
       PreparedStatement statement = connection.prepareStatement(sql);
       statement.setInt(1, customerId);
@@ -22,7 +22,7 @@ public class CustomerDAO extends BaseDAO {
 
       if (result.next()) {
         Customer customer = new Customer(result.getInt(1), result.getString(2), result.getString(3),
-            result.getInt(4), result.getInt(5), result.getInt(6));
+          result.getInt(4), result.getInt(5), result.getInt(6), result.getString(7));
         return customer;
     } else {
       throw new SQLException("No customer for Id");
@@ -87,7 +87,7 @@ public class CustomerDAO extends BaseDAO {
     String sql = "SELECT id, name, nick_name FROM customers where deleted = 0 ";
 
     if (!Util.isNullOrEmpty(name)) {
-      sql += " and (name like ? or nick_name like ?) ";
+      sql += " and (name ilike ? or nick_name ilike ?) ";
     }
 
     PreparedStatement statement = connection.prepareStatement(sql);
@@ -121,7 +121,8 @@ public class CustomerDAO extends BaseDAO {
 
   public static ArrayList<HashMap<String, String>> getContactPersons(Connection connection,
       int customerId) throws SQLException {
-    String sql = "SELECT cp.id, p.first_name, p.last_name, p.designation, p.phone, p.email "
+    String sql =
+        "SELECT cp.id, p.first_name, p.last_name, p.designation, p.phone, p.email, p.mobile, p.alternate_phone "
         + " from customer_persons cp inner join persons p on cp.person_id = p.id "
         + " where cp.customer_id = ? " + " order by p.last_name, p.first_name";
 
@@ -139,6 +140,8 @@ public class CustomerDAO extends BaseDAO {
       hashMap.put("designation", result.getString(4));
       hashMap.put("phone", result.getString(5));
       hashMap.put("email", result.getString(6));
+      hashMap.put("mobile", result.getString(7));
+      hashMap.put("alternatePhone", result.getString(8));
       contactPersons.add(hashMap);
     }
     return contactPersons;

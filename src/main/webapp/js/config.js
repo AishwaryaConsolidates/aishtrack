@@ -1,5 +1,8 @@
-var htmlURLBase = "https://aishtek.s3.amazonaws.com/aishtrack"; //https://aishtrack.s3.amazonaws.com
-var apiURLBase = "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod"; //https://1s5jtgvpjg.execute-api.ap-south-1.amazonaws.com/Prod
+var htmlURLBase = "https://aishtek.s3.amazonaws.com/aishtrack";
+var apiURLBase = "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod";
+
+//var htmlURLBase = "https://aishtrack.s3.amazonaws.com"; //
+//var apiURLBase = "https://1s5jtgvpjg.execute-api.ap-south-1.amazonaws.com/Prod";
 
 var installationDetails = {
 		"Gas": ["Gas Pressure", "Gas Regulator", "Gas Pressure Gauge", "Gas Pipe Leak Test", "Burner Flame Color"],

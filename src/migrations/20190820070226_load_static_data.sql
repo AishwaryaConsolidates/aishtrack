@@ -42,33 +42,33 @@ insert into equipments (category_id, name)
 select id, 'Ice Crushers' from categories where name = 'Refrigeration Systems';
 
 
-insert into persons (first_name, last_name, designation, phone, email) 
-values ('Count', 'Dracula', 'Owner', '9880482508', 'madadarsh@hotmail.com');
+insert into persons (first_name, last_name, designation, phone, email, mobile, alternate_phone) 
+values ('Count', 'Dracula', 'Owner', '9880482508', 'madadarsh@hotmail.com', '9880482508', '1112223333');
 
-insert into persons (first_name, last_name, designation, phone, email) 
-values ('Mavis', 'Dracula', 'Technician', '9880482508', 'simpleboy007@hotmail.com');
+insert into persons (first_name, last_name, designation, phone, email, mobile, alternate_phone) 
+values ('Mavis', 'Dracula', 'Technician', '9880482508', 'simpleboy007@hotmail.com', '9880482508', '1112223333');
 
-insert into persons (first_name, last_name, designation, phone, email) 
-values ('Johnny', 'Human', 'Technician', '9880482508', 'adarshadarsh@live.com');
+insert into persons (first_name, last_name, designation, phone, email, mobile, alternate_phone) 
+values ('Johnny', 'Human', 'Technician', '9880482508', 'adarshadarsh@live.com', '9880482508', '1112223333');
 
-insert into persons (first_name, last_name, designation, phone, email) values ('Soup', 'Chef', 'Cook', '9880482508', 'adarshadarsh@live.com');
+insert into persons (first_name, last_name, designation, phone, email, mobile, alternate_phone) values ('Soup', 'Chef', 'Cook', '9880482508', 'adarshadarsh@live.com', '9880482508', '1112223333');
 
 insert into addresses (street, area, city, state, pincode) values ('Ghoul Street', 'Forrest', 'Transylvania', 'Night', '60611');
 insert into addresses (street, area, city, state, pincode) values ('South End Road', 'Basavanagudi', 'Bangalore', 'Karnataka', '560004');
 
-insert into customers (name, nick_name, address_id, contact_person_id) values ('Hotel Transylvania', 'hotel transylvania', 1, 1);
+insert into customers (name, nick_name, address_id, contact_person_id, gst_in) values ('Hotel Transylvania', 'hotel transylvania', 1, 1,'ZA1H2G3H4JK5586');
 
 insert into customer_persons (customer_id, person_id) values (1, 1);
 insert into customer_persons (customer_id, person_id) values (1, 2);
 insert into customer_persons (customer_id, person_id) values (1, 3);
 
-insert into customers (name, nick_name, address_id, contact_person_id) values ('Military Hotel', 'military hotel', 2, 1);
+insert into customers (name, nick_name, address_id, contact_person_id, gst_in) values ('Military Hotel', 'military hotel', 2, 1,'ZA1H2G3H4JK5586');
 insert into customer_persons (customer_id, person_id) values (2, 1);
 
-insert into persons (first_name, last_name, designation, phone, email) 
-values ('Technician', 'Jack', 'Technician', '9880482508', 'info@aishwaryaconsolidates.com');
-insert into persons (first_name, last_name, designation, phone, email) 
-values ('Technician', 'Jill', 'Technician', '9880482508', 'service@aishwaryaconsolidates.com');
+insert into persons (first_name, last_name, designation, phone, email, mobile, alternate_phone) 
+values ('Technician', 'Jack', 'Technician', '9880482508', 'info@aishwaryaconsolidates.com', '9880482508', '1112223333');
+insert into persons (first_name, last_name, designation, phone, email, mobile, alternate_phone) 
+values ('Technician', 'Jill', 'Technician', '9880482508', 'service@aishwaryaconsolidates.com', '9880482508', '1112223333');
 
 insert into technicians (person_id) values (5);
 insert into technicians (person_id) values (6);

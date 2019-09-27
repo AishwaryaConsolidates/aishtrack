@@ -1,0 +1,1 @@
+ALTER TABLE customers ALTER COLUMN gst_in TYPE VARCHAR(40);

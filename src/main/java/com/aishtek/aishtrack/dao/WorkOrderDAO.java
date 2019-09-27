@@ -100,7 +100,7 @@ public class WorkOrderDAO extends BaseDAO {
       sql += " and wo.status = ANY (?) ";
     }
     if (!Util.isNullOrEmpty(customerName)) {
-      sql += " and (c.name like ? or c.nick_name like ?) ";
+      sql += " and (c.name ilike ? or c.nick_name ilike ?) ";
     }
     if (customerId > 0) {
       sql += " and c.id = ? ";

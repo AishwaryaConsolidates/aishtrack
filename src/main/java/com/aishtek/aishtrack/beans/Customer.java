@@ -7,6 +7,7 @@ public class Customer extends BaseBean {
 
   private String name;
   private String nickName;
+  private String gstIN;
   private int addressId;
   private int contactPersonId;
 
@@ -23,13 +24,14 @@ public class Customer extends BaseBean {
   }
 
   public Customer(int id, String name, String nickName, int addressId, int contactPersonId,
-      int deleted) {
+      int deleted, String gstIN) {
     this.id = id;
     this.name = name;
     this.nickName = nickName;
     this.addressId = addressId;
     this.contactPersonId = contactPersonId;
     this.deleted = deleted;
+    this.gstIN = gstIN;
   }
 
   public Customer(String name, String nickName, int addressId, int contactPersonId) {
@@ -101,5 +103,13 @@ public class Customer extends BaseBean {
 
   public void setContactPersons(ArrayList<HashMap<String, String>> contactPersons) {
     this.contactPersons = contactPersons;
+  }
+
+  public String getGstIN() {
+    return gstIN;
+  }
+
+  public void setGstIN(String gstIN) {
+    this.gstIN = gstIN;
   }
 }

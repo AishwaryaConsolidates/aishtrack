@@ -1,0 +1,1 @@
+ALTER TABLE addresses ALTER COLUMN street TYPE VARCHAR(256);

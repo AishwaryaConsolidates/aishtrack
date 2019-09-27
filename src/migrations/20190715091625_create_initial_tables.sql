@@ -4,13 +4,13 @@ CREATE OR REPLACE FUNCTION updated_at_trigger() RETURNS TRIGGER AS $$ BEGIN NEW.
 
 CREATE TABLE categories (
   id            SERIAL PRIMARY KEY,
-  name          VARCHAR(30)
+  name          VARCHAR(50)
 );
 
 CREATE TABLE equipments (
   id            SERIAL PRIMARY KEY,
   category_id   INT NOT NULL,
-  name          VARCHAR(30)
+  name          VARCHAR(50)
 );
 
 CREATE TABLE persons (
@@ -19,6 +19,8 @@ CREATE TABLE persons (
   last_name     VARCHAR(50),
   designation   VARCHAR(50),
   phone         VARCHAR(20),
+  mobile        VARCHAR(20),
+  alternate_phone VARCHAR(20),
   email         VARCHAR(50),
   created_at    TIMESTAMP DEFAULT NOW(),
   deleted       INT DEFAULT 0
@@ -39,6 +41,7 @@ CREATE TABLE customers (
   id                     SERIAL PRIMARY KEY,
   name                   VARCHAR(50),
   nick_name              VARCHAR(50) UNIQUE,
+  gst_in                 VARCHAR(20),
   address_id             INT NOT NULL,
   contact_person_id      INT NOT NULL,
   created_at             TIMESTAMP DEFAULT NOW(),

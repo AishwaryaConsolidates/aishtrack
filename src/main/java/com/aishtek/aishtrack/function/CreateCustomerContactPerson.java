@@ -23,7 +23,8 @@ public class CreateCustomerContactPerson extends BaseFunction
       try {
         Response response = getParams(serverlessInput.getBody());
         createContactPerson(connection, response.customerId, response.firstName, response.lastName,
-            response.email, response.phone, response.designation);
+            response.email, response.phone, response.designation, response.mobile,
+            response.alternatePhone);
 
         ArrayList<HashMap<String, String>> contactPersons =
             CustomerDAO.getContactPersons(connection, response.customerId);
@@ -40,9 +41,11 @@ public class CreateCustomerContactPerson extends BaseFunction
   }
 
   public void createContactPerson(Connection connection, int customerId, String firstName,
-      String lastName, String email, String phone, String designation)
+      String lastName, String email, String phone, String designation, String mobile,
+      String alternatePhone)
       throws SQLException {
-    Person person = new Person(firstName, lastName, designation, phone, email);
+    Person person =
+        new Person(firstName, lastName, designation, phone, email, mobile, alternatePhone);
     CustomerDAO.createContactPerson(connection, customerId, person);
   }
 
@@ -68,5 +71,7 @@ public class CreateCustomerContactPerson extends BaseFunction
     private String lastName;
     private String email;
     private String phone;
+    private String mobile;
+    private String alternatePhone;
   }
 }

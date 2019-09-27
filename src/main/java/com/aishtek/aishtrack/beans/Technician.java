@@ -15,7 +15,7 @@ public class Technician extends BaseBean {
 
   public Technician(int id, String firstName, String lastName, String designation) {
     this.id = id;
-    this.person = new Person(firstName, lastName, designation, null, null);
+    this.person = new Person(firstName, lastName, designation, null, null, null, null);
   }
 
   public Technician(int personId) {
