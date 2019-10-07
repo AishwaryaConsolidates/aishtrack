@@ -65,9 +65,10 @@
     <script type="text/javascript" src="../vendors/DataTables/datatables.min.js"></script>
     <script>    
         $(function () {
+        	verifySignin('administrator');
         	includeHTML();
+
         	var timeoutID = null;
-        	
         	$('#customerName').keyup(function(e) {
                 clearTimeout(timeoutID);
                 timeoutID = setTimeout(() => loadServiceReports(e.target.value), 500);

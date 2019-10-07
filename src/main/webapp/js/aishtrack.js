@@ -183,14 +183,14 @@ function fillWorkOrderForm(workOrder) {
 //Initialize a cognito auth object.
 function initCognitoSDK() {
 	var authData = {
-			ClientId : '33i51jtcqrisallfq09ddfoc1e', // Your client id here
-			AppWebDomain : 'aishtek.auth.ap-south-1.amazoncognito.com',
-			TokenScopesArray : ['email', 'openid', 'phone'], // e.g.['phone', 'email', 'profile','openid', 'aws.cognito.signin.user.admin'],
+			ClientId : clientId,
+			AppWebDomain : appWebDomain,
+			UserPoolId : userPoolId,
+			TokenScopesArray : ['phone', 'email', 'profile','openid', 'aws.cognito.signin.user.admin'], // e.g.['phone', 'email', 'profile','openid', 'aws.cognito.signin.user.admin'],
 			RedirectUriSignIn : htmlURLBase + '/index.html',
-			RedirectUriSignOut : 'https://aishtek.s3.amazonaws.com/aishtrack/products.html',
-/*         	IdentityProvider : '<TODO: add identity provider you want to specify>', // e.g. 'Facebook', */
-			UserPoolId : 'ap-south-1_jiWBJIz70', // Your user pool id here
+			RedirectUriSignOut : htmlURLBase + '/login.html',
 			AdvancedSecurityDataCollectionFlag : 'false', // e.g. true
+         	//IdentityProvider : '<TODO: add identity provider you want to specify>', // e.g. 'Facebook', 
 		    //Storage: 'LocalStorage' // OPTIONAL e.g. new CookieStorage(), to use the specified storage provided
 		};
 	var auth = new AmazonCognitoIdentity.CognitoAuth(authData);
@@ -211,10 +211,10 @@ function initCognitoSDK() {
 	return auth;
 }
 
-function verifySignin() {
+function verifySignin(onlyAllowForRole=null) {
 		var data = { 
-			UserPoolId : 'ap-south-1_jiWBJIz70',
-	        ClientId : '33i51jtcqrisallfq09ddfoc1e'
+            UserPoolId : userPoolId,
+			ClientId : clientId
 	    };
 	    var userPool = new AmazonCognitoIdentity.CognitoUserPool(data);
 	    cognitoUser = userPool.getCurrentUser();
@@ -227,10 +227,52 @@ function verifySignin() {
 	            }
 	            console.log('session validity: ' + session.isValid());
 	        });
+	        if(onlyAllowForRole != null) {
+	        	cognitoUser.getUserAttributes(function(err, result) {
+                    if (err) {
+                    	console.log(err);
+                        return;
+                    }
+                    for (i = 0; i < result.length; i++) {
+                    	if(result[i].getName() == 'profile') {
+                    	  if(!result[i].getValue().includes(onlyAllowForRole)) {
+                    		  alert("You do not have access to this page. Contact Administrator.");
+                    		  window.location.href = htmlURLBase + "/index.html";
+                    	  }
+                    	}
+                      console.log('attribute ' + result[i].getName() + ' has value ' + result[i].getValue());
+                    }
+                });
+	        }
 	    } else {
 	    	alert("You need to log into access the application");
 			window.location.href = htmlURLBase + "/login.html";
 	    }
+}
+
+function getSignedIdUser() {
+	var data = { 
+        UserPoolId : userPoolId,
+		ClientId : clientId
+    };
+    var userPool = new AmazonCognitoIdentity.CognitoUserPool(data);
+    cognitoUser = userPool.getCurrentUser();
+    
+    if (cognitoUser != null) {
+        	cognitoUser.getUserAttributes(function(err, result) {
+                if (err) {
+                	console.log(err);
+                    return "error";
+                }
+                for (i = 0; i < result.length; i++) {
+                	if(result[i].getName() == 'email') {
+                	  return result[i].getValue();
+                	}
+                }
+            });
+    } else {
+    	return "error";
+    }
 }
 
 function showJSON(obj) {
@@ -247,8 +289,8 @@ function showJSON(obj) {
 
 function signout() {
 	var data = {
-	    UserPoolId : 'ap-south-1_jiWBJIz70',
-	    ClientId : '33i51jtcqrisallfq09ddfoc1e'
+	    UserPoolId : userPoolId,
+		ClientId : clientId
 	};
 	var userPool = new AmazonCognitoIdentity.CognitoUserPool(data);
 	cognitoUser = userPool.getCurrentUser();
