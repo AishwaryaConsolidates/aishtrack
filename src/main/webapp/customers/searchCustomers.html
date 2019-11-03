@@ -57,10 +57,11 @@
         	
         	$('#customerName').keyup(function(e) {
                 clearTimeout(timeoutID);
-                timeoutID = setTimeout(() => loadWorkOrders(e.target.value), 500);
+                timeoutID = setTimeout(() => loadCustomers(e.target.value), 500);
             });
             
-            function loadWorkOrders(customerName) {
+            function loadCustomers(customerName) {
+            	$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
                 $.ajax({
                     url : apiURLBase + "/getCustomers?name=" + customerName,
                     type : "GET",
@@ -69,8 +70,10 @@
             		success: function(data) {
             			jsonArray = JSON.parse(JSON.stringify(data));
             			listCustomers(jsonArray);
+            			$("#notification").html("");
             		},
             		error: function(data) {
+            			$("#notification").html("");
             			log("Error fetching customers");
             		}
             	});

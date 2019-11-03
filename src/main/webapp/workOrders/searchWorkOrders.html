@@ -73,6 +73,7 @@
             });
         	
             function loadWorkOrders(customerName) {
+            	$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
                 $.ajax({
                     url : apiURLBase + "/getWorkOrders?name=" + customerName,
                     type : "GET",
@@ -81,8 +82,10 @@
             		success: function(data) {
             			jsonArray = JSON.parse(JSON.stringify(data));
             			listWorkOrders(jsonArray);
+            			$("#notification").html("");
             		},
             		error: function(data) {
+            			$("#notification").html("");
             			log("Error fetching customers");
             		}
             	});

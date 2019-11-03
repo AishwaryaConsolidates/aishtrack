@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import com.aishtek.aishtrack.beans.Person;
 import com.aishtek.aishtrack.dao.CustomerDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
@@ -40,26 +39,22 @@ public class CreateCustomerContactPerson extends BaseFunction
     return output;
   }
 
-  public void createContactPerson(Connection connection, int customerId, String firstName,
+  public int createContactPerson(Connection connection, int customerId, String firstName,
       String lastName, String email, String phone, String designation, String mobile,
       String alternatePhone)
       throws SQLException {
     Person person =
         new Person(firstName, lastName, designation, phone, email, mobile, alternatePhone);
-    CustomerDAO.createContactPerson(connection, customerId, person);
+    return CustomerDAO.createContactPerson(connection, customerId, person);
   }
 
-  public Response getParams(String jsonString) {
+  private Response getParams(String jsonString) {
     return (new Gson()).fromJson(jsonString, Response.class);
   }
 
   private ServerlessOutput createSuccessOutputForArrayHash(
       ArrayList<HashMap<String, String>> result) {
-    ServerlessOutput output = new ServerlessOutput();
-    output.setStatusCode(200);
-    Map<String, String> headers = new HashMap<String, String>();
-    headers.put("Access-Control-Allow-Origin", "*");
-    output.setHeaders(headers);
+    ServerlessOutput output = createSuccessOutput();
     output.setBody(new Gson().toJson(result));
     return output;
   }

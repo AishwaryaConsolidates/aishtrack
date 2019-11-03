@@ -75,6 +75,7 @@
             });
         	
             function loadServiceReports(customerName) {
+            	$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
                 $.ajax({
                     url : apiURLBase + "/getServiceReports?customerName=" + customerName,
                     type : "GET",
@@ -83,8 +84,10 @@
             		success: function(data) {
             			jsonArray = JSON.parse(JSON.stringify(data));
             			listServiceReports(jsonArray);
+            			$("#notification").html("");
             		},
             		error: function(data) {
+            			$("#notification").html("");
             			log("Error fetching customers");
             		}
             	});

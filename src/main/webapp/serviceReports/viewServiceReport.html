@@ -130,6 +130,7 @@
         	getServiceReport(serviceReportCode);
         	var serviceReportId;
         	function getServiceReport(serviceReportCode) {
+        		$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
                 $.ajax({
                     url : apiURLBase + "/viewServiceReport?serviceReportCode=" + serviceReportCode,
                     type : "GET",
@@ -141,9 +142,11 @@
             			$("#serviceReportId").val(serviceReportId);
             			fillPage(serviceReport);
             			loadVisits(serviceReportId);
-            			loadVisitFiles(serviceReportId)
+            			loadVisitFiles(serviceReportId);
+            			$("#notification").html("");
             		},
             		error: function(data) {
+            			$("#notification").html("");
             			log("Error fetching service report");
             		}
             	});

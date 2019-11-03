@@ -21,8 +21,8 @@ public class Person extends BaseBean {
     this.alternatePhone = alternatePhone;
   }
 
-  public Person(int id, String firstName, String lastName, String designation, String phone,
-      String email, int deleted, String mobile, String alternatePhone) {
+  public Person(int id, String firstName, String lastName, String designation, String email,
+      String phone, int deleted, String mobile, String alternatePhone) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;

@@ -192,6 +192,7 @@
         }
         
         function prefillCustomerData(customerId) {
+        	$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
             $.ajax({
                 url : apiURLBase + "/getCustomer?customerId=" + customerId,
                 type : "GET",
@@ -203,8 +204,10 @@
         			listWorkOrders(customer.workOrders);
         			fillServiceReports(customer);
         			fillContactPersons(customer);
+        			$("#notification").html("");
         		},
         		error: function(data) {
+        			$("#notification").html("");
         			log("Error fetching customers");
         		}
         	});

@@ -2,7 +2,6 @@ package com.aishtek.aishtrack.function;
 
 import java.sql.Connection;
 import java.util.HashMap;
-import java.util.Map;
 import com.aishtek.aishtrack.dao.ServiceReportDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
@@ -51,11 +50,7 @@ public class CreateInstallationDetail extends BaseFunction
 
   private ServerlessOutput createSuccessOutputForHashMapHashMap(
       HashMap<String, HashMap<String, String>> result) {
-    ServerlessOutput output = new ServerlessOutput();
-    output.setStatusCode(200);
-    Map<String, String> headers = new HashMap<String, String>();
-    headers.put("Access-Control-Allow-Origin", "*");
-    output.setHeaders(headers);
+    ServerlessOutput output = createSuccessOutput();
     output.setBody(new Gson().toJson(result));
     return output;
   }

@@ -87,7 +87,7 @@
         	
         	includeHTML();
       	    loadOpenWorkOrders();
-        	
+      	    $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
         	function loadOpenWorkOrders() {
                 $.ajax({
                     url : apiURLBase + "/getWorkOrders?status=all_open",
@@ -97,6 +97,7 @@
             		success: function(data) {
             			jsonArray = JSON.parse(JSON.stringify(data));
             			listWorkOrders(jsonArray);
+            			$("#notification").html("");
             		},
             		error: function(data) {
             			log("Error fetching customers");

@@ -45,44 +45,16 @@ public class BaseFunction {
   }
 
   protected ServerlessOutput createSuccessOutput(String result) {
-    ServerlessOutput output = new ServerlessOutput();
-    output.setStatusCode(200);
-    Map<String, String> headers = new HashMap<String, String>();
-    headers.put("Access-Control-Allow-Origin", "*");
-    output.setHeaders(headers);
+    ServerlessOutput output = createSuccessOutput();
     output.setBody(new Gson().toJson(result));
     return output;
   }
 
   protected ServerlessOutput createSuccessOutput(HashMap<String, String> result) {
-    ServerlessOutput output = new ServerlessOutput();
-    output.setStatusCode(200);
-    Map<String, String> headers = new HashMap<String, String>();
-    headers.put("Access-Control-Allow-Origin", "*");
-    output.setHeaders(headers);
+    ServerlessOutput output = createSuccessOutput();
     output.setBody(new Gson().toJson(result));
     return output;
   }
-
-  // protected ServerlessOutput createSuccessOutput(ArrayList<HashMap<String, String>> result) {
-  // ServerlessOutput output = new ServerlessOutput();
-  // output.setStatusCode(200);
-  // Map<String, String> headers = new HashMap<String, String>();
-  // headers.put("Access-Control-Allow-Origin", "*");
-  // output.setHeaders(headers);
-  // output.setBody(new Gson().toJson(result));
-  // return output;
-  // }
-
-  // protected ServerlessOutput createSuccessOutput(ArrayList<Object> result) {
-  // ServerlessOutput output = new ServerlessOutput();
-  // output.setStatusCode(200);
-  // Map<String, String> headers = new HashMap<String, String>();
-  // headers.put("Access-Control-Allow-Origin", "*");
-  // output.setHeaders(headers);
-  // output.setBody(new Gson().toJson(result));
-  // return output;
-  // }
 
   protected ServerlessOutput createFailureOutput(Exception e) {
     ServerlessOutput output = new ServerlessOutput();
