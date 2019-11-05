@@ -90,6 +90,7 @@ public class CustomerDAO extends BaseDAO {
       sql += " and (name ilike ? or nick_name ilike ?) ";
     }
 
+    sql += " order by name asc ";
     PreparedStatement statement = connection.prepareStatement(sql);
     if (!Util.isNullOrEmpty(name)) {
       name = "%" + name + "%";
