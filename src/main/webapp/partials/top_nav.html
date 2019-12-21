@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-xl navbar-light bg-light">
 	<a class="navbar-brand" href="/index.html">
-	<img src="https://aishtrack.s3.amazonaws.com/img/apcl_logo.png" style="width:200px;height:100px;"/>
+	<img src="https://aishtrack.s3.amazonaws.com/img/apcl_logo.png" style="width:160px;height:100px;"/>
 	</a>
 	<button class="navbar-toggler ml-auto mr-0" type="button"
 		data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -20,16 +20,22 @@
 					<a class="dropdown-item" href="#" onclick="navigateTo('/workOrders/updateWorkOrder.html');">Create</a>
 					<a class="dropdown-item" href="#" onclick="navigateTo('/workOrders/searchWorkOrders.html');">Search</a>
 				</div></li>
-			<li class="nav-item">
-			    <a class="nav-link" href="#" onclick="navigateTo('/customers/searchCustomers.html');">Customers</a>
-			</li>
+
+				<li class="nav-item dropdown"><a
+				class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+				role="button" data-toggle="dropdown" aria-haspopup="true"
+				aria-expanded="false"> Customers </a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="dropdown-item" href="#" onclick="navigateTo('/customers/updateCustomer.html');">Create</a>
+					<a class="dropdown-item" href="#" onclick="navigateTo('/customers/searchCustomers.html');">Search</a>
+				</div></li>
 			<li class="nav-item dropdown"><a
 				class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
 				role="button" data-toggle="dropdown" aria-haspopup="true"
 				aria-expanded="false"> Reports </a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-					<a class="dropdown-item" href="#">Report 1</a>
-					<a class="dropdown-item" href="#">Report 2</a>
+					<a class="dropdown-item" href="#" onclick="navigateTo('/technicianIndex.html');">Technician Page</a>
+					<a class="dropdown-item" href="#" onclick="navigateTo('/expenses/searchExpenseReports.html');">Expense Reports</a>
 				</div></li>
 		</ul>
 		<ul class="navbar-nav">

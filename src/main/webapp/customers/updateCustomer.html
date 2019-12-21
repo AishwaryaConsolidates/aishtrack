@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Create Work Order</title>
+    <title>Update Customer</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
     <link rel="stylesheet" href="../css/fontawesome.min.css">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
@@ -18,7 +18,87 @@
         <div class="row">
             <div class="col-12" w3-include-html="../partials/top_nav.html"> </div>
         </div>
-        
+
+         <div class="row tm-content-row tm-mt-big">
+           <div id="updateCustomerDiv" class="bg-white tm-block col-9">
+           <h2 class="tm-block-title d-inline-block">Edit Customer</h2>
+           <form id="createCustomerForm" action="" class="tm-edit-product-form">
+               <div class="input-group mb-3">
+                   <label for="name" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Name</label>
+                   <input id="name" name="name" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+               <div class="input-group mb-3">
+                   <label for="nickName" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Nick Name</label>
+                   <input id="nickName" name="nickName" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+               <div class="input-group mb-3">
+                   <label for="gstIN" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">GST IN</label>
+                   <input id="gstIN" name="gstIN" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+
+               <h3 class="tm-block-title d-inline-block">Address</h3>
+
+               <div class="input-group mb-3">
+                   <label for="street" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Street</label>
+                   <input id="street" name="street" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+               <div class="input-group mb-3">
+                   <label for="area" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Area</label>
+                   <input id="area" name="area" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+               <div class="input-group mb-3">
+                   <label for="city" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">City</label>
+                   <input id="city" name="city" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+               <div class="input-group mb-3">
+                   <label for="state" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">State</label>
+                   <input id="state" name="state" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+               <div class="input-group mb-3">
+                   <label for="pincode" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Pincode</label>
+                   <input id="pincode" name="pincode" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+
+               <h3 class="tm-block-title d-inline-block">Contact Person</h3>
+
+              <div class="input-group mb-3">
+                   <label for="firstName" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">First name</label>
+                   <input id="firstName" name="firstName" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+               <div class="input-group mb-3">
+                   <label for="lastName" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Last name</label>
+                   <input id="lastName" name="lastName" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+               <div class="input-group mb-3">
+                   <label for="designation" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Designation</label>
+                   <input id="designation" name="designation" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+               <div class="input-group mb-3">
+                   <label for="phone" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Phone</label>
+                   <input id="phone" name="phone" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+               <div class="input-group mb-3">
+                   <label for="mobile" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Mobile</label>
+                   <input id="mobile" name="mobile" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+               <div class="input-group mb-3">
+                   <label for="alternatePhone" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Alternate Phone</label>
+                   <input id="alternatePhone" name="alternatePhone" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+               <div class="input-group mb-3">
+                   <label for="email" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Email</label>
+                   <input id="email" name="email" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+
+               <div class="input-group mb-3">
+                   <div class="ml-auto col-xl-8 col-lg-8 col-md-8 col-sm-7 pl-0">
+                       <button type="submit" class="btn btn-primary" id="createCustomer">Save</button>
+                   </div>
+               </div>
+           </form>
+           </div>
+           </div>
+
         <div class="row tm-content-row tm-mt-big">
            <div id="addContactPersonDiv" class="bg-white tm-block col-9">
            <h2 class="tm-block-title d-inline-block">Add Contact Person</h2>
@@ -60,7 +140,7 @@
            </form>
            </div>
            </div>
-           <div class="row tm-content-row tm-mt-big">
+           <div id="workOrders" class="row tm-content-row tm-mt-big">
             <div class="bg-white tm-block col-9">
                     <div class="row">
                         <div class="col-12">
@@ -87,23 +167,20 @@
             <div class="tm-col col-3">
                 <div class="bg-white tm-block">
                     <h2 class="tm-block-title">Details</h2>
-			            <div id="name"></div>
+			            <div id="detailsName"></div>
 			            <br/>
-			            <div id="nickName"></div>
+			            <div id="detailsNickName"></div>
 			            <br/>
-			            <div id="gstIN"></div>
+			            <div id="detailsGstIN"></div>
 			            <br/>
 			            <div id="address"></div>
-			            <br/>
-			            <div>Main Contact Person</div>
-			            <div id="contactPerson"></div>
 			            <br/>
 			            <button id="showAddContactPerson" type="submit" class="btn btn-small btn-primary" id="submitButton">Add Contact</button>
                 </div>
             </div>
         </div>
         
-        <div class="row tm-content-row tm-mt-big">
+        <div id="contactPersonsDiv" class="row tm-content-row tm-mt-big">
               <div class="bg-white tm-block col-12">
                    <div class="row">
                         <div class="col-12">
@@ -179,6 +256,35 @@
                 return false;
         });
         
+        $("#createCustomer").on("click", function (e) {
+    		$("#createCustomer").attr("disabled", true);
+            e.preventDefault();
+            window.scrollTo(0,0);
+            $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+            $.ajax({
+                url : apiURLBase + "/createCustomer",
+                type : "POST",
+                data: getJSONFormData($('#createCustomerForm')),
+                dataType: "json",
+                contentType: 'application/json',
+                crossDomain: true,
+        		success: function(data) {
+        			if(!isNaN(data)) {
+        				$("#customerId").val(customerId);
+        			}
+        			$("#notification").html("<center><font color=\"green\">Customer Created</font></center>");
+        			document.location.href = 'searchCustomers.html';
+        		},
+        		error: function(data) {
+        			alert("Error creating customer.");
+        		},
+        		complete: function(data) {
+        			$("#createCustomer").attr("disabled", false);
+        		}
+        	});
+            return false;
+        });
+
         function getCustomerInfo() {
         	urlParams = new URLSearchParams(window.location.search);
         	customerId = urlParams.get('customerId');
@@ -188,6 +294,11 @@
         		$('#getOpenServiceReports').html("<a href=\"../serviceReports/createServiceReport.html?workOrderId=" + customerId + "\" class=\"btn btn-small btn-primary\">Open Service Reports</a>");
         		$('#getOpenWorkOrders').html("<a href=\"../serviceReports/createServiceReport.html?workOrderId=" + customerId + "\" class=\"btn btn-small btn-primary\">Open Service Reports</a>");
         		prefillCustomerData(customerId);
+        		$("#updateCustomerDiv").hide();
+        	} else {
+        		$("#updateCustomerDiv").show();
+        		$("#workOrders").hide();
+        		$("#contactPersonsDiv").hide();
         	}
         }
         
@@ -214,11 +325,10 @@
           }
         
         function fillForm(customer) {
-        	$("#name").html(customer.name);
-        	$("#nickName").html(customer.nickName);
-        	$("#gstIN").html(customer.gstIN);
+        	$("#detailsName").html(customer.name);
+        	$("#detailsNickName").html(customer.nickName);
+        	$("#detailsGstIN").html(customer.gstIN);
         	$("#address").html(customer.address);
-        	$("#contactPerson").html(customer.contactPerson);
         }
         
         function fillContactPersons(customer) {        	

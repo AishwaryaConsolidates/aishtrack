@@ -6,7 +6,6 @@ import java.util.HashMap;
 import com.aishtek.aishtrack.beans.Customer;
 import com.aishtek.aishtrack.dao.AddressDAO;
 import com.aishtek.aishtrack.dao.CustomerDAO;
-import com.aishtek.aishtrack.dao.PersonDAO;
 import com.aishtek.aishtrack.dao.WorkOrderDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
@@ -29,7 +28,6 @@ public class GetCustomer extends BaseFunction
 
         Customer customer = CustomerDAO.findById(connection, Util.getInt(customerId));
         customer.setAddress(AddressDAO.findById(connection, customer.getAddressId()));
-        customer.setContactPerson(PersonDAO.findById(connection, customer.getContactPersonId()));
 
         ArrayList<HashMap<String, String>> workOrders =
             WorkOrderDAO.searchFor(connection, "", Integer.parseInt(customerId), null);

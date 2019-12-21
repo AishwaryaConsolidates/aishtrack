@@ -14,7 +14,7 @@ import com.aishtek.aishtrack.utils.Util;
 public class CustomerDAO extends BaseDAO {
   public static Customer findById(Connection connection, int customerId) throws SQLException {
       String sql =
-        "SELECT id, name, nick_name, address_id, contact_person_id, deleted, gst_in FROM customers where id = ?";
+        "SELECT id, name, nick_name, address_id, deleted, gst_in FROM customers where id = ?";
 
       PreparedStatement statement = connection.prepareStatement(sql);
       statement.setInt(1, customerId);
@@ -22,7 +22,8 @@ public class CustomerDAO extends BaseDAO {
 
       if (result.next()) {
         Customer customer = new Customer(result.getInt(1), result.getString(2), result.getString(3),
-          result.getInt(4), result.getInt(5), result.getInt(6), result.getString(7));
+          result.getInt(4), result.getInt(5), result.getString(6));
+      // 0 for contact person, not used anyhwere
         return customer;
     } else {
       throw new SQLException("No customer for Id");
@@ -31,26 +32,16 @@ public class CustomerDAO extends BaseDAO {
 
   public static int create(Connection connection, Customer customer) throws SQLException {
     PreparedStatement preparedStatement = connection.prepareStatement(
-        "insert into customers (name, nick_name, address_id, contact_person_id) values(?, ?, ?, ?)",
+        "insert into customers (name, nick_name, address_id) values(?, ?, ?)",
         PreparedStatement.RETURN_GENERATED_KEYS);
     preparedStatement.setString(1, customer.getName());
     preparedStatement.setString(2, customer.getNickName());
     preparedStatement.setInt(3, customer.getAddressId());
-    preparedStatement.setInt(4, customer.getContactPersonId());
     preparedStatement.executeUpdate();
 
     ResultSet result = preparedStatement.getGeneratedKeys();
     if (result.next()) {
-      int customerId = result.getInt(1);
-
-      preparedStatement = connection.prepareStatement(
-          "insert into customer_persons (customer_id, person_id) values(?, ?)",
-          PreparedStatement.RETURN_GENERATED_KEYS);
-      preparedStatement.setInt(1, customerId);
-      preparedStatement.setInt(2, customer.getContactPersonId());
-      preparedStatement.executeUpdate();
-
-      return customerId;
+      return result.getInt(1);
     } else {
       throw new SQLException("Service Report ID not generted");
     }

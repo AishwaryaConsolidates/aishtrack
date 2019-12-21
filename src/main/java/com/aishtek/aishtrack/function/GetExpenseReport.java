@@ -1,9 +1,8 @@
 package com.aishtek.aishtrack.function;
 
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import com.aishtek.aishtrack.dao.ServiceReportDAO;
+import com.aishtek.aishtrack.beans.ExpenseReport;
+import com.aishtek.aishtrack.dao.ExpenseReportDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
 import com.aishtek.aishtrack.utils.Util;
@@ -11,7 +10,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.google.gson.Gson;
 
-public class GetServiceReports extends BaseFunction
+public class GetExpenseReport extends BaseFunction
     implements RequestHandler<ServerlessInput, ServerlessOutput> {
 
   @Override
@@ -20,21 +19,15 @@ public class GetServiceReports extends BaseFunction
 
     try (Connection connection = getConnection()) {
       try {
-        int workOrderId = 0;
-        int customerId = 0;
-        String customerName = "";
-        String personEmail = "";
-        String[] statuses = null;
-        
-        workOrderId = Util.getInt(serverlessInput.getQueryStringParameters().get("workOrderId"));
-        customerName = serverlessInput.getQueryStringParameters().get("customerName");
-        personEmail = serverlessInput.getQueryStringParameters().get("personEmail");
 
-        ArrayList<HashMap<String, String>> serviceReports = ServiceReportDAO.searchFor(connection,
-            customerName, customerId, workOrderId, statuses, personEmail);
+        int expenseReportId =
+            Util.getInt(serverlessInput.getQueryStringParameters().get("expenseReportId"));
+
+        // get expense report
+        ExpenseReport expenseReport = ExpenseReportDAO.findById(connection, expenseReportId);
 
         output = createSuccessOutput();
-        output.setBody(new Gson().toJson(serviceReports));
+        output.setBody(new Gson().toJson(expenseReport));
       } catch (Exception e) {
         connection.rollback();
         output = createFailureOutput(e);

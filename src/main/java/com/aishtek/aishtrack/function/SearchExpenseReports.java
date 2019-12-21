@@ -3,7 +3,7 @@ package com.aishtek.aishtrack.function;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
-import com.aishtek.aishtrack.dao.ServiceReportDAO;
+import com.aishtek.aishtrack.dao.ExpenseReportDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
 import com.aishtek.aishtrack.utils.Util;
@@ -11,7 +11,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.google.gson.Gson;
 
-public class GetServiceReports extends BaseFunction
+public class SearchExpenseReports extends BaseFunction
     implements RequestHandler<ServerlessInput, ServerlessOutput> {
 
   @Override
@@ -20,21 +20,19 @@ public class GetServiceReports extends BaseFunction
 
     try (Connection connection = getConnection()) {
       try {
-        int workOrderId = 0;
+        int technicianId = 0;
         int customerId = 0;
-        String customerName = "";
-        String personEmail = "";
-        String[] statuses = null;
+        int settled = 0;
         
-        workOrderId = Util.getInt(serverlessInput.getQueryStringParameters().get("workOrderId"));
-        customerName = serverlessInput.getQueryStringParameters().get("customerName");
-        personEmail = serverlessInput.getQueryStringParameters().get("personEmail");
+        technicianId = Util.getInt(serverlessInput.getQueryStringParameters().get("technicianId"));
+        customerId = Util.getInt(serverlessInput.getQueryStringParameters().get("customerId"));
+        settled = Util.getInt(serverlessInput.getQueryStringParameters().get("settled"));
 
-        ArrayList<HashMap<String, String>> serviceReports = ServiceReportDAO.searchFor(connection,
-            customerName, customerId, workOrderId, statuses, personEmail);
+        ArrayList<HashMap<String, String>> expenseReports =
+            ExpenseReportDAO.searchFor(connection, technicianId, customerId, settled);
 
         output = createSuccessOutput();
-        output.setBody(new Gson().toJson(serviceReports));
+        output.setBody(new Gson().toJson(expenseReports));
       } catch (Exception e) {
         connection.rollback();
         output = createFailureOutput(e);

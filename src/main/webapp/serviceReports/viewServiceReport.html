@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="../vendors/jquery-ui-datepicker/jquery-ui.min.css" type="text/css" />
 </head>
 
-<body class="bg02">
+<body class="bg04">
     <div class="container">
         <div class="row">
             <div class="col-12" w3-include-html="../partials/top_nav.html"> </div>
@@ -46,8 +46,11 @@
                         
                         <tr><td>Technicians:</td><td><div id="technicians"/></td></tr>
                         
-                        <tr><td>Notes:</td><td><div id="notes"/></td></tr>
+                        <tr><td>Notes:</td><td><div id="notes"/></td></tr>                   
                         </table>
+                        <br/><br/><br/>
+                        <a id="createNewServiceReportButton" href="#" class="btn btn-small btn-primary">Create New Service Report</a>
+                        
                 </div>
             </div>
             <div class="tm-col tm-col-big">
@@ -144,6 +147,13 @@
             			loadVisits(serviceReportId);
             			loadVisitFiles(serviceReportId);
             			$("#notification").html("");
+            			
+            			$("#createNewServiceReportButton").click(function (e) {
+                    		e.preventDefault();
+                    		if(confirm("Are you sure you want to create a new service report?")) {
+                                window.open(htmlURLBase + '/serviceReports/createServiceReport.html?type=service&workOrderId='+serviceReport.workOrderId + '&copyFromServiceReportId='+serviceReportId); 
+                    		}
+                    	});
             		},
             		error: function(data) {
             			$("#notification").html("");

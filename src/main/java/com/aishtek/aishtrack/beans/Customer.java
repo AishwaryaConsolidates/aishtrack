@@ -9,7 +9,6 @@ public class Customer extends BaseBean {
   private String nickName;
   private String gstIN;
   private int addressId;
-  private int contactPersonId;
 
   // string fields for view
   private String contactPerson;
@@ -23,22 +22,13 @@ public class Customer extends BaseBean {
     this.nickName = nickName;
   }
 
-  public Customer(int id, String name, String nickName, int addressId, int contactPersonId,
-      int deleted, String gstIN) {
+  public Customer(int id, String name, String nickName, int addressId, int deleted, String gstIN) {
     this.id = id;
     this.name = name;
     this.nickName = nickName;
     this.addressId = addressId;
-    this.contactPersonId = contactPersonId;
     this.deleted = deleted;
     this.gstIN = gstIN;
-  }
-
-  public Customer(String name, String nickName, int addressId, int contactPersonId) {
-    this.name = name;
-    this.nickName = nickName;
-    this.addressId = addressId;
-    this.contactPersonId = contactPersonId;
   }
 
   public String getName() {
@@ -63,14 +53,6 @@ public class Customer extends BaseBean {
 
   public void setAddressId(int addressId) {
     this.addressId = addressId;
-  }
-
-  public int getContactPersonId() {
-    return contactPersonId;
-  }
-
-  public void setContactPersonId(int contactPersonId) {
-    this.contactPersonId = contactPersonId;
   }
 
   public String getContactPerson() {

@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import com.aishtek.aishtrack.beans.Customer;
 import com.aishtek.aishtrack.beans.Person;
 import com.aishtek.aishtrack.beans.ServiceReport;
 import com.aishtek.aishtrack.beans.Technician;
@@ -65,6 +66,18 @@ public class ServiceReportDAO extends BaseDAO {
     preparedStatement.setString(7, partNumber);
     preparedStatement.setString(8, notes);
     preparedStatement.setInt(9, serviceReportId);
+    preparedStatement.executeUpdate();
+  }
+
+  public static void updateFeedback(Connection connection, String serviceReportCode,
+      int serviceRating,
+      String signedBy, String customerRemarks) throws SQLException {
+    PreparedStatement preparedStatement = connection.prepareStatement(
+        "update service_reports set customer_remarks = ?, service_rating = ?, signed_by = ? where code = ?");
+    preparedStatement.setString(1, customerRemarks);
+    preparedStatement.setInt(2, serviceRating);
+    preparedStatement.setString(3, signedBy);
+    preparedStatement.setObject(4, java.util.UUID.fromString(serviceReportCode));
     preparedStatement.executeUpdate();
   }
 
@@ -191,27 +204,36 @@ public class ServiceReportDAO extends BaseDAO {
 
   public static ArrayList<HashMap<String, String>> searchFor(Connection connection,
       String customerName,
-      int customerId, int workOrderId, String[] statuses) throws SQLException {
-    String sql =
-        "SELECT sr.id, sr.code, sr.status, c.name, ct.name, eq.name, sr.brand, sr.model "
-            + " from service_reports sr inner join customers c on sr.customer_id = c.id "
-            + " inner join work_order_service_reports wosr on sr.id = wosr.service_report_id "
-            + " left join categories ct on sr.category_id = ct.id "
-            + " left join equipments eq on sr.equipment_id = eq.id where sr.deleted = 0 ";
+      int customerId, int workOrderId, String[] statuses, String personEmail) throws SQLException {
+
+    String selectSQL =
+        "SELECT sr.id, sr.code, sr.status, c.name, ct.name, eq.name, sr.brand, sr.model ";
+    String fromSQL = " from service_reports sr inner join customers c on sr.customer_id = c.id "
+        + " inner join work_order_service_reports wosr on sr.id = wosr.service_report_id "
+        + " left join categories ct on sr.category_id = ct.id "
+        + " left join equipments eq on sr.equipment_id = eq.id ";
+    String whereSQL = " where sr.deleted = 0 ";
 
     if (!Util.isNullOrEmpty(statuses)) {
-      sql += " and sr.status = ANY (?) ";
+      whereSQL += " and sr.status = ANY (?) ";
     }
     if (!Util.isNullOrEmpty(customerName)) {
-      sql += " and (c.name ilike ? or c.nick_name ilike ?) ";
+      whereSQL += " and (c.name ilike ? or c.nick_name ilike ?) ";
     }
     if (customerId > 0) {
-      sql += " and c.id = ? ";
+      whereSQL += " and c.id = ? ";
     }
     if (workOrderId > 0) {
-      sql += " and wosr.work_order_id = ? ";
+      whereSQL += " and wosr.work_order_id = ? ";
     }
-    sql += " order by status, status_date ";
+    if (!Util.isNullOrEmpty(personEmail)) {
+      fromSQL += " inner join service_report_technicians srt on sr.id = srt.service_report_id "
+          + " inner join technicians t on srt.technician_id = t.id "
+          + " inner join persons p on t.person_id = p.id ";
+      whereSQL += " and p.email = ? ";
+    }
+
+    String sql = selectSQL + fromSQL + whereSQL + " order by status, status_date ";
 
     PreparedStatement statement = connection.prepareStatement(sql);
 
@@ -235,7 +257,10 @@ public class ServiceReportDAO extends BaseDAO {
       statement.setInt(index, workOrderId);
       index++;
     }
-
+    if (!Util.isNullOrEmpty(personEmail)) {
+      statement.setString(index, personEmail);
+      index++;
+    }
     ResultSet result = statement.executeQuery();
 
     ArrayList<HashMap<String, String>> serviceReports = new ArrayList<HashMap<String, String>>();
@@ -301,5 +326,31 @@ public class ServiceReportDAO extends BaseDAO {
     } else {
       throw new SQLException();
     }
+  }
+
+  public static Customer getCustomerFor(Connection connection, int serviceReportId)
+      throws SQLException {
+    String sql =
+        "SELECT c.id, c.name, c.nick_name, c.address_id, c.deleted, c.gst_in FROM service_reports sr inner join customers c on sr.customer_id = c.id where sr.id = ?";
+
+    PreparedStatement statement = connection.prepareStatement(sql);
+    statement.setInt(1, serviceReportId);
+    ResultSet result = statement.executeQuery();
+
+    if (result.next()) {
+      Customer customer = new Customer(result.getInt(1), result.getString(2), result.getString(3),
+          result.getInt(4), result.getInt(5), result.getString(6));
+      return customer;
+    } else {
+      throw new SQLException("No customer for Id");
+    }
+  }
+
+  public static void deleteForWorkOrder(Connection connection, int workOrderId)
+      throws SQLException {
+    PreparedStatement preparedStatement = connection.prepareStatement(
+        "update service_reports set deleted = 1 from service_reports sr, work_order_service_reports wosr where wosr.work_order_id = ? and wosr.service_report_id = sr.id ");
+    preparedStatement.setInt(1, workOrderId);
+    preparedStatement.executeUpdate();
   }
 }

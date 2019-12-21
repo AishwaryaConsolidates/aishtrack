@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Service Report Feedback</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/tooplate.css">
+    <link rel="stylesheet" href="../vendors/jquery-ui-datepicker/jquery-ui.min.css" type="text/css" />
+</head>
+
+<body class="bg04">
+    <div class="container">
+        <br/>    
+            <div class="row tm-content-row tm-mt-big">
+            <div class="tm-col tm-col-big">
+                <div class="bg-white tm-block">
+                    <div class="row">
+                    <div id="notification"></div>
+                        <div class="col-12">
+                            <h2 class="tm-block-title d-inline-block">Service Report Feedback</h2>
+                        </div>
+                    </div>
+                    <form action="" class="tm-edit-product-form" id="serviceReportFeedbackForm">
+                        <input type="hidden" id="serviceRating" name="serviceRating" value="0"/>
+                        <input type="hidden" id="serviceReportCode" name="serviceReportCode"/>
+                        <div id="note">We are glad to have completed your serivice report, please rate your experience with the Aishwarya service team.</div>
+<br/>
+<div id="viewServiceReport"></div>
+<br/>
+                        <div class="input-group mb-12">
+                        <label for="signedBy" class="">Rating:</label>
+                        <a href="#" id="star1"><span class="far fa-star" id="starrating1"></span></a>&nbsp;
+                        <a href="#" id="star2"><span class="far fa-star" id="starrating2"></span></a>&nbsp;
+                        <a href="#" id="star3"><span class="far fa-star" id="starrating3"></span></a>&nbsp;
+                        <a href="#" id="star4"><span class="far fa-star" id="starrating4"></span></a>&nbsp;
+                        <a href="#" id="star5"><span class="far fa-star" id="starrating5"></span></a>&nbsp;
+                        </div>
+
+<br/>                      
+                        <div class="input-group mb-12">
+                          <textarea name="customerRemarks" id = "customerRemarks" class="form-control validate col-xl-11 col-lg-10 col-md-10 col-sm-9" rows="7" placeholder="Remarks" required></textarea>
+                        </div>
+<br/>                        
+                        <div class="input-group mb-12">
+                            <label for="signedBy" class="">Signed By: </label>
+                            <input id="signedBy" name="signedBy" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                        </div>
+                        
+                        <br/>
+                        
+                        <a id="submitButton" href="#" class="btn btn-small btn-primary">Submit Feedback</a> 
+                    </form>   
+                </div>
+            </div>
+        </div>                    
+        <div w3-include-html="../partials/footer.html"> </div>
+    </div>
+
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/aishtrack.js"></script>
+    <script>
+        $(function () {
+        	includeHTML();
+        	urlParams = new URLSearchParams(window.location.search);
+        	serviceReportCode = urlParams.get('serviceReportCode');
+        	$("#serviceReportCode").val(serviceReportCode);
+        	
+        	html = "<a target=\"_new\" href=\"../serviceReports/printServiceReport.html?serviceReportCode=" + serviceReportCode+ "\">View Service Report</a>";
+        	$("#viewServiceReport").html(html);
+        	
+        	function rate(item, index) {
+        		$("#starrating"+item).removeClass ('far fa-star');
+                $("#starrating"+item).addClass ('fas fa-star');
+        	}
+        	function unrate(item, index) {
+        		$("#starrating"+item).removeClass ('fas fa-star');
+                $("#starrating"+item).addClass ('far fa-star');
+        	}
+        	$("#star5").on("click", function (e) {
+                e.preventDefault();
+                $("#serviceRating").val(5);
+                [1,2,3,4,5].forEach(rate);
+        	});
+        	$("#star4").on("click", function (e) {
+                e.preventDefault();
+                $("#serviceRating").val(4);
+                [1,2,3,4].forEach(rate);
+                [5].forEach(unrate);
+        	});
+        	$("#star3").on("click", function (e) {
+                e.preventDefault();
+                $("#serviceRating").val(3);
+                [1,2,3].forEach(rate);
+                [5,4].forEach(unrate);
+        	});
+        	$("#star2").on("click", function (e) {
+                e.preventDefault();
+                $("#serviceRating").val(2);
+                [1,2].forEach(rate);
+                [5,4,3].forEach(unrate);
+        	});
+        	$("#star1").on("click", function (e) {
+                e.preventDefault();
+                $("#serviceRating").val(1);
+                [1].forEach(rate);
+                [5,4,3,2].forEach(unrate);
+        	});
+        	
+        	$("#submitButton").on("click", function (e) {
+        		$("#submitButton").attr("disabled", true);
+                e.preventDefault();
+                window.scrollTo(0,0);
+                $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+                $.ajax({
+                    url : apiURLBase + "/serviceReportFeedback",
+                    type : "POST",
+                    data: getJSONFormData($('#serviceReportFeedbackForm')),
+                    dataType: "json",
+                    contentType: 'application/json',
+                    crossDomain: true,
+            		success: function(data) {
+            			$("#notification").html("<center><font color=\"green\">Feedback Submitted. Thank you!</font></center>");
+            		},
+            		error: function(data) {
+            			alert("Error submitting feedback please refresh browser and try again.");
+            		},
+            		complete: function(data) {
+            			$("#submitButton").attr("disabled", false);
+            		}
+            	});
+                return false;
+              });
+        })
+    </script>
+</body>
+
+</html>

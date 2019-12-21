@@ -144,4 +144,12 @@ public class VisitDAO extends BaseDAO {
     }
     return files;
   }
+
+  public static void deleteForWorkOrder(Connection connection, int workOrderId)
+      throws SQLException {
+    PreparedStatement preparedStatement = connection.prepareStatement(
+        "update visits set deleted = 1 from visits v, work_order_service_reports wosr where wosr.work_order_id = ? and wosr.service_report_id = v.service_report_id ");
+    preparedStatement.setInt(1, workOrderId);
+    preparedStatement.executeUpdate();
+  }
 }

@@ -55,6 +55,22 @@ public class TechnicianDAO extends BaseDAO {
     return technicians;
   }
 
+  public static int getTechnicianIdFor(Connection connection, String technicianEmail)
+      throws SQLException {
+    String sql =
+        "SELECT t.id FROM technicians t, persons p where t.person_id = p.id and p.email = ? and p.deleted = 0";
+
+    PreparedStatement statement = connection.prepareStatement(sql);
+    statement.setString(1, technicianEmail);
+
+    ResultSet result = statement.executeQuery();
+
+    if (result.next()) {
+      return result.getInt(1);
+    }
+    throw new SQLException("Technician Not Found");
+  }
+
   public static void delete(Connection connection, int technicianId) throws SQLException {
     PreparedStatement preparedStatement =
         connection.prepareStatement("update technicians set deleted = 1 where id = ?");
@@ -96,6 +112,22 @@ public class TechnicianDAO extends BaseDAO {
     ArrayList<String> technicians = new ArrayList<String>();
     while (result.next()) {
       technicians.add(result.getString(1) + " " + result.getString(2));
+    }
+    return technicians;
+  }
+
+  public static ArrayList<Integer> getTechnicianIdsFor(Connection connection, int serviceReportId)
+      throws SQLException {
+    String sql =
+        "SELECT t.id FROM technicians t, service_report_technicians srt where srt.technician_id = t.id and srt.service_report_id = ? ";
+
+    PreparedStatement statement = connection.prepareStatement(sql);
+    statement.setInt(1, serviceReportId);
+    ResultSet result = statement.executeQuery();
+
+    ArrayList<Integer> technicians = new ArrayList<Integer>();
+    while (result.next()) {
+      technicians.add(result.getInt(1));
     }
     return technicians;
   }

@@ -1,4 +1,4 @@
-create extension "uuid-ossp";
+create extension if not exists "uuid-ossp";
 
 CREATE OR REPLACE FUNCTION updated_at_trigger() RETURNS TRIGGER AS $$ BEGIN NEW.updated_at = NOW(); RETURN NEW; END; $$ LANGUAGE plpgsql;
 

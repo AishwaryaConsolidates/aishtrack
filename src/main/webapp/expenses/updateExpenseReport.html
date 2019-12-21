@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Create Work order</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/tooplate.css">
+    <link rel="stylesheet" href="../vendors/jquery-ui-datepicker/jquery-ui.min.css" type="text/css" />
+</head>
+
+<body class="bg01">
+    <div class="container">
+        <div class="row">
+            <div class="col-12" w3-include-html="../partials/top_nav.html"> </div>
+        </div>
+        <br/>
+        <!-- row -->
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                <div class="bg-white tm-block">
+                    <div class="row">
+                        <div class="col-12">
+                            <div id="notification"></div>
+                            <h2 class="tm-block-title d-inline-block">Expense Report</h2>
+                            <h5 id="customerName"></h5>
+                            <h5 id="technicianName"></h5>
+                        </div>
+                    </div>
+                    <div class="row mt-4 tm-edit-product-row">
+                        <div class="col-xl-12 col-lg-12 col-md-12">
+                            <form action="" class="tm-edit-product-form" id="updateExpenseReportForm">
+                               <input type="hidden" id="expenseReportId" name="id"/>
+                               <input type="hidden" id="serviceReportId" name="serviceReportId"/>
+                               <input type="hidden" id="customerId" name="customerId"/>
+                               <input type="hidden" id="technicianId" name="technicianId"/>
+                               <input type="hidden" id="technicianEmail" name="technicianEmail"/>
+                               
+                               Advance Amount: <input class="recalculate" id="advanceAmount" name="advanceAmount" type="text" size="12" value=0>
+                               Total Expense Amount: <input id="totalExpenseAmount" name="totalExpenseAmount" type="text" size="12" value=0>
+                               Amount Due: <input id="dueAmount" name="dueAmount" type="text" size="12" value=0>
+                              
+                              <br/>
+                               
+                              <h2>Expenses </h2>
+
+                               <table id="expensesTable" width="100%">
+	                               <tr>
+	                                 <td>Date</td>
+	                                 <td>Type</td>
+	                                 <td>Notes</td>
+	                                 <td>Amount</td>
+	                               </tr>
+                               </table>
+                              
+                                
+                                <div class="input-group mb-3">
+                                    <div class="ml-auto col-xl-8 col-lg-8 col-md-8 col-sm-7 pl-0">
+                                        <button type="submit" class="btn btn-primary" id="submitButton">Update</button>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                            <div id="expenseDateTemplate" style="display:none"><input id="expenseDateCOUNT" name="expenseDate" type="text" size="10"></div>
+                            <div id="expenseTypeTemplate" style="display:none">
+                              <select name="expenseType" id="expenseTypeCOUNT">
+                                <option value="">Select Expense Type</option>
+	                            <option value="Boarding">Boarding</option>
+	                            <option value="Conveyance Blr">Conveyance Blr</option>
+	                            <option value="Conveyance Site">Conveyance Site</option>
+	                            <option value="Fare">Fare</option>
+	                            <option value="Lodging">Lodging</option>
+	                            <option value="Miscellaneous">Miscellaneous</option>
+	                            <option value="Purchase">Purchase</option>
+	                            <option value="Telephone">Telephone</option>
+	                          </select>
+	                        </div>
+                            <div id="expenseNotesTemplate" style="display:none"><input id="expenseNoteCOUNT" name="expenseNote" type="text" size="70"></div>
+                            <div id="expenseAmountTemplate" style="display:none"><input class="recalculate expAmount" id="expenseAmountCOUNT" name="expenseAmount" type="text" size="12"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div w3-include-html="../partials/footer.html"> </div>
+    </div>
+
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/aishtrack.js"></script>
+    <script src="../vendors/jquery-ui-datepicker/jquery-ui.min.js"></script>
+    <script src="../js/amazon-cognito-identity.min.js"></script>
+    <script>
+        $(function () {
+        	verifySiginAndLoadTechnician();
+        	includeHTML();
+         	var expensesTable = document.getElementById("expensesTable");
+         	
+         	checkForUpdate();
+         	
+         	async function verifySiginAndLoadTechnician() {
+            	userEmail = await verifySignin();
+            	$("#technicianEmail").val(userEmail[1]);
+            }
+         	
+         	$("#submitButton").on("click", function (e) {
+                $("#submitButton").attr("disabled", true);
+                e.preventDefault();
+                window.scrollTo(0,0);
+                $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+                $.ajax({
+                    url : apiURLBase + "/updateExpenseReport",
+                    type : "POST",
+                    data: getJSONFormData($('#updateExpenseReportForm')),
+                    dataType: "json",
+                    contentType: 'application/json',
+                    crossDomain: true,
+            		success: function(data) {
+            			if(!isNaN(data)) {
+            			    $("#id").val(data);
+            			}
+            			$("#notification").html("<center><font color=\"green\">Expense Report Updated</font></center>");
+            		},
+            		error: function(data) {
+            			alert("Error updating expense report, please try again");
+            		},
+            		complete: function(data) {
+            			$("#submitButton").attr("disabled", false);
+            		}
+            	});
+                return false;
+              });
+        });
+        
+        function recalculate() {
+        	totalExpenditure = 0;
+        	$(".expAmount").each(function() {
+        		totalExpenditure = +totalExpenditure + +$(this).val();
+        	});
+        	$("#totalExpenseAmount").val(totalExpenditure);
+        	$("#dueAmount").val((+totalExpenditure - +$("#advanceAmount").val()).toFixed(2));
+        }
+        
+        function checkForUpdate() {
+        	urlParams = new URLSearchParams(window.location.search);
+        	customerId = urlParams.get('customerId');
+        	$("#customerId").val(customerId);
+        	serviceReportId = urlParams.get('serviceReportId');
+        	$("#serviceReportId").val(serviceReportId);
+        	technicianId = urlParams.get('technicianId');
+        	$("#technicianId").val(technicianId);
+        	expenseReportId = urlParams.get('expenseReportId');
+        	$("#expenseReportId").val(expenseReportId);
+        	if(expenseReportId != null) {
+        		prefillExpenseReport(expenseReportId);
+        	} else {
+        		addEmptyExpenses(0, 10);
+        	}
+        }
+        
+        function prefillExpenseReport(expenseReportId) {	
+            $.ajax({
+                url : apiURLBase + "/getExpenseReport?expenseReportId=" + expenseReportId,
+                type : "GET",
+                dataType: "json",
+                crossDomain: true,
+        		success: function(data) {
+        			expenseReport = JSON.parse(JSON.stringify(data));
+        			fillForm(expenseReport);
+        		},
+        		error: function(data) {
+        			console.log("Error fetching expense report "+ data);
+        		}
+        	});
+        }
+        
+        function fillForm(expenseReport) {
+        	$("#expenseReportId").val(expenseReport.id);
+        	$("#technicianId").val(expenseReport.technicianId);
+        	$("#serviceReportId").val(expenseReport.serviceReportId);
+        	$("#customerId").val(expenseReport.customerId);
+        	$("#advanceAmount").val(expenseReport.advanceAmount);
+        	$("#customerName").html(expenseReport.customerName);
+        	$("#technicianName").html(expenseReport.technicianName);
+        	fillExpenses(expenseReport.expenses);
+        	recalculate();
+        }
+        
+        function fillExpenses(expenses) {
+        	addEmptyExpenses(0, (expenses.length + 5));
+        	$.each(expenses, function(index, expense){
+        		$("#"+"expenseDate"+index).val(expense.expenseDateString);
+        		$("#"+"expenseType"+index).val(expense.expenseType);
+        		$("#"+"expenseNote"+index).val(expense.notes);
+        		$("#"+"expenseAmount"+index).val(expense.amount);
+            });
+        }
+        
+        function addEmptyExpenses(initial = 0, count = 10) {
+         	var i;
+         	for (i = initial; i < (initial + count); i++) {
+            	var row = expensesTable.insertRow();
+             	var dateCell = row.insertCell(0);
+            	var typeCell = row.insertCell(1);
+            	var notesCell = row.insertCell(2);
+            	var amountCell = row.insertCell(3);
+            	
+            	dateCell.innerHTML = document.getElementById("expenseDateTemplate").innerHTML.replace(/COUNT/g, i);
+            	typeCell.innerHTML = document.getElementById("expenseTypeTemplate").innerHTML.replace(/COUNT/g, i);
+            	notesCell.innerHTML = document.getElementById("expenseNotesTemplate").innerHTML.replace(/COUNT/g, i);
+            	amountCell.innerHTML = document.getElementById("expenseAmountTemplate").innerHTML.replace(/COUNT/g, i);
+            	
+            	$('#expenseDate' + i).datepicker({
+        	        dateFormat: 'dd/mm/yy'
+        	    });
+            	
+            	$(".recalculate").change(function() {
+                	recalculate();
+                });
+         	}       	
+        }
+    </script>
+</body>
+
+</html>

@@ -1,4 +1,6 @@
 var cognitoUser;
+var userEmail;
+var userRole;
 
 function includeHTML() {
 	var z, i, elmnt, file, xhttp;
@@ -167,6 +169,7 @@ function prefillWorkOrderData(workOrderId) {
 
 function fillWorkOrderForm(workOrder) {
 	$("#workOrderId").val(workOrder.id);
+	$("#deleteWorkOrderId").val(workOrder.id);
 	$("#customerId").val(workOrder.customerId);
 	$("#type").val(workOrder.type);
 	$("#notes").val(workOrder.notes);
@@ -211,7 +214,7 @@ function initCognitoSDK() {
 	return auth;
 }
 
-function verifySignin(onlyAllowForRole=null) {
+async function verifySignin(onlyAllowForRole=null) {
 		var data = { 
             UserPoolId : userPoolId,
 			ClientId : clientId
@@ -227,27 +230,41 @@ function verifySignin(onlyAllowForRole=null) {
 	            }
 	            console.log('session validity: ' + session.isValid());
 	        });
+	        
+	        await retrieveattribute();
 	        if(onlyAllowForRole != null) {
-	        	cognitoUser.getUserAttributes(function(err, result) {
-                    if (err) {
-                    	console.log(err);
-                        return;
-                    }
-                    for (i = 0; i < result.length; i++) {
-                    	if(result[i].getName() == 'profile') {
-                    	  if(!result[i].getValue().includes(onlyAllowForRole)) {
-                    		  alert("You do not have access to this page. Contact Administrator.");
-                    		  window.location.href = htmlURLBase + "/index.html";
-                    	  }
-                    	}
-                      console.log('attribute ' + result[i].getName() + ' has value ' + result[i].getValue());
-                    }
-                });
-	        }
+            	if(!userRole.includes(onlyAllowForRole)) {
+          		  alert("You do not have access to this page. Contact Administrator.");
+          		  window.location.href = htmlURLBase + "/index.html";
+                }
+            }
+            return [userRole, userEmail];
 	    } else {
 	    	alert("You need to log into access the application");
 			window.location.href = htmlURLBase + "/login.html";
 	    }
+}
+
+function retrieveattribute() {
+    return new Promise(function(res) {
+        cognitoUser.getUserAttributes(function(err, result) {
+            if (err) {
+                alert(err);
+                return;
+            }
+            for (i = 0; i < result.length; i++) {
+                if (result[i].getName() == 'email') {
+                    userEmail = result[i].getValue();
+                    console.log(userEmail);
+                }
+                if (result[i].getName() == 'profile') {
+                    userRole = result[i].getValue();
+                    console.log(userRole);
+                }
+            }
+            res([userRole, userEmail]);
+        });
+    })
 }
 
 function getSignedIdUser() {

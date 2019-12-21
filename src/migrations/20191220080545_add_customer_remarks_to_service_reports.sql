@@ -1,0 +1,1 @@
+ALTER TABLE service_reports ADD COLUMN customer_remarks TEXT;

@@ -35,6 +35,8 @@
                                <input type="hidden" id="serviceReportId" name="id"/>
                                <input type="hidden" id="workOrderId" name="workOrderId"/>
                                <input type="hidden" id="serviceReportType" name="type"/>
+                               <input type="hidden" id="copyFromServiceReportId" name="copyFromServiceReportId"/>
+                               
                                <div class="input-group mb-3">
                                     <label for="reportDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Report Date</label>
                                     <input id="reportDate" name="reportDate" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" data-large-mode="true">
@@ -159,9 +161,14 @@
         function checkForWorkOrder() {
         	urlParams = new URLSearchParams(window.location.search);
         	workOrderId = urlParams.get('workOrderId');
+        	copyFromServiceReportId = urlParams.get('copyFromServiceReportId');
         	if(workOrderId != null) {
         		$("#workOrderId").val(workOrderId);
         		prefillWorkOrderData(workOrderId);
+        	}
+        	if(copyFromServiceReportId != null) {
+        		$("#copyFromServiceReportId").val(copyFromServiceReportId);
+        		document.getElementById("technicianIds").disabled=true;
         	}
         	type = urlParams.get('type');
         	if(type) {

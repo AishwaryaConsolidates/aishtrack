@@ -1,0 +1,1 @@
+ALTER TABLE "customers" DROP "contact_person_id";

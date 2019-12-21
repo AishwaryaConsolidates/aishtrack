@@ -69,6 +69,13 @@ public class WorkOrderDAO extends BaseDAO {
     preparedStatement.executeUpdate();
   }
 
+  public static void delete(Connection connection, int workOrderId) throws SQLException {
+    PreparedStatement preparedStatement =
+        connection.prepareStatement("update work_orders set deleted = 1 where id = ?");
+    preparedStatement.setInt(1, workOrderId);
+    preparedStatement.executeUpdate();
+  }
+
   public static void update(Connection connection, WorkOrder workOrder) throws SQLException {
     PreparedStatement preparedStatement = connection.prepareStatement(
         "update work_orders set customer_id =?, contact_person_id = ?, type = ?, notes = ?, category_id = ?, equipment_id = ?, brand = ?, model = ?, serial_number = ?, part_number = ? where id = ?");

@@ -8,6 +8,7 @@ import com.aishtek.aishtrack.dao.CustomerDAO;
 import com.aishtek.aishtrack.dao.WorkOrderDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
+import com.aishtek.aishtrack.services.CustomerService;
 import com.aishtek.aishtrack.utils.Util;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
@@ -22,6 +23,8 @@ public class CreateWorkOrder extends BaseFunction
     try (Connection connection = getConnection()) {
       try {
         Response response = getParams(serverlessInput.getBody());
+        addContactPerson(connection, response);
+
         if (Util.isNullOrEmpty(response.id)) {
           Customer customer = CustomerDAO.findById(connection, response.customerId);
           int workOrderId =
@@ -33,7 +36,8 @@ public class CreateWorkOrder extends BaseFunction
         } else {
           updateWorkOrder(connection, Util.getInt(response.id), response.customerId,
               response.type, response.notes, response.categoryId, response.equipmentId,
-              response.brand, response.model, response.serialNumber, response.partNumber);
+              response.brand, response.model, response.serialNumber, response.partNumber,
+              response.contactPersonId);
           output = createSuccessOutput("");
         }
         connection.commit();
@@ -60,7 +64,7 @@ public class CreateWorkOrder extends BaseFunction
 
   public void updateWorkOrder(Connection connection, int id, int customerId, String type,
       String notes, int categoryId, int equipmentId, String brand, String model,
-      String serialNumber, String partNumber) throws SQLException {
+      String serialNumber, String partNumber, int contactPersonId) throws SQLException {
     WorkOrder workOrder = WorkOrderDAO.findById(connection, id);
     workOrder.setCustomerId(customerId);
     workOrder.setType(type);
@@ -71,11 +75,21 @@ public class CreateWorkOrder extends BaseFunction
     workOrder.setModel(model);
     workOrder.setSerialNumber(serialNumber);
     workOrder.setPartNumber(partNumber);
+    workOrder.setContactPersonId(contactPersonId);
     WorkOrderDAO.update(connection, workOrder);
   }
 
   public Response getParams(String jsonString) {
     return (new Gson()).fromJson(jsonString, Response.class);
+  }
+
+  public void addContactPerson(Connection connection, Response response) throws SQLException {
+    if (!Util.isNullOrEmpty(response.firstName)) {
+      CustomerService customerService = new CustomerService();
+      response.contactPersonId = customerService.createContactPerson(connection,
+          response.customerId, response.firstName, response.lastName, response.email,
+          response.phone, response.designation, response.mobile, response.alternatePhone);
+    }
   }
 
   class Response {
@@ -84,11 +98,19 @@ public class CreateWorkOrder extends BaseFunction
     public Integer contactPersonId;
     public String notes;
     public String type;
-    private Integer categoryId;
-    private Integer equipmentId;
-    private String brand;
-    private String model;
-    private String serialNumber;
-    private String partNumber;
+    public Integer categoryId;
+    public Integer equipmentId;
+    public String brand;
+    public String model;
+    public String serialNumber;
+    public String partNumber;
+
+    public String designation;
+    public String firstName;
+    public String lastName;
+    public String email;
+    public String phone;
+    public String mobile;
+    public String alternatePhone;
   }
 }

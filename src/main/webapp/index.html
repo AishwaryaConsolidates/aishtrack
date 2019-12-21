@@ -86,8 +86,8 @@
         	/* verifySignin(); this doesnt work here go figure*/
         	
         	includeHTML();
+        	$("#notification").html("<center><img src='img/Gear-3.1s-104px.gif'/></center>");
       	    loadOpenWorkOrders();
-      	    $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
         	function loadOpenWorkOrders() {
                 $.ajax({
                     url : apiURLBase + "/getWorkOrders?status=all_open",

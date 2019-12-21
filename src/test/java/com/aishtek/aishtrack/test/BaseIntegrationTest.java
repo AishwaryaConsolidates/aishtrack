@@ -39,9 +39,11 @@ public class BaseIntegrationTest {
   }
 
   public int createTestCustomer(Connection connection) throws SQLException {
-    return CustomerDAO.create(connection,
-        new Customer("Bajji Corner", "Bajji", createTestAddress(connection),
-            createTestPerson(connection)));
+    int customerId = CustomerDAO.create(connection,
+        new Customer(0, "Bajji Corner", "Bajji", createTestAddress(connection), 0, "GSTIN"));
+    CustomerDAO.createContactPerson(connection, customerId, new Person("Asterix", "Gaul",
+        "Troubleshooter", "asterix@aishtek.tst", "9999999999", "8888888888", "7777777777"));
+    return customerId;
   }
 
   public int createTestWorkOrder(Connection connection, int customerId, int personId)

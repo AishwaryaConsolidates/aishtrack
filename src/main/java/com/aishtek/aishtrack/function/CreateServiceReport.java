@@ -14,6 +14,7 @@ import com.aishtek.aishtrack.beans.WorkOrder;
 import com.aishtek.aishtrack.dao.CustomerDAO;
 import com.aishtek.aishtrack.dao.PersonDAO;
 import com.aishtek.aishtrack.dao.ServiceReportDAO;
+import com.aishtek.aishtrack.dao.TechnicianDAO;
 import com.aishtek.aishtrack.dao.WorkOrderDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
@@ -37,10 +38,19 @@ public class CreateServiceReport extends BaseFunction
         Response response = getParams(serverlessInput.getBody());
         if (Util.isNullOrEmpty(response.id)) {
           Date reportDate = new SimpleDateFormat("dd/MM/yyyy").parse(response.reportDate);
+
+          ArrayList<Integer> technicianIds = new ArrayList<Integer>();
+          if (!Util.isNullOrEmpty(response.copyFromServiceReportId)) {
+            technicianIds = TechnicianDAO.getTechnicianIdsFor(connection,
+                Integer.parseInt(response.copyFromServiceReportId));
+          } else {
+            technicianIds = getIntegerList(response.technicianIds);
+          }
+
           int serviceReportId = createServiceReport(connection, response.workOrderId,
               response.contactPersonId, response.categoryId, response.equipmentId, response.notes,
               response.brand, response.model, response.serialNumber, response.partNumber,
-              reportDate, getIntegerList(response.technicianIds), response.type);
+              reportDate, technicianIds, response.type);
           output = createSuccessOutput("" + serviceReportId);
         } else {
           updateServiceReport(connection, Integer.parseInt(response.id), response.contactPersonId,
@@ -128,8 +138,7 @@ public class CreateServiceReport extends BaseFunction
   private void sendEmailToCustomer(Connection connection, ServiceReport serviceReport)
       throws SQLException {
     try {
-      Customer customer = CustomerDAO.findById(connection, serviceReport.getCustomerId());
-      Person person = PersonDAO.findById(connection, customer.getContactPersonId());
+      Person person = PersonDAO.findById(connection, serviceReport.getContactPersonId());
       String[] to = {person.getEmail()};
       String[] emailBodies = customerEmailBodies(connection, serviceReport);
       EmailSenderService.sendEmail(to, customerEmailSubject, emailBodies[0], emailBodies[1]);
@@ -155,6 +164,7 @@ public class CreateServiceReport extends BaseFunction
 
   class Response {
     private String id;
+    private String copyFromServiceReportId;
     private String type;
     private int workOrderId;
     public Integer contactPersonId;

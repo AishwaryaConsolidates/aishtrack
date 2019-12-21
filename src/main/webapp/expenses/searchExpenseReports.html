@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Search Expense Reports</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/tooplate.css">
+    <link rel="stylesheet" type="text/css" href="../vendors/DataTables/dataTables.bootstrap4.css"/>
+</head>
+
+<body id="reportsPage" class="bg02">
+        <div class="container">
+            <div class="row">
+                <div class="col-12" w3-include-html="../partials/top_nav.html"> </div>
+            </div>
+            <br/>
+            <!-- row -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="bg-white tm-block h-100">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <h2 class="tm-block-title d-inline-block">Search Expense Reports
+                            </div>
+                                
+                        <div class="table-responsive">
+                        <form action="" class="tm-edit-product-form" id="updateExpenseReportForm">
+                        <input type="hidden" id="expenseReportId" name="expenseReportId"/>
+                            <table id="resultsTable" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">&nbsp;</th>
+                                        <th scope="col">Customer</th>
+                                        <th scope="col">Technician</th>
+                                        <th scope="col">Settled</th>
+                                        
+                                        <th scope="col">Settle</th>
+                                        <th scope="col">&nbsp;</th>
+                                        <th scope="col">&nbsp;</th>
+                                        <th scope="col">&nbsp;</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="results"></tbody>
+                            </table>
+                        </form>    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div w3-include-html="../partials/footer.html"> </div>
+        </div>
+    </div>
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/aishtrack.js"></script>
+    <script src="../js/amazon-cognito-identity.min.js"></script>
+    <script type="text/javascript" src="../vendors/DataTables/datatables.min.js"></script>
+    <script>    
+        $(function () {
+        	verifySignin('administrator');
+        	includeHTML();
+        	loadExpenseReports();
+        	
+        	function bindSettleButton() {
+        		$(".settleButton").on("click", function (e) {
+                    $("#expenseReportId").val($(this).attr("data-id"));
+                    e.preventDefault();
+                    window.scrollTo(0,0);
+                    $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+                    $.ajax({
+                        url : apiURLBase + "/settleExpenseReport",
+                        type : "POST",
+                        data: getJSONFormData($('#updateExpenseReportForm')),
+                        dataType: "json",
+                        contentType: 'application/json',
+                        crossDomain: true,
+                		success: function(data) {
+                			$("#notification").html("<center><font color=\"green\">Expense Report Updated</font></center>");
+                		},
+                		error: function(data) {
+                			alert("Error updating expense report, please try again");
+                		}
+                	});
+                    return false;
+                  });
+        	}
+            function loadExpenseReports() {
+            	$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+                $.ajax({
+                    url : apiURLBase + "/searchExpenseReports?settled=0",
+                    type : "GET",
+                    dataType: "json",
+                    crossDomain: true,
+            		success: function(data) {
+            			jsonArray = JSON.parse(JSON.stringify(data));
+            			listExpenseReports(jsonArray);
+            			 bindSettleButton();
+            			$("#notification").html("");
+            		},
+            		error: function(data) {
+            			$("#notification").html("");
+            			log("Error fetching expense reports");
+            		}
+            	});
+              }
+            
+            function listExpenseReports(jsonArray) {
+            	html="";
+            	$.each(jsonArray, function(index, jsonObject){
+            		expenseReport = JSON.parse(JSON.stringify(jsonObject));
+            		html+="<tr>";
+            		html+="<td>";
+            		html+="<a target = \"_" + index +"\" href=\"" + htmlURLBase + "/expenses/updateExpenseReport.html?expenseReportId=" + expenseReport.id + "\"><i class=\"fas fa-edit\"></i></a>";
+            		html+="</td>";
+            		html+="<td>" + expenseReport.customer + "</td>";
+            		html+="<td>" + expenseReport.technician + "</td>";
+            		html+="<td>" + expenseReport.settled + "</td>";
+            		if(expenseReport.settled=="Yes") {
+            			html+="<td>&nbsp;</td>";
+            		} else {
+            			html+="<td><button type=\"submit\" data-id=\"" + expenseReport.id  + "\" class=\"settleButton btn btn-primary\">Settle</button></td>";
+            		}
+            		html+="<td>&nbsp;</td>";
+            		html+="<td>&nbsp;</td>";
+            		html+="<td>&nbsp;</td>";
+            		
+            		html+="</tr>";
+            	});
+            	$("#results").html(html);
+            	$('#resultsTable').DataTable();
+            }
+        })
+    </script>
+</body>
+
+</html>
