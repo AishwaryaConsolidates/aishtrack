@@ -69,6 +69,32 @@ public class ServiceReportDAO extends BaseDAO {
     preparedStatement.executeUpdate();
   }
 
+  public static void updateEquipment(Connection connection, int serviceReportId, int categoryId,
+      int equipmentId, String brand, String model, String serialNumber, String partNumber)
+      throws SQLException {
+    PreparedStatement preparedStatement = connection.prepareStatement(
+        "update service_reports set category_id = ?, equipment_id = ?, brand = ?, model = ?, serial_number = ?, part_number = ? where id = ?");
+
+    preparedStatement.setInt(1, categoryId);
+    preparedStatement.setInt(2, equipmentId);
+    preparedStatement.setString(3, brand);
+    preparedStatement.setString(4, model);
+    preparedStatement.setString(5, serialNumber);
+    preparedStatement.setString(6, partNumber);
+    preparedStatement.setInt(7, serviceReportId);
+    preparedStatement.executeUpdate();
+  }
+
+  public static void updateAdditionalEmail(Connection connection, int serviceReportId, String email)
+      throws SQLException {
+    PreparedStatement preparedStatement =
+        connection.prepareStatement("update service_reports set additional_email = ? where id = ?");
+
+    preparedStatement.setString(1, email);
+    preparedStatement.setInt(2, serviceReportId);
+    preparedStatement.executeUpdate();
+  }
+
   public static void updateFeedback(Connection connection, String serviceReportCode,
       int serviceRating,
       String signedBy, String customerRemarks) throws SQLException {
@@ -108,7 +134,7 @@ public class ServiceReportDAO extends BaseDAO {
     String sql =
         "SELECT sr.id, sr.report_date, sr.status, sr.status_date, ct.name, eq.name, sr.brand, sr.model, sr.serial_number, sr.part_number, sr.notes, "
             + " c.name, cp.first_name, cp.last_name, cp.designation, cp.email, cp.phone, "
-            + " ca.street, ca.area, ca.city, ca.state, ca.pincode, wosr.work_order_id,  wo.created_at, sr.type, sr.installation_details "
+            + " ca.street, ca.area, ca.city, ca.state, ca.pincode, wosr.work_order_id,  wo.created_at, sr.type, sr.installation_details, sr.category_id, sr.equipment_id, sr.additional_email "
             + " FROM service_reports sr, customers c, addresses ca, persons cp, categories ct, equipments eq, work_order_service_reports wosr, work_orders wo "
             + " WHERE sr.code = ? and sr.customer_id = c.id and sr.address_id = ca.id and sr.contact_person_id = cp.id "
             + " and sr.category_id = ct.id and sr.equipment_id = eq.id and sr.id = wosr.service_report_id and wosr.work_order_id = wo.id ";
@@ -148,6 +174,10 @@ public class ServiceReportDAO extends BaseDAO {
       hashMap.put("workOrderDate", formatTimestamp(result.getTimestamp(24)));
       hashMap.put("type", result.getString(25));
       hashMap.put("installationDetails", result.getString(26));
+
+      hashMap.put("categoryId", "" + result.getInt(27));
+      hashMap.put("equipmentId", "" + result.getInt(28));
+      hashMap.put("additionalEmail", result.getString(29));
 
       hashMap.put("technicians", getTechnicians(connection, serviceReportId));
       return hashMap;

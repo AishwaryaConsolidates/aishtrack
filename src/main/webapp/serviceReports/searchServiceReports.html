@@ -20,7 +20,7 @@
     <link rel="stylesheet" type="text/css" href="../vendors/DataTables/dataTables.bootstrap4.css"/>
 </head>
 
-<body id="reportsPage" class="bg02">
+<body id="reportsPage">
         <div class="container">
             <div class="row">
                 <div class="col-12" w3-include-html="../partials/top_nav.html"> </div>
@@ -61,11 +61,11 @@
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/config.js"></script>
     <script src="../js/aishtrack.js"></script>
-    <script src="../js/amazon-cognito-identity.min.js"></script>
     <script type="text/javascript" src="../vendors/DataTables/datatables.min.js"></script>
     <script>    
         $(function () {
-        	verifySignin('administrator');
+        	checkLogin();
+        	checkForAdministrator();
         	includeHTML();
 
         	var timeoutID = null;

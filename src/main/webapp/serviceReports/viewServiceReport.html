@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="../vendors/jquery-ui-datepicker/jquery-ui.min.css" type="text/css" />
 </head>
 
-<body class="bg04">
+<body>
     <div class="container">
         <div class="row">
             <div class="col-12" w3-include-html="../partials/top_nav.html"> </div>
@@ -37,13 +37,6 @@
                         <tr><td>Contact:</td><td><div id="contact"/></td></tr>
                         <tr><td>Address:</td><td><div id="address"/></td></tr>
                         
-                        <tr><td>Category:</td><td><div id="category"/></td></tr>
-                        <tr><td>Equipment:</td><td><div id="equipment"/></td></tr>
-                        <tr><td>Brand:</td><td><div id="brand"/></td></tr>
-                        <tr><td>Model:</td><td><div id="model"/></td></tr>
-                        <tr><td nowrap>Serial Number:</td><td><div id="serialNumber"/></td></tr>
-                        <tr><td nowrap>Part Number:</td><td><div id="partNumber"/></td></tr>
-                        
                         <tr><td>Technicians:</td><td><div id="technicians"/></td></tr>
                         
                         <tr><td>Notes:</td><td><div id="notes"/></td></tr>                   
@@ -52,8 +45,71 @@
                         <a id="createNewServiceReportButton" href="#" class="btn btn-small btn-primary">Create New Service Report</a>
                         
                 </div>
+
+                <br/>
+                <div class="bg-white tm-block">
+                <form action="" class="tm-edit-product-form" id="updateEmailForm">
+                <div class="input-group mb-3">
+                   <label for="additionalEmail" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Additional Email</label>
+                   <input id="additionalEmail" name="additionalEmail" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+               </div>
+
+               <button type="submit" class="btn btn-primary" id="updateEmailButton">Update Email</button>
+               </form>
+               
+               <br/><br/>
+               
+               <button type="submit" class="btn btn-primary" id="sendFeedbackEmailButton">Send Feedback Email</button>
+               
+                </div>
             </div>
+
             <div class="tm-col tm-col-big">
+
+            <div id="equipmentBlock" class="bg-white tm-block">
+            <form action="" class="tm-edit-product-form" id="updateEquipmentForm">
+            <input type="hidden" id="id" name="id"/>
+            <h2 class="tm-block-title d-inline-block">Equipment</h2><br/>
+
+                <div class="input-group mb-3">
+                    <label for="category" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Category</label>
+                    <select name="categoryId" id="categoryId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+
+                    </select>
+                </div>
+
+                <div class="input-group mb-3">
+                    <label for="equipmentId" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Equipment</label>
+                    <select name="equipmentId" id="equipmentId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+
+                    </select>
+                </div>
+               <div class="input-group mb-3">
+                   <label for="brand" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Brand</label>
+                   <input id="brand" name="brand" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+               </div>
+
+               <div class="input-group mb-3">
+                   <label for="model" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Model</label>
+                   <input id="model" name="model" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+               </div>
+
+               <div class="input-group mb-3">
+                   <label for="serialNumber" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Serial Number</label>
+                   <input id="serialNumber" name="serialNumber" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+               </div>
+
+               <div class="input-group mb-3">
+                   <label for="partNumber" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Part Number</label>
+                   <input id="partNumber" name="partNumber" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+               </div>
+
+               <button type="submit" class="btn btn-primary" id="updateEquipmentButton">Update Equipment</button>
+            </form>
+            </div>
+
+            <br/>
+
               <form action="" class="tm-edit-product-form" id="addInstallationDetailForm">
                 <div id="installationDetailsBlock" class="bg-white tm-block">
                     <h2 class="tm-block-title d-inline-block">Installation Details</h2><br/>
@@ -109,12 +165,24 @@
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/config.js"></script>
     <script src="../js/aishtrack.js"></script>
-    <script src="../js/amazon-cognito-identity.min.js"></script>
     <script>
         $(function () {
+        	checkLogin();
         	includeHTML();
+        	$("#categoryId").change(function () {
+        		getEquipments(this.value);
+            });
+        	function getAllInfoForPage(serviceReportCode) {
+            	$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+            	$.when(getCategories()).done(function() {
+            		getServiceReport(serviceReportCode);
+            	});
+            	$("#notification").html("");
+            }
+
         	urlParams = new URLSearchParams(window.location.search);
         	serviceReportCode = urlParams.get('serviceReportCode');
+        	getAllInfoForPage(serviceReportCode);
 
         	$("#addInstallationDetailButton").click(function (e) {
         		e.preventDefault();
@@ -130,7 +198,6 @@
         		document.getElementById("installationDetail").style.display = "block";
         	});
         	
-        	getServiceReport(serviceReportCode);
         	var serviceReportId;
         	function getServiceReport(serviceReportCode) {
         		$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
@@ -161,7 +228,7 @@
             		}
             	});
               }
-        	
+
         	function fillPage(serviceReport) {
         		$("#reportId").html(serviceReport.id);
         		$("#reportType").html(serviceReport.type);
@@ -170,15 +237,25 @@
         		$("#customerName").html(serviceReport.customerName);
         		$("#contact").html(contact(serviceReport));
         		$("#address").html(address(serviceReport));
-        		$("#category").html(serviceReport.category);
-        		$("#equipment").html(serviceReport.equipment);
-        		$("#brand").html(serviceReport.brand);
-        		$("#model").html(serviceReport.model);
-        		$("#serialNumber").html(serviceReport.serialNumber);
-        		$("#partNumber").html(serviceReport.partNumber);
         		$("#technicians").html(serviceReport.technicians);
         		$("#notes").html(serviceReport.notes);
+
+        		$("#id").val(serviceReport.id);
+        		$("#categoryId").val(serviceReport.categoryId);
+        		$("#brand").val(serviceReport.brand);
+        		$("#model").val(serviceReport.model);
+        		$("#serialNumber").val(serviceReport.serialNumber);
+        		$("#partNumber").val(serviceReport.partNumber);
         		
+        		if(serviceReport.additionalEmail) {
+        			$("#additionalEmail").val(serviceReport.additionalEmail);
+        		} else {
+        			$("#additionalEmail").val(serviceReport.contactEmail);
+        		}
+        		$.when(getEquipments(serviceReport.categoryId)).done(function() {
+        			$("#equipmentId").val(serviceReport.equipmentId);
+            	});
+
         		if (serviceReport.type === "installation") {
         			html = "";
            		    var detailJSON = JSON.parse(serviceReport.installationDetails);
@@ -283,6 +360,81 @@
             	});
                 return false;
         	});
+
+            $("#updateEquipmentButton").on("click", function (e) {
+        		$("#updateEquipmentButton").attr("disabled", true);
+                e.preventDefault();
+                window.scrollTo(0,0);
+                $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+                $.ajax({
+                    url : apiURLBase + "/updateServiceReportEquipment",
+                    type : "POST",
+                    data: getJSONFormData($('#updateEquipmentForm')),
+                    dataType: "json",
+                    contentType: 'application/json',
+                    crossDomain: true,
+            		success: function(data) {
+            			$("#notification").html("<center><font color=\"green\">Service Report Updated</font></center>");
+            		},
+            		error: function(data) {
+            			alert("Error updating service report.");
+            		},
+            		complete: function(data) {
+            			$("#updateEquipmentButton").attr("disabled", false);
+            		}
+            	});
+                return false;
+              });
+
+            $("#updateEmailButton").on("click", function (e) {
+        		$("#updateEmailButton").attr("disabled", true);
+                e.preventDefault();
+                window.scrollTo(0,0);
+                $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+                $.ajax({
+                    url : apiURLBase + "/updateServiceReportEmail",
+                    type : "POST",
+                    data: getJSONFormData($('#updateEmailForm')),
+                    dataType: "json",
+                    contentType: 'application/json',
+                    crossDomain: true,
+            		success: function(data) {
+            			$("#notification").html("<center><font color=\"green\">Service Report Updated</font></center>");
+            		},
+            		error: function(data) {
+            			alert("Error updating service report.");
+            		},
+            		complete: function(data) {
+            			$("#updateEmailButton").attr("disabled", false);
+            		}
+            	});
+                return false;
+              });
+            
+            $("#sendFeedbackEmailButton").on("click", function (e) {
+        		$("#sendFeedbackEmailButton").attr("disabled", true);
+                e.preventDefault();
+                window.scrollTo(0,0);
+                $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+                $.ajax({
+                    url : apiURLBase + "/sendServiceReportFeedbackEmail",
+                    type : "POST",
+                    data: getJSONFormData($('#updateEmailForm')),
+                    dataType: "json",
+                    contentType: 'application/json',
+                    crossDomain: true,
+            		success: function(data) {
+            			$("#notification").html("<center><font color=\"green\">Feedback Email Sent</font></center>");
+            		},
+            		error: function(data) {
+            			alert("Error sending email.");
+            		},
+            		complete: function(data) {
+            			$("#sendFeedbackEmailButton").attr("disabled", false);
+            		}
+            	});
+                return false;
+              });
         })
     </script>
 </body>

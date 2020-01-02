@@ -6,13 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Aishtrack Dashboard</title>
-    <!--
-
-    Template 2108 Dashboard
-
-	http://www.tooplate.com/view/2108-dashboard
-
-    -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
     <!-- https://fonts.google.com/specimen/Open+Sans -->
     <link rel="stylesheet" href="css/fontawesome.min.css">
@@ -26,7 +19,7 @@
 
 </head>
 
-<body class="bg01" id="reportsPage">
+<body id="reportsPage">
     <div class="" id="home">
         <div class="container">
             <div class="row">
@@ -65,25 +58,16 @@
         </div>
     </div>
     <script src="js/jquery-3.3.1.min.js"></script>
-    <!-- https://jquery.com/download/ -->
     <script src="js/moment.min.js"></script>
-    <!-- https://momentjs.com/ -->
     <script src="js/utils.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <!-- https://getbootstrap.com/ -->
     <script src="js/tooplate-scripts.js"></script>
     <script src="js/config.js"></script>
     <script src="js/aishtrack.js"></script>
     <script type="text/javascript" src="vendors/DataTables/datatables.min.js"></script>
-    <script src="js/amazon-cognito-auth.min.js"></script>
-    <!-- <script src="js/amazon-cognito-identity.min.js"></script> -->
     <script>
         $(function () {
-        	var auth = initCognitoSDK();
-        	var curUrl = window.location.href;
-        	auth.parseCognitoWebResponse(curUrl);
-        	
-        	/* verifySignin(); this doesnt work here go figure*/
+        	checkLogin();
         	
         	includeHTML();
         	$("#notification").html("<center><img src='img/Gear-3.1s-104px.gif'/></center>");

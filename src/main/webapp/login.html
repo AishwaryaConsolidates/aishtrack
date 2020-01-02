@@ -7,22 +7,18 @@
     <link rel="stylesheet" href="css/fontawesome.min.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/tooplate.css">
-	<link rel="stylesheet" href="css/styleSheetStart.css">
 	<script src="js/jquery-3.3.1.min.js"></script>
-	<script src="js/amazon-cognito-auth.min.js"></script>
+	<script src="js/amazon-cognito-identity.min.js"></script>
 	<script src="js/config.js"></script>
 </head>
 
-<body class="bg02">
-    <div class="" id="home">
+<body>
+    <div id="home">
         <div class="container">
             <div class="row">
                 <div class="col-12">
                 <nav class="navbar navbar-expand-xl navbar-light bg-light">
-	<a class="navbar-brand" href="#"> <i
-		class="fas fa-3x fa-tachometer-alt tm-site-icon"></i>
-		<h1 class="tm-site-title mb-0">Aishtrack</h1>
-	</a>
+	<img src="https://aishtrack.s3.amazonaws.com/img/apcl_logo.png" style="width:160px;height:100px;"/>
 	<button class="navbar-toggler ml-auto mr-0" type="button"
 		data-toggle="collapse" data-target="#navbarSupportedContent"
 		aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -41,23 +37,22 @@
                         <div id="notification"></div>
 
 
-                            <h2 class="tm-block-title d-inline-block">Welcome to Aishtrack Login Page</h2>
+                            <h2 class="tm-block-title d-inline-block">Aishtrack Login Page</h2>
                         </div>
 
-  <div>
-      <p id="statusNotAuth" title="Status">
-          Sign-In to Continue
-      </p>
-      <p id="statusAuth" title="Status">
-          You have Signed-In
-      </p>
-  </div>
 
-<br/>
-<br/>
-
-  <div id="startButtons">
-        <a class="btn btn-small btn-primary nav-tabs" id="signInButton" href="javascript:void(0)" title="Sign in">Sign In</a>
+  <div id="loginDiv">
+      <div class="input-group mb-3">
+          <label for="username" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">User Name</label>
+          <input id="username" name="username" type="text" class="form-control validate col-xl-16 col-lg-16 col-md-16 col-sm-16">
+      </div>
+      <div class="input-group mb-3">
+          <label for="password" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Password</label>
+          <input id="password" name="password" type="password" class="form-control validate col-xl-16 col-lg-16 col-md-16 col-sm-16">
+      </div>
+      <div class="ml-auto col-xl-8 col-lg-8 col-md-8 col-sm-7 pl-0">
+          <button type="submit" class="btn btn-primary" id="loginButton">Login</button>
+      </div>
   </div>
 		
 		
@@ -71,92 +66,72 @@
     
 	<script>
 	$(function () {
-		onLoad();	
+		$("#loginButton").on("click", function (e) {
+    		$("#loginButton").attr("disabled", true);
+            e.preventDefault();
+            login();
+            $("#loginButton").attr("disabled", false);
+            return false;
+        });
 	});
-	// Operations when the web page is loaded.
-	function onLoad() {
-		var i, items, tabs;
-		items = document.getElementsByClassName("tab-pane");
-		for (i = 0; i < items.length; i++) {
-			items[i].style.display = 'none';
-		}
-		document.getElementById("statusNotAuth").style.display = 'block';
-		document.getElementById("statusAuth").style.display = 'none';
-		// Initiatlize CognitoAuth object
-		var auth = initCognitoSDK();
-		document.getElementById("signInButton").addEventListener("click", function() {
-			userButton(auth);
-		});
-		var curUrl = window.location.href;
-		auth.parseCognitoWebResponse(curUrl);
+
+	async function login() {
+		var authenticationData = {
+		        Username : $('#username').val(),
+		        Password : $('#password').val()
+		    };
+		    var authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(authenticationData);
+		    var poolData = {
+		    	UserPoolId : userPoolId,
+		        ClientId : clientId
+		    };
+		    var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+		    var userData = {
+		        Username : $('#username').val(),
+		        Pool : userPool
+		    };
+		    var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
+		    cognitoUser.authenticateUser(authenticationDetails, {
+		        onSuccess: async function (result) {
+		        	userRoleEmail = await retrieveattribute(cognitoUser);
+		        	localStorage.setItem('userRole', userRoleEmail[0]);
+		        	localStorage.setItem('userEmail', userRoleEmail[1]);
+		        	redirectTo(userRoleEmail[0]);
+		        },
+		        onFailure: function(err) {
+		        	alert("There is a problem with your login, please check your username and password.");
+		        },
+		    });
 	}
-  // Operation when tab is closed.
-	function closeTab(tabName) {
-	  document.getElementById(tabName).style.display = 'none';
-	}
-  // Operation when tab is opened.
-  function openTab(tabName) {
-		document.getElementById(tabName).style.display = 'block';
-	}
-  // Operations when showing message.
-	function showMessage(msgTitle, msgText, msgDetail) {
-		var msgTab = document.getElementById('message');
-		document.getElementById('messageTitle').innerHTML = msgTitle;
-		document.getElementById('messageText').innerHTML = msgText;
-		document.getElementById('messageDetail').innerHTML = msgDetail;
-		msgTab.style.display = "block";
-	}
-  // Perform user operations.
-	function userButton(auth) {
-		var state = document.getElementById('signInButton').innerHTML;
-		if (state === "Sign Out") {
-			document.getElementById("signInButton").innerHTML = "Sign In";
-			auth.signOut();
-			showSignedOut();
+
+	function redirectTo(role) {
+		if(role==="technician") {
+			window.location.href = htmlURLBase + "/technicianIndex.html";
 		} else {
-			auth.getSession();
+			window.location.href = htmlURLBase + "/index.html";
 		}
 	}
-	// Operations when signed in.
-  function showSignedIn(session) {
-		document.getElementById("statusNotAuth").style.display = 'none';
-		document.getElementById("statusAuth").style.display = 'block';
-		document.getElementById("signInButton").innerHTML = "Sign Out";
-	}
-	// Operations when signed out.
-	function showSignedOut() {
-		document.getElementById("statusNotAuth").style.display = 'block';
-		document.getElementById("statusAuth").style.display = 'none';
-	}
-  // Initialize a cognito auth object.
-	function initCognitoSDK() {
-		var authData = {
-				ClientId : clientId,
-				AppWebDomain : appWebDomain,
-				UserPoolId : userPoolId,
-				TokenScopesArray : ['email', 'openid', 'phone', 'aws.cognito.signin.user.admin', 'profile'], // e.g.['phone', 'email', 'profile','openid', 'aws.cognito.signin.user.admin'],
-				RedirectUriSignIn : htmlURLBase + '/index.html',
-				RedirectUriSignOut : htmlURLBase + '/login.html',
-				AdvancedSecurityDataCollectionFlag : 'false', // e.g. true
-         		//IdentityProvider : '<TODO: add identity provider you want to specify>', // e.g. 'Facebook',
-			    //Storage: 'LocalStorage' // OPTIONAL e.g. new CookieStorage(), to use the specified storage provided
-			};
-		var auth = new AmazonCognitoIdentity.CognitoAuth(authData);
-		// You can also set state parameter 
-		// auth.setState(<state parameter>);  
-		auth.userhandler = {
-			onSuccess: function(result) {
-				alert("Sign in success");
-				showSignedIn(result);
-				window.location = htmlURLBase + '/index.html';
-			},
-			onFailure: function(err) {
-				alert("Error!" + err);
-			}
-		};
-		// The default response_type is "token", uncomment the next line will make it be "code".
-		// auth.useCodeGrantFlow();
-		return auth;
+
+	function retrieveattribute(cognitoUser) {
+	    return new Promise(function(res) {
+	        cognitoUser.getUserAttributes(function(err, result) {
+	            if (err) {
+	                alert(err);
+	                return;
+	            }
+	            for (i = 0; i < result.length; i++) {
+	                if (result[i].getName() == 'email') {
+	                    userEmail = result[i].getValue();
+	                    console.log(userEmail);
+	                }
+	                if (result[i].getName() == 'profile') {
+	                    userRole = result[i].getValue();
+	                    console.log(userRole);
+	                }
+	            }
+	            res([userRole, userEmail]);
+	        });
+	    })
 	}
 	</script>
 </body>

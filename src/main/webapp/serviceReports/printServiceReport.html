@@ -20,7 +20,7 @@
 <td colspan="4" align="center">#19, First Floor , 10th B Main , 27th Cross Third Block-Jayanagar, Bengaluru 560 011, India</td>
 </tr>
 <tr>
-<td colspan="4" align="center"><h1>Service Report</h1></td>
+<td colspan="4" align="center"><h1><div id="reportType"></div></h1></td>
 </tr>
 
 <tr>
@@ -78,7 +78,7 @@
 </tr>
 
 <tr>
-<td colspan="4" class="font-weight-bold">Nature of complaint</td>
+<td colspan="4" class="font-weight-bold"><div id="notesDiv"></div></td>
 </tr>
 
 <tr>
@@ -89,19 +89,17 @@
 <td colspan="4">&nbsp;</td>
 </tr>
 
-<div id="installationDetailsBlock" style="display:none">
-	<tr>
+	<tr class="installationDetailsBlock">
 	<td colspan="4" class="font-weight-bold">Installation Details</td>
 	</tr>
 	
-	<tr>
+	<tr class="installationDetailsBlock">
 	<td colspan="4" class="text-wrap"><div id="installationDetails" class="text-wrap"/></td>
 	</tr>
 	
-	<tr>
+	<tr class="installationDetailsBlock">
 	<td colspan="4">&nbsp;</td>
 	</tr>
-</div>
 
 <tr>
 <td colspan="4"><div id="visits"/></td>
@@ -124,10 +122,10 @@
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/config.js"></script>
     <script src="../js/aishtrack.js"></script>
-    <script src="../js/amazon-cognito-identity.min.js"></script>
     <script>
         $(function () {
-        	verifySignin('administrator');
+        	checkLogin();
+        	checkForAdministrator();
         	urlParams = new URLSearchParams(window.location.search);
         	serviceReportCode = urlParams.get('serviceReportCode');
 
@@ -180,6 +178,8 @@
         		$("#notes").html(serviceReport.notes);
         		
         		if (serviceReport.type === "installation") {
+        			$("#reportType").html("Installation Report");
+        			$("#notesDiv").html("Nature of Installation");
         			html = "";
            		    var detailJSON = JSON.parse(serviceReport.installationDetails);
         		    Object.keys(detailJSON).forEach(function(key) {
@@ -188,7 +188,11 @@
         		    	html+= showJSON(detailJSON[key])
         		    });
         		    $("#installationDetails").html(html);
-        		    document.getElementById("installationDetailsBlock").style.display = "block";
+        		    $(".installationDetailsBlock").show();
+      		    } else {
+      		    	$("#reportType").html("Service Report");
+      		    	$("#notesDiv").html("Nature of Complaint");
+      		    	$(".installationDetailsBlock").hide();
       		    }
             }
         	
@@ -218,18 +222,22 @@
             		html+="<tr><td><table width=\"100%\" frame=\"box\">";
             		html+="<tr><td colspan=\"4\" class=\"font-weight-bold\">Visit Date: " + visit.visitDate.substr(0, 12) +"</td></tr>";
             		
-            		html+="<tr><td colspan=\"4\" class=\"font-weight-bold\">Complaint</td></tr>";
-            		html+="<tr><td colspan=\"4\" class=\"text-wrap\">" + visit.complaint +"</td></tr>";
-            		
-            		html+="<tr><td colspan=\"4\" class=\"font-weight-bold\">Findings</td></tr>";
-            		html+="<tr><td colspan=\"4\" class=\"text-wrap\">" + visit.findings +"</td></tr>";
-            		
-            		html+="<tr><td colspan=\"4\" class=\"font-weight-bold\">Work Done</td></tr>";
-            		html+="<tr><td colspan=\"4\" class=\"text-wrap\">" + visit.workDone +"</td></tr>";
-            		
-            		html+="<tr><td colspan=\"4\" class=\"font-weight-bold\">Customer Remarks</td></tr>";
-            		html+="<tr><td colspan=\"4\" class=\"text-wrap\">" + visit.customerRemarks +"</td></tr>";
-            		
+            		if(visit.complaint) {
+            		    html+="<tr><td colspan=\"4\" class=\"font-weight-bold\">Complaint</td></tr>";
+            		    html+="<tr><td colspan=\"4\" class=\"text-wrap\">" + visit.complaint +"</td></tr>";
+            		}
+            		if(visit.findings) {
+            		    html+="<tr><td colspan=\"4\" class=\"font-weight-bold\">Findings</td></tr>";
+            		    html+="<tr><td colspan=\"4\" class=\"text-wrap\">" + visit.findings +"</td></tr>";
+            		}
+            		if(visit.workDone) {
+            		    html+="<tr><td colspan=\"4\" class=\"font-weight-bold\">Work Done</td></tr>";
+            		    html+="<tr><td colspan=\"4\" class=\"text-wrap\">" + visit.workDone +"</td></tr>";
+            		}
+            		if(visit.customerRemarks) {
+            		    html+="<tr><td colspan=\"4\" class=\"font-weight-bold\">Customer Remarks</td></tr>";
+            		    html+="<tr><td colspan=\"4\" class=\"text-wrap\">" + visit.customerRemarks +"</td></tr>";
+            		}
             		html+="</table></td></tr>";
             		html+="<tr><td colspan=\"4\">&nbsp;</td></tr>";
             		$.each(visit.recommendedSpareParts, function(index, sparePart){

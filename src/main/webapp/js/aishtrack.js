@@ -304,16 +304,49 @@ function showJSON(obj) {
     return result;
 }
 
-function signout() {
-	var data = {
-	    UserPoolId : userPoolId,
-		ClientId : clientId
-	};
-	var userPool = new AmazonCognitoIdentity.CognitoUserPool(data);
-	cognitoUser = userPool.getCurrentUser();
-    if (cognitoUser != null) {
-	    cognitoUser.signOut();
+function checkLogin() {
+	if(localStorage.getItem("userEmail")){
+		return true;
+	} else {
+		return false;
 	}
+}
+
+function checkForAdministrator() {
+	if(getUserRole() === "administrator"){
+		return true;
+	} else {
+		window.location.href = htmlURLBase + "/technicianIndex.html";
+	}
+}
+
+function checkForTechinician() {
+	if(getUserRole() === "technician"){
+		return true;
+	} else {
+		window.location.href = htmlURLBase + "/index.html";
+	}
+}
+
+function getUserRole() {
+	if(localStorage.getItem("userRole")){
+		return localStorage.getItem("userRole");
+	} else {
+		window.location.href = htmlURLBase + "/login.html";
+	}
+}
+
+function getUserEmail() {
+	if(localStorage.getItem("userEmail")){
+		return localStorage.getItem("userEmail");
+	} else {
+		window.location.href = htmlURLBase + "/login.html";
+	}
+}
+
+function signout() {
+	localStorage.removeItem("userRole");
+	localStorage.removeItem("userEmail");
 	window.location.href = htmlURLBase + "/login.html";
 }
 

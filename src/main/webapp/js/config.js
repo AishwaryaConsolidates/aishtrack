@@ -2,14 +2,14 @@
 var htmlURLBase = "https://aishtek.s3.amazonaws.com/aishtrack";
 var apiURLBase = "https://4ompw72vyb.execute-api.ap-south-1.amazonaws.com/Prod";
 var userPoolId = 'ap-south-1_5Zq6Ucr1p';
-var clientId = 'u0tjn44hhggiavte32291paft';
+var clientId = "5j38rm0r7eu5egt0vaaour0njl";
 var appWebDomain = 'aishtracktest.auth.ap-south-1.amazoncognito.com';
 
 //production
 //var htmlURLBase = "https://aishtrack.s3.amazonaws.com";
 //var apiURLBase = "https://1s5jtgvpjg.execute-api.ap-south-1.amazonaws.com/Prod";
 //var userPoolId = 'ap-south-1_kfadN9z8w';
-//var clientId = 'k3sr2j779uu03nmnejbl8tk8r';
+//var clientId = '50d4771kqefbcrrbojud4hi5i1';
 //var appWebDomain = 'aishtrack.auth.ap-south-1.amazoncognito.com';
 
 var installationDetails = {

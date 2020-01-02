@@ -1,0 +1,1 @@
+ALTER TABLE service_reports ADD COLUMN additional_email VARCHAR(50);

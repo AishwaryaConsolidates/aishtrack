@@ -23,7 +23,8 @@ body {
 }
 
 body {
-  background-image: url(../img/dash-bg-01.jpg);
+  /* background-image: url(../img/dash-bg-01.jpg); */
+  background-color: DodgerBlue;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -32,13 +33,13 @@ body {
   padding-right: 50px;
 }
 
-.bg02 {
+/* .bg02 {
 	background-image: url(../img/dash-bg-02.jpg);
 }
 
 .bg03 {
 	background-image: url(../img/dash-bg-03.jpg);
-}
+} */
 
 a {
   transition: all 0.3s ease;

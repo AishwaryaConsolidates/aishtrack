@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="vendors/DataTables/dataTables.bootstrap4.css"/>
 </head>
 
-<body id="reportsPage" class="bg01">
+<body>
         <div class="container">
             <div class="row">
                 <div class="col-12" w3-include-html="partials/top_nav.html"> </div>
@@ -54,7 +54,6 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/config.js"></script>
     <script src="js/aishtrack.js"></script>
-    <script src="js/amazon-cognito-identity.min.js"></script>
     <script type="text/javascript" src="vendors/DataTables/datatables.min.js"></script>
     <script>    
         $(function () {
@@ -80,9 +79,10 @@
             	});
               }
             
-            async function verifySiginAndLoadTechnician() {
-            	userEmail = await verifySignin('technician');
-            	loadServiceReports(userEmail[1]);
+            function verifySiginAndLoadTechnician() {
+            	checkLogin();
+            	checkForTechinician();
+            	loadServiceReports(getUserEmail());
             }
             
             function listServiceReports(jsonArray) {

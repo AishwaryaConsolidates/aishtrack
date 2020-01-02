@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="../vendors/jquery-ui-datepicker/jquery-ui.min.css" type="text/css" />
 </head>
 
-<body class="bg01">
+<body>
     <div class="container">
         <div class="row">
             <div class="col-12" w3-include-html="../partials/top_nav.html"> </div>
@@ -114,10 +114,9 @@
     <script src="../js/config.js"></script>
     <script src="../js/aishtrack.js"></script>
     <script src="../vendors/jquery-ui-datepicker/jquery-ui.min.js"></script>
-    <script src="../js/amazon-cognito-identity.min.js"></script>
     <script>
         $(function () {
-        	verifySignin();
+        	checkLogin();
         	includeHTML();
 
         	$('#reportDate').datepicker({
