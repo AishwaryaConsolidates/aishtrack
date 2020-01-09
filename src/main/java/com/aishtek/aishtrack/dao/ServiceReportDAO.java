@@ -383,4 +383,45 @@ public class ServiceReportDAO extends BaseDAO {
     preparedStatement.setInt(1, workOrderId);
     preparedStatement.executeUpdate();
   }
+
+  public static ArrayList<String> getEmailForFeedback(Connection connection, int serviceReportId)
+      throws SQLException {
+    String sql =
+        "SELECT cp.email, sr.additional_email FROM service_reports sr, persons cp WHERE sr.id = ? and sr.contact_person_id = cp.id ";
+
+    PreparedStatement statement = connection.prepareStatement(sql);
+    statement.setInt(1, serviceReportId);
+    ResultSet result = statement.executeQuery();
+
+    ArrayList<String> emails = new ArrayList<String>();
+    if (result.next()) {
+      String email;
+      email = result.getString(1);
+      if (!Util.isNullOrEmpty(email)) {
+        emails.add(email);
+      }
+      email = result.getString(2);
+      if (!Util.isNullOrEmpty(email)) {
+        emails.add(email);
+      }
+      return emails;
+    } else {
+      throw new SQLException("No Service Report found");
+    }
+  }
+
+  public static String getCodeForId(Connection connection, int serviceReportId)
+      throws SQLException {
+    String sql = "SELECT code FROM service_reports where id = ?";
+
+    PreparedStatement statement = connection.prepareStatement(sql);
+    statement.setInt(1, serviceReportId);
+    ResultSet result = statement.executeQuery();
+
+    if (result.next()) {
+      return result.getString(1);
+    } else {
+      throw new SQLException("No Service Report found, ID does not exist");
+    }
+  }
 }
