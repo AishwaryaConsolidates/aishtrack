@@ -87,14 +87,14 @@ function getJSONFormData(form){
     return JSON.stringify(indexed_array);
 }
 
-function getTechnicians() {
+function getTechnicians(firstBlank = false) {
     return $.ajax({
         url : apiURLBase + "/getTechnicians",
         type : "GET",
         dataType: "json",
         crossDomain: true,
 		success: function(data) {
-			createDropdown(JSON.stringify(data), "technicianIds");
+			createDropdown(JSON.stringify(data), "technicianIds", firstBlank);
 		},
 		error: function(data) {
 			log("Error fetching technicians");
@@ -313,18 +313,34 @@ function checkLogin() {
 }
 
 function checkForAdministrator() {
-	if(getUserRole() === "administrator"){
+	if(isAdministrator()){
 		return true;
 	} else {
 		window.location.href = htmlURLBase + "/technicianIndex.html";
 	}
 }
 
+function isAdministrator() {
+	if(getUserRole() === "administrator"){
+		return true;
+	} else {
+		return false;
+	}
+}
+
 function checkForTechinician() {
-	if(getUserRole() === "technician"){
+	if(isTechnician()){
 		return true;
 	} else {
 		window.location.href = htmlURLBase + "/index.html";
+	}
+}
+
+function isTechnician() {
+	if(getUserRole() === "technician"){
+		return true;
+	} else {
+		return false;
 	}
 }
 

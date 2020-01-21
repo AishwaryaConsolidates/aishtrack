@@ -6,15 +6,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import com.aishtek.aishtrack.beans.ExpenseReport;
 
 public class ExpenseReportDAO extends BaseDAO {
 
   public static int create(Connection connection, int serviceReportId, int customerId,
-      int technicianId, BigDecimal advanceAmount) throws SQLException {
+      int technicianId, BigDecimal advanceAmount, BigDecimal carryForwardAmount, String location,
+      Date advanceAmountDate)
+      throws SQLException {
     PreparedStatement preparedStatement = connection.prepareStatement(
-        "insert into expense_reports (service_report_id, customer_id, technician_id, advance_amount) values(?, ?, ?, ?)",
+        "insert into expense_reports (service_report_id, customer_id, technician_id, advance_amount, carry_forward_amount, location, advance_amount_date) values(?, ?, ?, ?, ?, ?, ?)",
         PreparedStatement.RETURN_GENERATED_KEYS);
 
     if (serviceReportId > 0) {
@@ -29,6 +32,9 @@ public class ExpenseReportDAO extends BaseDAO {
     }
     preparedStatement.setInt(3, technicianId);
     preparedStatement.setBigDecimal(4, advanceAmount);
+    preparedStatement.setBigDecimal(5, carryForwardAmount);
+    preparedStatement.setString(6, location);
+    preparedStatement.setTimestamp(7, timestampFor(advanceAmountDate));
 
     preparedStatement.executeUpdate();
 
@@ -40,13 +46,18 @@ public class ExpenseReportDAO extends BaseDAO {
     }
   }
 
-  public static void update(Connection connection, int expenseReportId, BigDecimal advanceAmount)
+  public static void update(Connection connection, int expenseReportId, BigDecimal advanceAmount,
+      BigDecimal carryForwardAmount, String location, Date advanceAmountDate)
       throws SQLException {
     PreparedStatement preparedStatement =
-        connection.prepareStatement("update expense_reports set advance_amount = ? where id =  ?");
+        connection.prepareStatement(
+            "update expense_reports set advance_amount = ?, carry_forward_amount = ?, location = ?, advance_amount_date = ? where id =  ?");
 
     preparedStatement.setBigDecimal(1, advanceAmount);
-    preparedStatement.setInt(2, expenseReportId);
+    preparedStatement.setBigDecimal(2, carryForwardAmount);
+    preparedStatement.setString(3, location);
+    preparedStatement.setTimestamp(4, timestampFor(advanceAmountDate));
+    preparedStatement.setInt(5, expenseReportId);
 
     preparedStatement.executeUpdate();
   }
@@ -54,7 +65,7 @@ public class ExpenseReportDAO extends BaseDAO {
   public static ExpenseReport findById(Connection connection, int expenseReportId)
       throws SQLException {
     String sql =
-        "SELECT er.id, er.service_report_id, er.customer_id, er.technician_id, c.name customer_name, (p.first_name || ' ' || p.last_name) technician_name, er.advance_amount, er.settled "
+        "SELECT er.id, er.service_report_id, er.customer_id, er.technician_id, c.name customer_name, (p.first_name || ' ' || p.last_name) technician_name, er.advance_amount, er.settled, er.carry_forward_amount, er.location, er.advance_amount_date "
             + " FROM expense_reports er left outer join customers c on er.customer_id = c.id "
             + " left outer join technicians t on er.technician_id = t.id left outer join persons p on t.person_id = p.id "
             + " where er.id = ?";
@@ -65,7 +76,8 @@ public class ExpenseReportDAO extends BaseDAO {
     if (result.next()) {
       ExpenseReport expenseReport =
           new ExpenseReport(result.getInt(1), result.getInt(2), result.getInt(3), result.getInt(4),
-              result.getBigDecimal(7), result.getInt(8));
+              result.getBigDecimal(7), result.getInt(8), result.getBigDecimal(9),
+              result.getString(10), dateFor(result.getTimestamp(11)));
       expenseReport.setExpenses(ExpenseDAO.findByExpenseReportId(connection, expenseReportId));
       expenseReport.setCustomerName(result.getString(5));
       expenseReport.setTechnicianName(result.getString(6));
@@ -77,7 +89,7 @@ public class ExpenseReportDAO extends BaseDAO {
   public static ArrayList<HashMap<String, String>> getExpenseReportsForSR(Connection connection,
       int serviceReportId) throws SQLException {
     String sql =
-        "SELECT er.id, tpr.first_name, tpr.last_name from expense_reports er left outer join technicians t on er.technician_id = t.id left outer join persons tpr on t.person_id = tpr.id where er.service_report_id = ?";
+        "SELECT er.id, tpr.first_name, tpr.last_name from expense_reports er left outer join technicians t on er.technician_id = t.id left outer join persons tpr on t.person_id = tpr.id where er.deleted = 0 and er.service_report_id = ?";
 
     PreparedStatement statement = connection.prepareStatement(sql);
     statement.setInt(1, serviceReportId);
@@ -97,7 +109,7 @@ public class ExpenseReportDAO extends BaseDAO {
   public static ArrayList<HashMap<String, String>> getExpenseReportsForCustomer(
       Connection connection, int customerId) throws SQLException {
     String sql =
-        "SELECT er.id, tpr.first_name, tpr.last_name from expense_reports er left outer join technicians t on er.technician_id = t.id left outer join persons tpr on t.person_id = tpr.id where sr.customer_id = ?";
+        "SELECT er.id, tpr.first_name, tpr.last_name from expense_reports er left outer join technicians t on er.technician_id = t.id left outer join persons tpr on t.person_id = tpr.id where er.deleted = 0 and sr.customer_id = ?";
 
     PreparedStatement statement = connection.prepareStatement(sql);
     statement.setInt(1, customerId);
@@ -117,7 +129,7 @@ public class ExpenseReportDAO extends BaseDAO {
   public static ArrayList<HashMap<String, String>> getExpenseReportsForTechnician(
       Connection connection, int technicianId) throws SQLException {
     String sql =
-        "SELECT er.id, tpr.first_name, tpr.last_name from expense_reports er left outer join technicians t on er.technician_id = t.id left outer join persons tpr on t.person_id = tpr.id where er.customer_id = ?";
+        "SELECT er.id, tpr.first_name, tpr.last_name from expense_reports er left outer join technicians t on er.technician_id = t.id left outer join persons tpr on t.person_id = tpr.id where er.deleted = 0 and er.technician_id = ?";
 
     PreparedStatement statement = connection.prepareStatement(sql);
     statement.setInt(1, technicianId);
@@ -135,7 +147,8 @@ public class ExpenseReportDAO extends BaseDAO {
   }
 
   public static ArrayList<HashMap<String, String>> searchFor(Connection connection,
-      int technicianId, int customerId, int settled) throws SQLException {
+      int technicianId, int customerId, int settled, Date startDate, Date endDate)
+      throws SQLException {
     String sql =
         "SELECT er.id, tpr.first_name, tpr.last_name, c.name, er.settled from expense_reports er left outer join customers c on er.customer_id = c.id left outer join technicians t on er.technician_id = t.id left outer join persons tpr on t.person_id = tpr.id where er.deleted = 0 ";
 
@@ -145,8 +158,14 @@ public class ExpenseReportDAO extends BaseDAO {
     if (customerId > 0) {
       sql += " and er.customer_id = ? ";
     }
-    if (settled > 0) {
+    if (settled >= 0) {
       sql += " and er.settled = ? ";
+    }
+    if (endDate != null) {
+      sql += " and er.created_at <= ? ";
+    }
+    if (startDate != null) {
+      sql += " and er.created_at >= ? ";
     }
 
     PreparedStatement statement = connection.prepareStatement(sql);
@@ -164,7 +183,14 @@ public class ExpenseReportDAO extends BaseDAO {
       statement.setInt(index, settled);
       index++;
     }
-
+    if (endDate != null) {
+      statement.setDate(index, (java.sql.Date) endDate);
+      index++;
+    }
+    if (startDate != null) {
+      statement.setDate(index, (java.sql.Date) startDate);
+      index++;
+    }
     ResultSet result = statement.executeQuery();
 
     ArrayList<HashMap<String, String>> expenseReports = new ArrayList<HashMap<String, String>>();
@@ -182,6 +208,13 @@ public class ExpenseReportDAO extends BaseDAO {
   public static void settle(Connection connection, int expenseReportId) throws SQLException {
     PreparedStatement preparedStatement =
         connection.prepareStatement("update expense_reports set settled = 1 where id = ?");
+    preparedStatement.setInt(1, expenseReportId);
+    preparedStatement.executeUpdate();
+  }
+
+  public static void delete(Connection connection, int expenseReportId) throws SQLException {
+    PreparedStatement preparedStatement =
+        connection.prepareStatement("update expense_reports set deleted = 1 where id = ?");
     preparedStatement.setInt(1, expenseReportId);
     preparedStatement.executeUpdate();
   }

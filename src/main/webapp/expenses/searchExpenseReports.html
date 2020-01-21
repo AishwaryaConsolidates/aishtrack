@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/tooplate.css">
     <link rel="stylesheet" type="text/css" href="../vendors/DataTables/dataTables.bootstrap4.css"/>
+    <link rel="stylesheet" href="../vendors/jquery-ui-datepicker/jquery-ui.min.css" type="text/css" />
 </head>
 
 <body>
@@ -28,7 +29,38 @@
                             <div class="col-md-12 col-sm-12">
                                 <h2 class="tm-block-title d-inline-block">Search Expense Reports
                             </div>
-                                
+                        <form action="" class="tm-edit-product-form" id="searchExpenseReportForm">
+                        <input type="hidden" id="technicianEmail" name="technicianEmail"/>
+                        <div class="input-group mb-3">
+                            <label for="category" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Customer</label>
+                            <select name="customerId" id="customerId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+
+                            </select>
+                        </div>
+                        <div class="input-group mb-3">
+                            <label for="technicians" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Technician</label>
+                            <select name="technicianIds" id="technicianIds" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+
+                            </select>
+                        </div>
+                        <div class="input-group mb-3">
+                            <label for="startDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Report Start Date</label>
+                            <input id="startDate" name="startDate" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" data-large-mode="true">
+                        </div>
+                        <div class="input-group mb-3">
+                            <label for="endDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Report End Date</label>
+                            <input id="endDate" name="endDate" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" data-large-mode="true">
+                        </div>
+                        <div class="input-group mb-3">
+                        <input type="radio" id="settled" name="settled" aria-label="Radio" value="1">Only Settled &nbsp;&nbsp;
+                        <input type="radio" id="settled" name="settled" aria-label="Radio" value="0">Only Open &nbsp;&nbsp;
+                        <input type="radio" id="settled" name="settled" aria-label="Radio" value="-1" checked="checked">All &nbsp;&nbsp;
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <button type="submit" class="btn btn-primary" id="submitButton">Search</button>
+                        </div>
+                        </form>
                         <div class="table-responsive">
                         <form action="" class="tm-edit-product-form" id="updateExpenseReportForm">
                         <input type="hidden" id="expenseReportId" name="expenseReportId"/>
@@ -62,13 +94,37 @@
     <script src="../js/aishtrack.js"></script>
     <script src="../js/amazon-cognito-identity.min.js"></script>
     <script type="text/javascript" src="../vendors/DataTables/datatables.min.js"></script>
+    <script src="../vendors/jquery-ui-datepicker/jquery-ui.min.js"></script>
     <script>    
         $(function () {
+        	$('#startDate').datepicker({
+        	    dateFormat: 'dd/mm/yy'
+        	});
+        	$('#endDate').datepicker({
+        	    dateFormat: 'dd/mm/yy'
+        	});
         	checkLogin();
-        	checkForAdministrator();
         	includeHTML();
-        	loadExpenseReports();
-        	
+        	getCustomers();
+        	if(isTechnician()) {
+        		$("#technicianEmail").val(getUserEmail());
+        		$option = $("<option/>", {
+        			value : 0,
+        			text : "Select....."
+        		});
+        		$("#technicianIds").append($option);
+        	} else {
+        		getTechnicians(true);
+        	}
+
+        	// loadExpenseReports();
+        	$("#submitButton").on("click", function (e) {
+        		$("#submitButton").attr("disabled", true);
+                e.preventDefault();
+                loadExpenseReports();
+                $("#submitButton").attr("disabled", false);
+                return false;
+            });
         	function bindSettleButton() {
         		$(".settleButton").on("click", function (e) {
                     $("#expenseReportId").val($(this).attr("data-id"));
@@ -95,7 +151,7 @@
             function loadExpenseReports() {
             	$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
                 $.ajax({
-                    url : apiURLBase + "/searchExpenseReports?settled=0",
+                    url : apiURLBase + "/searchExpenseReports?" + $('#searchExpenseReportForm').serialize(),
                     type : "GET",
                     dataType: "json",
                     crossDomain: true,

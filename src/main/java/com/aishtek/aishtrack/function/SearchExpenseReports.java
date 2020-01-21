@@ -1,9 +1,12 @@
 package com.aishtek.aishtrack.function;
 
 import java.sql.Connection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import com.aishtek.aishtrack.dao.ExpenseReportDAO;
+import com.aishtek.aishtrack.dao.TechnicianDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
 import com.aishtek.aishtrack.utils.Util;
@@ -20,16 +23,32 @@ public class SearchExpenseReports extends BaseFunction
 
     try (Connection connection = getConnection()) {
       try {
+        String technicianEmail; //only for technicians
         int technicianId = 0;
         int customerId = 0;
         int settled = 0;
+        Date startDate = null;
+        Date endDate = null;
         
-        technicianId = Util.getInt(serverlessInput.getQueryStringParameters().get("technicianId"));
+        technicianEmail = serverlessInput.getQueryStringParameters().get("technicianEmail");
+        technicianId = Util.getInt(serverlessInput.getQueryStringParameters().get("technicianIds"));
+        if(!Util.isNullOrEmpty(technicianEmail)) {
+          technicianId = TechnicianDAO.getTechnicianIdFor(connection, technicianEmail);
+        }
         customerId = Util.getInt(serverlessInput.getQueryStringParameters().get("customerId"));
         settled = Util.getInt(serverlessInput.getQueryStringParameters().get("settled"));
+        if (!Util.isNullOrEmpty(serverlessInput.getQueryStringParameters().get("startDate"))) {
+          startDate = new SimpleDateFormat("dd/MM/yyyy")
+              .parse(serverlessInput.getQueryStringParameters().get("startDate"));
+        }
+        if (!Util.isNullOrEmpty(serverlessInput.getQueryStringParameters().get("endDate"))) {
+          startDate = new SimpleDateFormat("dd/MM/yyyy")
+              .parse(serverlessInput.getQueryStringParameters().get("endDate"));
+        }
 
         ArrayList<HashMap<String, String>> expenseReports =
-            ExpenseReportDAO.searchFor(connection, technicianId, customerId, settled);
+            ExpenseReportDAO.searchFor(connection, technicianId, customerId, settled, startDate,
+                endDate);
 
         output = createSuccessOutput();
         output.setBody(new Gson().toJson(expenseReports));

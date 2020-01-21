@@ -95,12 +95,23 @@ public class UpdateVisit extends BaseFunction
         getStringList(recommendedSparePartDescription);
 
     RecommendedSparePartDAO.deleteFor(connection, visitId);
+    String description;
+    String quantity;
     for (int i = 0; i < recommendedSparePartNumbers.size(); i++) {
       if (!Util.isNullOrEmpty(recommendedSparePartNumbers.get(i))) {
+        if (recommendedSparePartDescriptions.size() <= i) {
+          description = recommendedSparePartDescriptions.get(i);
+        } else {
+          description = "";
+        }
+        if (recommendedSparePartQuantitys.size() <= i) {
+          quantity = recommendedSparePartQuantitys.get(i);
+        } else {
+          quantity = "0";
+        }
         RecommendedSparePartDAO.create(connection,
-        new SparePart(visitId, recommendedSparePartNumbers.get(i),
-            recommendedSparePartDescriptions.get(i),
-                Util.getInt(recommendedSparePartQuantitys.get(i))));
+            new SparePart(visitId, recommendedSparePartNumbers.get(i), description,
+                Util.getInt(quantity)));
       }
     }
   }
@@ -113,12 +124,23 @@ public class UpdateVisit extends BaseFunction
     ArrayList<String> replacedSparePartDescriptions = getStringList(replacedSparePartDescription);
 
     ReplacedSparePartDAO.deleteFor(connection, visitId);
+    String description;
+    String quantity;
     for (int i = 0; i < replacedSparePartNumbers.size(); i++) {
       if (!Util.isNullOrEmpty(replacedSparePartNumbers.get(i))) {
-        ReplacedSparePartDAO.create(connection,
-            new SparePart(visitId, replacedSparePartNumbers.get(i),
-                replacedSparePartDescriptions.get(i),
-                Util.getInt(replacedSparePartQuantitys.get(i))));
+
+        if (replacedSparePartDescriptions.size() <= i) {
+          description = replacedSparePartDescriptions.get(i);
+        } else {
+          description = "";
+        }
+        if (replacedSparePartQuantitys.size() <= i) {
+          quantity = replacedSparePartQuantitys.get(i);
+        } else {
+          quantity = "0";
+        }
+        RecommendedSparePartDAO.create(connection, new SparePart(visitId,
+            replacedSparePartNumbers.get(i), description, Util.getInt(quantity)));
       }
     }
   }

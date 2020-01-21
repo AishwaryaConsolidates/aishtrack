@@ -25,7 +25,7 @@
                 <div class="bg-white tm-block">
                     <div class="row">
                         <div class="col-12">
-                            <h2 class="tm-block-title d-inline-block">Service Report</h2>
+                            <h2 class="tm-block-title d-inline-block">Service Report <a href="#" class=showSR>(view)</a></h2>
                         </div>
                     </div>
                         <table class="">
@@ -183,6 +183,11 @@
         	urlParams = new URLSearchParams(window.location.search);
         	serviceReportCode = urlParams.get('serviceReportCode');
         	getAllInfoForPage(serviceReportCode);
+
+        	$(".showSR").click(function (e) {
+        		window.open(htmlURLBase + "/serviceReports/printServiceReport.html?serviceReportCode=" + serviceReportCode);
+        		return false;
+        	});
 
         	$("#addInstallationDetailButton").click(function (e) {
         		e.preventDefault();

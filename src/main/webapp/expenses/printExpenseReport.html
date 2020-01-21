@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Expense Report</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+</head>
+
+<body>
+<table width="95%" align="center">
+<tr>
+<td colspan="4" align="center"><h1>Aishwarya Consolidates Pvt Ltd.,</h1></td>
+</tr>
+<tr>
+<td colspan="4" align="center">#19, First Floor , 10th B Main , 27th Cross Third Block-Jayanagar, Bengaluru 560 011, India</td>
+</tr>
+
+<tr>
+<td colspan="4" align="center">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="2"><h1>Tour Expenses Statement</h1></td>
+<td colspan="1"><h1><div id="reportId"/><h1></td>
+<td colspan="1">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="4" align="center">&nbsp;</td>
+</tr>
+
+<tr>
+<td>Location</td><td><div id="location"/></td>
+<td>Date</td><td><div id="reportDate"/></td>
+</tr>
+       	
+<tr>
+<td>Customer</td><td><div id="customerName"/></td>
+<td>Technician</td><td><div id="technicianName"/></td>
+</tr>
+
+<tr>
+<td>Carry Forward Amount</td><td><div id="carryForwardAmount"/></td>
+<td>Advance Amount</td><td><div id="advanceAmount"/></td>
+</tr>
+
+<tr>
+<td>Total Expense Amount</td><td><div id="totalExpenseAmount"/></td>
+<td>Amount Due</td><td><div id="amountDue"/></td>
+</tr>
+
+<tr>
+<td colspan="4" align="center">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="4"><h1>Expenses</h1></td>
+</tr>
+
+<tr>
+<td colspan="4">
+    <table id="expensesTable" width="100%">
+	  <tr>
+	    <td>Date</td>
+	    <td>Type</td>
+	    <td>Notes</td>
+	    <td>Amount</td>
+	  </tr>
+   </table>
+</td>
+</tr>
+
+</table>
+
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/aishtrack.js"></script>
+    <script>
+        $(function () {
+        	checkLogin();
+        	checkForAdministrator();
+        	urlParams = new URLSearchParams(window.location.search);
+        	expenseReportId = urlParams.get('id');
+
+        	prefillExpenseReport(expenseReportId);
+        	
+        	function prefillExpenseReport(expenseReportId) {	
+                $.ajax({
+                    url : apiURLBase + "/getExpenseReport?expenseReportId=" + expenseReportId,
+                    type : "GET",
+                    dataType: "json",
+                    crossDomain: true,
+            		success: function(data) {
+            			expenseReport = JSON.parse(JSON.stringify(data));
+            			loadExpenseReport(expenseReport);
+            		},
+            		error: function(data) {
+            			console.log("Error fetching expense report "+ data);
+            		}
+            	});
+            }
+        	
+        	function loadExpenseReport(expenseReport) {
+        		$("#reportId").html(expenseReport.id);
+        		$("#reportDate").html(expenseReport.expenseReportDate);
+        		$("#location").html(expenseReport.location);
+        		$("#carryForwardAmount").html(expenseReport.carryForwardAmount);
+        		$("#advanceAmount").html(expenseReport.advanceAmount);
+        		$("#totalExpenseAmount").html(expenseReport.totalExpenseAmount);
+        		$("#amountDue").html(expenseReport.amountDue);
+        		$("#customerName").html(expenseReport.customerName);
+            	$("#technicianName").html(expenseReport.technicianName);
+            	
+        		fillExpenses(expenseReport.expenses);
+            }
+        	
+        	function fillExpenses(expenses) {
+        		var expensesTable = document.getElementById("expensesTable");
+            	$.each(expenses, function(index, expense){
+            		var row = expensesTable.insertRow();
+                 	var dateCell = row.insertCell(0);
+                	var typeCell = row.insertCell(1);
+                	var notesCell = row.insertCell(2);
+                	var amountCell = row.insertCell(3);
+                	
+                	dateCell.innerHTML = expense.expenseDateString;
+                	typeCell.innerHTML = expense.expenseType;
+                	notesCell.innerHTML = expense.notes;
+                	amountCell.innerHTML = expense.amount;
+                });
+            }
+        })
+    </script>
+</body>
+
+</html>

@@ -263,7 +263,7 @@ public class ServiceReportDAO extends BaseDAO {
       whereSQL += " and p.email = ? ";
     }
 
-    String sql = selectSQL + fromSQL + whereSQL + " order by status, status_date ";
+    String sql = selectSQL + fromSQL + whereSQL + " order by created_at desc ";
 
     PreparedStatement statement = connection.prepareStatement(sql);
 

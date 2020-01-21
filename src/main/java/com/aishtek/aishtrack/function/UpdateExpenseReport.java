@@ -30,11 +30,15 @@ public class UpdateExpenseReport extends BaseFunction
         Response response = getParams(serverlessInput.getBody());
         setTechnicianId(response, connection);
 
+        Date advanceAmountDate =
+            new SimpleDateFormat("dd/MM/yyyy").parse(response.advanceAmountDate);
         if (Util.isNullOrEmpty(response.id)) {
           int expenseReportId =
               createExpenseReport(connection, Util.getInt(response.serviceReportId),
                   Util.getInt(response.customerId), Util.getInt(response.technicianId),
-                  new BigDecimal(response.advanceAmount));
+                  new BigDecimal(response.advanceAmount),
+                  new BigDecimal(response.carryForwardAmount), response.location,
+                  advanceAmountDate);
 
           createExpenses(connection, expenseReportId, response.expenseDate, response.expenseType,
               response.expenseNote, response.expenseAmount);
@@ -42,7 +46,8 @@ public class UpdateExpenseReport extends BaseFunction
           output = createSuccessOutput("" + expenseReportId);
         } else {
           updateExpenseReport(connection, Util.getInt(response.id),
-              new BigDecimal(response.advanceAmount));
+              new BigDecimal(response.advanceAmount), new BigDecimal(response.carryForwardAmount),
+              response.location, advanceAmountDate);
 
           createExpenses(connection, Util.getInt(response.id), response.expenseDate,
               response.expenseType, response.expenseNote, response.expenseAmount);
@@ -61,19 +66,23 @@ public class UpdateExpenseReport extends BaseFunction
   }
 
   public int createExpenseReport(Connection connection, int serviceReportId, int customerId,
-      int technicianId, BigDecimal advanceAmount)
+      int technicianId, BigDecimal advanceAmount, BigDecimal carryForwardAmount, String location,
+      Date advanceAmountDate)
       throws SQLException {
     if (serviceReportId > 0) {
       Customer customer = ServiceReportDAO.getCustomerFor(connection, serviceReportId);
       customerId = customer.getId();
     }
     return ExpenseReportDAO.create(connection, serviceReportId, customerId, technicianId,
-        advanceAmount);
+        advanceAmount, carryForwardAmount, location, advanceAmountDate);
   }
 
   public void updateExpenseReport(Connection connection, int expenseReportId,
-      BigDecimal advanceAmount) throws SQLException {
-    ExpenseReportDAO.update(connection, expenseReportId, advanceAmount);
+      BigDecimal advanceAmount, BigDecimal carryForwardAmount, String location,
+      Date advanceAmountDate)
+      throws SQLException {
+    ExpenseReportDAO.update(connection, expenseReportId, advanceAmount, carryForwardAmount,
+        location, advanceAmountDate);
   }
 
   public Response getParams(String jsonString) {
@@ -121,6 +130,9 @@ public class UpdateExpenseReport extends BaseFunction
     public String technicianEmail;
     public String customerId;
     public String advanceAmount;
+    public String advanceAmountDate;
+    public String carryForwardAmount;
+    public String location;
 
     public String expenseDate;
     public String expenseType;

@@ -1,0 +1,1 @@
+ALTER TABLE expense_reports ADD advance_amount_date TIMESTAMP;

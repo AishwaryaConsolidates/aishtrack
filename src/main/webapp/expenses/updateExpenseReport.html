@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Create Work order</title>
+    <title>Expense Report</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
     <link rel="stylesheet" href="../css/fontawesome.min.css">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
@@ -26,7 +26,15 @@
                     <div class="row">
                         <div class="col-12">
                             <div id="notification"></div>
-                            <h2 class="tm-block-title d-inline-block">Expense Report</h2>
+
+                            <table width="100%">
+                            <tr>
+                            <td><h2>Tour Expenses Statement</h2></td>
+                            <td align="left"><h2><div id="reportId"/></h2></td>
+                            <td>&nbsp;</td>
+                            <td align="right"><i class="fas fa-print" onclick="printExpenseReport()"></i>&nbsp;<i class="fas fa-trash" onclick="deleteExpenseReport()"></i></td>
+                            </tr>
+                            </table>
                             <h5 id="customerName"></h5>
                             <h5 id="technicianName"></h5>
                         </div>
@@ -40,12 +48,33 @@
                                <input type="hidden" id="technicianId" name="technicianId"/>
                                <input type="hidden" id="technicianEmail" name="technicianEmail"/>
                                
-                               Advance Amount: <input class="recalculate" id="advanceAmount" name="advanceAmount" type="text" size="12" value=0>
-                               Total Expense Amount: <input id="totalExpenseAmount" name="totalExpenseAmount" type="text" size="12" value=0>
-                               Amount Due: <input id="dueAmount" name="dueAmount" type="text" size="12" value=0>
-                              
-                              <br/>
-                               
+                               <table id="expenseReportTable" width="100%">
+                               <tr>
+                               <td>Carry Forward Amount:</td>
+                               <td><input class="recalculate" id="carryForwardAmount" name="carryForwardAmount" type="text" size="12" value=0></td>
+                               </tr>
+                               <tr>
+                               <td>Advance Amount:</td>
+                               <td><input class="recalculate" id="advanceAmount" name="advanceAmount" type="text" size="12" value=0></td>
+                               </tr>
+                               <tr>
+                               <td>Advance Amount Date:</td>
+                               <td><input id="advanceAmountDate" name="advanceAmountDate" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" data-large-mode="true"></td>
+                               </tr>
+                               <tr>
+                               <td>Total Expense Amount:</td>
+                               <td><input id="totalExpenseAmount" name="totalExpenseAmount" type="text" size="12" value=0></td>
+                               </tr>
+                               <tr>
+                               <td>Amount Due:</td>
+                               <td><input id="dueAmount" name="dueAmount" type="text" size="12" value=0>
+                               </tr>
+                               <tr>
+                               <td>Location:</td>
+                               <td><input id="location" name="location" type="text" size="40"></td>
+                               </tr>
+                               </table>
+                               <br/>
                               <h2>Expenses </h2>
 
                                <table id="expensesTable" width="100%">
@@ -57,7 +86,7 @@
 	                               </tr>
                                </table>
                               
-                                
+                                <i class="far fa-plus-square" id="addSingleExpense" onclick="addEmptyExpense()"></i>
                                 <div class="input-group mb-3">
                                     <div class="ml-auto col-xl-8 col-lg-8 col-md-8 col-sm-7 pl-0">
                                         <button type="submit" class="btn btn-primary" id="submitButton">Update</button>
@@ -95,15 +124,19 @@
     <script src="../js/aishtrack.js"></script>
     <script src="../vendors/jquery-ui-datepicker/jquery-ui.min.js"></script>
     <script>
+    var noOfExpenses = 0;
         $(function () {
         	checkLogin();
         	$("#technicianEmail").val(getUserEmail());
 
         	includeHTML();
          	var expensesTable = document.getElementById("expensesTable");
-         	
          	checkForUpdate();
          	
+         	$('#advanceAmountDate').datepicker({
+        	    dateFormat: 'dd/mm/yy'
+        	});
+
          	$("#submitButton").on("click", function (e) {
                 $("#submitButton").attr("disabled", true);
                 e.preventDefault();
@@ -139,7 +172,7 @@
         		totalExpenditure = +totalExpenditure + +$(this).val();
         	});
         	$("#totalExpenseAmount").val(totalExpenditure);
-        	$("#dueAmount").val((+totalExpenditure - +$("#advanceAmount").val()).toFixed(2));
+        	$("#dueAmount").val((+totalExpenditure - +$("#advanceAmount").val() - +$("#carryForwardAmount").val()).toFixed(2));
         }
         
         function checkForUpdate() {
@@ -176,13 +209,17 @@
         }
         
         function fillForm(expenseReport) {
+        	$("#reportId").html(expenseReport.id);
         	$("#expenseReportId").val(expenseReport.id);
         	$("#technicianId").val(expenseReport.technicianId);
         	$("#serviceReportId").val(expenseReport.serviceReportId);
         	$("#customerId").val(expenseReport.customerId);
         	$("#advanceAmount").val(expenseReport.advanceAmount);
+        	$("#carryForwardAmount").val(expenseReport.carryForwardAmount);
+        	$("#location").val(expenseReport.location);
         	$("#customerName").html(expenseReport.customerName);
         	$("#technicianName").html(expenseReport.technicianName);
+        	$("#advanceAmountDate").val(expenseReport.advanceAmountDateString);
         	fillExpenses(expenseReport.expenses);
         	recalculate();
         }
@@ -218,7 +255,52 @@
             	$(".recalculate").change(function() {
                 	recalculate();
                 });
+            	noOfExpenses++;
          	}       	
+        }
+
+        function addEmptyExpense() {
+        	nextId = noOfExpenses++;
+            var row = expensesTable.insertRow();
+            var dateCell = row.insertCell(0);
+            var typeCell = row.insertCell(1);
+            var notesCell = row.insertCell(2);
+            var amountCell = row.insertCell(3);
+
+            dateCell.innerHTML = document.getElementById("expenseDateTemplate").innerHTML.replace(/COUNT/g, nextId);
+            typeCell.innerHTML = document.getElementById("expenseTypeTemplate").innerHTML.replace(/COUNT/g, nextId);
+            notesCell.innerHTML = document.getElementById("expenseNotesTemplate").innerHTML.replace(/COUNT/g, nextId);
+            amountCell.innerHTML = document.getElementById("expenseAmountTemplate").innerHTML.replace(/COUNT/g, nextId);
+
+            $('#expenseDate' + nextId).datepicker({
+        	    dateFormat: 'dd/mm/yy'
+        	});
+
+            $(".recalculate").change(function() {
+                recalculate();
+            });
+        }
+
+        function printExpenseReport() {
+        	window.open(htmlURLBase + "/expenses/printExpenseReport.html?id=" + urlParams.get('expenseReportId'));
+        }
+
+        function deleteExpenseReport() {
+        	$.ajax({
+                url : apiURLBase + "/deleteExpenseReport",
+                type : "POST",
+                data: getJSONFormData($('#updateExpenseReportForm')),
+                dataType: "json",
+                contentType: 'application/json',
+                crossDomain: true,
+        		success: function(data) {
+        			$("#notification").html("<center><font color=\"green\">Expense Report Updated</font></center>");
+        		},
+        		error: function(data) {
+        			alert("Error updating expense report, please try again");
+        		}
+        	});
+        	return false;
         }
     </script>
 </body>

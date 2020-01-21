@@ -2,6 +2,7 @@ package com.aishtek.aishtrack.beans;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ExpenseReport extends BaseBean {
 
@@ -9,22 +10,30 @@ public class ExpenseReport extends BaseBean {
   private int customerId;
   private int technicianId;
   private BigDecimal advanceAmount;
+  private BigDecimal carryForwardAmount;
+  private String location;
   private int settled;
+  private Date advanceAmountDate;
 
   private ArrayList<Expense> expenses;
 
   // for view
   private String customerName;
   private String technicianName;
+  private String advanceAmountDateString;
 
   public ExpenseReport(int id, int serviceReportId, int customerId, int technicianId,
-      BigDecimal advanceAmount, int settled) {
+      BigDecimal advanceAmount, int settled, BigDecimal carryForwardAmount, String location,
+      Date advanceAmountDate) {
     this.id = id;
     this.serviceReportId = serviceReportId;
     this.customerId = customerId;
     this.technicianId = technicianId;
     this.advanceAmount = advanceAmount;
     this.settled = settled;
+    this.carryForwardAmount = carryForwardAmount;
+    this.location = location;
+    this.advanceAmountDate = advanceAmountDate;
   }
 
   public int getServiceReportId() {
@@ -89,6 +98,38 @@ public class ExpenseReport extends BaseBean {
 
   public void setSettled(int settled) {
     this.settled = settled;
+  }
+
+  public BigDecimal getCarryForwardAmount() {
+    return carryForwardAmount;
+  }
+
+  public void setCarryForwardAmount(BigDecimal carryForwardAmount) {
+    this.carryForwardAmount = carryForwardAmount;
+  }
+
+  public String getLocation() {
+    return location;
+  }
+
+  public void setLocation(String location) {
+    this.location = location;
+  }
+
+  public Date getAdvanceAmountDate() {
+    return advanceAmountDate;
+  }
+
+  public void setAdvanceAmountDate(Date advanceAmountDate) {
+    this.advanceAmountDate = advanceAmountDate;
+  }
+
+  public String getAdvanceAmountDateString() {
+    return advanceAmountDateString;
+  }
+
+  public void setAdvanceAmountDateString(String advanceAmountDateString) {
+    this.advanceAmountDateString = advanceAmountDateString;
   }
 
 }
