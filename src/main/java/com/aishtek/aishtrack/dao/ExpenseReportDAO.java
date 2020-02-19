@@ -184,11 +184,11 @@ public class ExpenseReportDAO extends BaseDAO {
       index++;
     }
     if (endDate != null) {
-      statement.setDate(index, (java.sql.Date) endDate);
+      statement.setTimestamp(index, endOfDayTimestamp(endDate));
       index++;
     }
     if (startDate != null) {
-      statement.setDate(index, (java.sql.Date) startDate);
+      statement.setTimestamp(index, beginningOfDayTimestamp(startDate));
       index++;
     }
     ResultSet result = statement.executeQuery();

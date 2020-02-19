@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import com.aishtek.aishtrack.beans.Customer;
 import com.aishtek.aishtrack.beans.Person;
@@ -12,6 +13,7 @@ import com.aishtek.aishtrack.beans.ServiceReport;
 import com.aishtek.aishtrack.beans.Technician;
 import com.aishtek.aishtrack.beans.WorkOrder;
 import com.aishtek.aishtrack.utils.Util;
+import com.aishtek.aishtrack.utils.WorkStatus;
 import com.google.gson.Gson;
 
 public class ServiceReportDAO extends BaseDAO {
@@ -99,11 +101,19 @@ public class ServiceReportDAO extends BaseDAO {
       int serviceRating,
       String signedBy, String customerRemarks) throws SQLException {
     PreparedStatement preparedStatement = connection.prepareStatement(
-        "update service_reports set customer_remarks = ?, service_rating = ?, signed_by = ? where code = ?");
+        "update service_reports set customer_remarks = ?, service_rating = ?, signed_by = ?, status = ?, status_date = ? where code = ?");
     preparedStatement.setString(1, customerRemarks);
     preparedStatement.setInt(2, serviceRating);
     preparedStatement.setString(3, signedBy);
-    preparedStatement.setObject(4, java.util.UUID.fromString(serviceReportCode));
+    preparedStatement.setString(4, WorkStatus.COMPLETED_STATUS);
+    preparedStatement.setTimestamp(5, timestampFor(new Date()));
+    preparedStatement.setObject(6, java.util.UUID.fromString(serviceReportCode));
+    preparedStatement.executeUpdate();
+
+    preparedStatement = connection.prepareStatement(
+        "insert into service_report_status_histories (service_report_id, status) select sr.id, ? from service_reports sr where sr.code = ?");
+    preparedStatement.setString(1, WorkStatus.COMPLETED_STATUS);
+    preparedStatement.setObject(2, java.util.UUID.fromString(serviceReportCode));
     preparedStatement.executeUpdate();
   }
 
@@ -263,7 +273,7 @@ public class ServiceReportDAO extends BaseDAO {
       whereSQL += " and p.email = ? ";
     }
 
-    String sql = selectSQL + fromSQL + whereSQL + " order by created_at desc ";
+    String sql = selectSQL + fromSQL + whereSQL + " order by sr.created_at desc ";
 
     PreparedStatement statement = connection.prepareStatement(sql);
 
@@ -379,8 +389,17 @@ public class ServiceReportDAO extends BaseDAO {
   public static void deleteForWorkOrder(Connection connection, int workOrderId)
       throws SQLException {
     PreparedStatement preparedStatement = connection.prepareStatement(
-        "update service_reports set deleted = 1 from service_reports sr, work_order_service_reports wosr where wosr.work_order_id = ? and wosr.service_report_id = sr.id ");
-    preparedStatement.setInt(1, workOrderId);
+        "update service_reports set deleted = 1, status =?, status_date = ? from service_reports sr, work_order_service_reports wosr where wosr.work_order_id = ? and wosr.service_report_id = sr.id ");
+
+    preparedStatement.setString(1, WorkStatus.DELETED_STATUS);
+    preparedStatement.setTimestamp(2, timestampFor(new Date()));
+    preparedStatement.setInt(3, workOrderId);
+    preparedStatement.executeUpdate();
+
+    preparedStatement = connection.prepareStatement(
+        "insert into service_report_status_histories (service_report_id, status) select wosr.service_report_id, ? from work_order_service_reports wosr where wosr.work_order_id = ?");
+    preparedStatement.setString(1, WorkStatus.DELETED_STATUS);
+    preparedStatement.setInt(2, workOrderId);
     preparedStatement.executeUpdate();
   }
 
@@ -423,5 +442,28 @@ public class ServiceReportDAO extends BaseDAO {
     } else {
       throw new SQLException("No Service Report found, ID does not exist");
     }
+  }
+
+  public static void updateStatus(Connection connection, int serviceReportId, String status)
+      throws SQLException {
+    PreparedStatement preparedStatement = connection
+        .prepareStatement("update service_reports set status = ?, status_date = ? where id = ?");
+    preparedStatement.setString(1, status);
+    preparedStatement.setTimestamp(2, timestampFor(new Date()));
+    preparedStatement.setInt(3, serviceReportId);
+    preparedStatement.executeUpdate();
+
+    createStatusHistory(connection, serviceReportId, status);
+  }
+
+  public static void createStatusHistory(Connection connection, int serviceReportId, String status)
+      throws SQLException {
+    PreparedStatement preparedStatement = connection.prepareStatement(
+        "insert into service_report_status_histories (service_report_id, status) values(?, ?)");
+
+    preparedStatement.setInt(1, serviceReportId);
+    preparedStatement.setString(2, status);
+
+    preparedStatement.executeUpdate();
   }
 }

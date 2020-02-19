@@ -25,7 +25,8 @@
           "AWSLambdaBasicExecutionRole",
           "AmazonRDSDataFullAccess",
           "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
+          "AmazonS3FullAccess",
+          "AWSSendSESEmail"
         ],
         "Environment" : {
         },
@@ -50,7 +51,8 @@
           "AWSLambdaBasicExecutionRole",
           "AmazonRDSDataFullAccess",
           "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
+          "AmazonS3FullAccess",
+          "AWSSendSESEmail"
         ],
         "Environment" : {
         },
@@ -125,7 +127,8 @@
           "AWSLambdaBasicExecutionRole",
           "AmazonRDSDataFullAccess",
           "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
+          "AmazonS3FullAccess",
+          "AWSSendSESEmail"
         ],
         "Environment" : {
         },
@@ -600,7 +603,8 @@
           "AWSLambdaBasicExecutionRole",
           "AmazonRDSDataFullAccess",
           "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
+          "AmazonS3FullAccess",
+          "AWSSendSESEmail"
         ],
         "Environment" : {
         },
@@ -675,7 +679,8 @@
           "AWSLambdaBasicExecutionRole",
           "AmazonRDSDataFullAccess",
           "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
+          "AmazonS3FullAccess",
+          "AWSSendSESEmail"
         ],
         "Environment" : {
         },

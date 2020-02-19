@@ -2,6 +2,7 @@ package com.aishtek.aishtrack.dao;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class BaseDAO {
@@ -15,6 +16,32 @@ public class BaseDAO {
       return null;
     }
     return new Timestamp(date.getTime());
+  }
+
+  public static Timestamp endOfDayTimestamp(Date date) {
+    if (date == null) {
+      return null;
+    }
+    Calendar c = Calendar.getInstance();
+    c.setTime(date);
+    c.set(Calendar.HOUR_OF_DAY, 23);
+    c.set(Calendar.MINUTE, 59);
+    c.set(Calendar.SECOND, 59);
+    c.set(Calendar.MILLISECOND, 999);
+    return new Timestamp(c.getTimeInMillis());
+  }
+
+  public static Timestamp beginningOfDayTimestamp(Date date) {
+    if (date == null) {
+      return null;
+    }
+    Calendar c = Calendar.getInstance();
+    c.setTime(date);
+    c.set(Calendar.HOUR_OF_DAY, 0);
+    c.set(Calendar.MINUTE, 0);
+    c.set(Calendar.SECOND, 0);
+    c.set(Calendar.MILLISECOND, 1);
+    return new Timestamp(c.getTimeInMillis());
   }
 
   public static Date dateFor(Timestamp timestamp) {

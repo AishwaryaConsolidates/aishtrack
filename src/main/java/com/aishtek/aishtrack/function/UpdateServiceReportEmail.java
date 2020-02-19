@@ -18,7 +18,7 @@ public class UpdateServiceReportEmail extends BaseFunction
     try (Connection connection = getConnection()) {
       try {
         Response response = getParams(serverlessInput.getBody());
-        updateServiceReportEmail(connection, Integer.parseInt(response.id),
+        updateServiceReportEmail(connection, Integer.parseInt(response.emailServiceReportId),
             response.additionalEmail);
         output = createSuccessOutput("");
         connection.commit();
@@ -43,7 +43,7 @@ public class UpdateServiceReportEmail extends BaseFunction
   }
 
   class Response {
-    private String id;
+    private String emailServiceReportId;
     private String additionalEmail;
   }
 }

@@ -21,6 +21,8 @@ public class ExpenseReport extends BaseBean {
   private String customerName;
   private String technicianName;
   private String advanceAmountDateString;
+  private BigDecimal totalExpenseAmount;
+  private BigDecimal amountDue;
 
   public ExpenseReport(int id, int serviceReportId, int customerId, int technicianId,
       BigDecimal advanceAmount, int settled, BigDecimal carryForwardAmount, String location,
@@ -34,6 +36,16 @@ public class ExpenseReport extends BaseBean {
     this.carryForwardAmount = carryForwardAmount;
     this.location = location;
     this.advanceAmountDate = advanceAmountDate;
+  }
+
+  public BigDecimal getTotalExpenseAmount() {
+    totalExpenseAmount = new BigDecimal(0);
+    expenses.forEach(expense -> totalExpenseAmount.add(expense.getAmount()));
+    return totalExpenseAmount;
+  }
+
+  public BigDecimal getAmountDue() {
+    return getTotalExpenseAmount().subtract(carryForwardAmount.add(advanceAmount));
   }
 
   public int getServiceReportId() {

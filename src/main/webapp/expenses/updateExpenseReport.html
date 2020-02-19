@@ -21,26 +21,16 @@
         <br/>
         <!-- row -->
         <div class="row">
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+            <div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
                 <div class="bg-white tm-block">
                     <div class="row">
                         <div class="col-12">
-                            <div id="notification"></div>
-
-                            <table width="100%">
-                            <tr>
-                            <td><h2>Tour Expenses Statement</h2></td>
-                            <td align="left"><h2><div id="reportId"/></h2></td>
-                            <td>&nbsp;</td>
-                            <td align="right"><i class="fas fa-print" onclick="printExpenseReport()"></i>&nbsp;<i class="fas fa-trash" onclick="deleteExpenseReport()"></i></td>
-                            </tr>
-                            </table>
-                            <h5 id="customerName"></h5>
-                            <h5 id="technicianName"></h5>
+                        <div id="notification"></div>
+                            <h2 class="tm-block-title d-inline-block">Tour Expenses Statement</h2>
                         </div>
                     </div>
                     <div class="row mt-4 tm-edit-product-row">
-                        <div class="col-xl-12 col-lg-12 col-md-12">
+                        <div class="col-xl-7 col-lg-7 col-md-12">
                             <form action="" class="tm-edit-product-form" id="updateExpenseReportForm">
                                <input type="hidden" id="expenseReportId" name="id"/>
                                <input type="hidden" id="serviceReportId" name="serviceReportId"/>
@@ -48,76 +38,105 @@
                                <input type="hidden" id="technicianId" name="technicianId"/>
                                <input type="hidden" id="technicianEmail" name="technicianEmail"/>
                                
-                               <table id="expenseReportTable" width="100%">
-                               <tr>
-                               <td>Carry Forward Amount:</td>
-                               <td><input class="recalculate" id="carryForwardAmount" name="carryForwardAmount" type="text" size="12" value=0></td>
-                               </tr>
-                               <tr>
-                               <td>Advance Amount:</td>
-                               <td><input class="recalculate" id="advanceAmount" name="advanceAmount" type="text" size="12" value=0></td>
-                               </tr>
-                               <tr>
-                               <td>Advance Amount Date:</td>
-                               <td><input id="advanceAmountDate" name="advanceAmountDate" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" data-large-mode="true"></td>
-                               </tr>
-                               <tr>
-                               <td>Total Expense Amount:</td>
-                               <td><input id="totalExpenseAmount" name="totalExpenseAmount" type="text" size="12" value=0></td>
-                               </tr>
-                               <tr>
-                               <td>Amount Due:</td>
-                               <td><input id="dueAmount" name="dueAmount" type="text" size="12" value=0>
-                               </tr>
-                               <tr>
-                               <td>Location:</td>
-                               <td><input id="location" name="location" type="text" size="40"></td>
-                               </tr>
-                               </table>
-                               <br/>
-                              <h2>Expenses </h2>
+                               <div class="input-group mb-3">
+                                   <label for="brand" class="col-xl-8 8 col-md-8 col-sm-8 col-form-label">Carry Forward Amount</label>
+                                   <input class="recalculate form-control validate col-xl-4 col-lg-4 col-md-4 col-sm-4" id="carryForwardAmount" name="carryForwardAmount" type="text" value=0>
+                               </div>
+                                
+                                
+                               <div class="input-group mb-3">
+                                   <label for="brand" class="col-xl-8 8 col-md-8 col-sm-8 col-form-label">Advance Amount</label>
+                                   <input class="recalculate form-control validate col-xl-4 col-lg-4 col-md-4 col-sm-4" id="advanceAmount" name="advanceAmount" type="text" value=0>
+                               </div>
+                                
+                               <div class="input-group mb-3">
+                                   <label for="brand" class="col-xl-8 8 col-md-8 col-sm-8 col-form-label">Advance Amount Date</label>
+                                   <input class="form-control validate col-xl-6 col-lg-6 col-md-6 col-sm-6" id="advanceAmountDate" name="advanceAmountDate" type="text">
+                               </div>
+                               
+                               <div class="input-group mb-3">
+                                   <label for="brand" class="col-xl-8 8 col-md-8 col-sm-8 col-form-label">Total Expense Amount</label>
+                                   <input class="form-control validate col-xl-4 col-lg-4 col-md-4 col-sm-4" id="totalExpenseAmount" name="totalExpenseAmount" type="text" value=0>
+                               </div>
+                               
+                               <div class="input-group mb-3">
+                                   <label for="brand" class="col-xl-8 8 col-md-8 col-sm-8 col-form-label">Amount Due</label>
+                                   <input class="recalculate form-control validate col-xl-4 col-lg-4 col-md-4 col-sm-4" id="dueAmount" name="dueAmount" type="text" value=0>
+                               </div>
+                               
+                               <div class="input-group mb-3">
+                                   <label for="brand" class="col-xl-8 8 col-md-8 col-sm-8 col-form-label">Location</label>
+                                   <input class="recalculate form-control validate col-xl-8 col-lg-8 col-md-8 col-sm-8" id="location" name="location" type="text">
+                               </div>
+                               
+                               
+                               <h4>Expenses </h4>
 
-                               <table id="expensesTable" width="100%">
-	                               <tr>
-	                                 <td>Date</td>
-	                                 <td>Type</td>
-	                                 <td>Notes</td>
-	                                 <td>Amount</td>
-	                               </tr>
-                               </table>
-                              
-                                <i class="far fa-plus-square" id="addSingleExpense" onclick="addEmptyExpense()"></i>
+								<div id="expensesDiv">
+                               </div>
+                               <i class="far fa-plus-square" id="addSingleExpense" onclick="addEmptyExpense()"></i>
                                 <div class="input-group mb-3">
                                     <div class="ml-auto col-xl-8 col-lg-8 col-md-8 col-sm-7 pl-0">
                                         <button type="submit" class="btn btn-primary" id="submitButton">Update</button>
                                     </div>
                                 </div>
                             </form>
-                            
-                            <div id="expenseDateTemplate" style="display:none"><input id="expenseDateCOUNT" name="expenseDate" type="text" size="10"></div>
-                            <div id="expenseTypeTemplate" style="display:none">
-                              <select name="expenseType" id="expenseTypeCOUNT">
-                                <option value="">Select Expense Type</option>
-	                            <option value="Boarding">Boarding</option>
-	                            <option value="Conveyance Blr">Conveyance Blr</option>
-	                            <option value="Conveyance Site">Conveyance Site</option>
-	                            <option value="Fare">Fare</option>
-	                            <option value="Lodging">Lodging</option>
-	                            <option value="Miscellaneous">Miscellaneous</option>
-	                            <option value="Purchase">Purchase</option>
-	                            <option value="Telephone">Telephone</option>
-	                          </select>
-	                        </div>
-                            <div id="expenseNotesTemplate" style="display:none"><input id="expenseNoteCOUNT" name="expenseNote" type="text" size="70"></div>
-                            <div id="expenseAmountTemplate" style="display:none"><input class="recalculate expAmount" id="expenseAmountCOUNT" name="expenseAmount" type="text" size="12"></div>
                         </div>
                     </div>
                 </div>
             </div>
+         <div class="col-xl-4 col-lg-12 tm-md-12 tm-sm-12 tm-col">
+           <div class="bg-white tm-block h-30" id="serviceReport">
+           <i class="fas fa-print" onclick="printExpenseReport()"></i>&nbsp;<i class="fas fa-trash" onclick="deleteExpenseReport()"></i>
+           <h5 id="customerName"></h5>
+           <h5 id="technicianName"></h5>
+           </div>
+        </div>
         </div>
         <div w3-include-html="../partials/footer.html"> </div>
     </div>
 
+                                <div id="singleExpenseTemplate" style="display:none">
+								<table id="expensesTable" style="width: 600px">
+									<tr>
+										<td width="50%"><label for="firstName" class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-form-label">Date</label>
+											<input class="form-control validate col-xl-6 col-lg-6 col-md-6 col-sm-6" id="expenseDateCOUNT" name="expenseDate" type="text">
+										</td>
+										<td><label for="firstName"
+											class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Type</label>
+											<select name="expenseType" id="expenseTypeCOUNT" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+												<option value="Other">Expense Type</option>
+												<option value="Boarding">Boarding</option>
+												<option value="Conveyance Blr">Conveyance Blr</option>
+												<option value="Conveyance Site">Conveyance Site</option>
+												<option value="Fare">Fare</option>
+												<option value="Lodging">Lodging</option>
+												<option value="Miscellaneous">Miscellaneous</option>
+												<option value="Purchase">Purchase</option>
+												<option value="Telephone">Telephone</option>
+										</select></td>
+									</tr>
+									<tr>
+										<td colspan="2"><label for="firstName"
+											class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Note</label>
+											<input
+											class="form-control validate col-xl-16 col-lg-16 col-md-16 col-sm-16"
+											id="expenseNoteCOUNT" name="expenseNote" type="text"
+											size="70"></td>
+									</tr>		
+									<tr>
+										<td><label for="firstName"
+											class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Amount</label>
+											<input
+											class="recalculate expAmount form-control validate col-xl-6 col-lg-6 col-md-6 col-sm-6"
+											id="expenseAmountCOUNT" name="expenseAmount" type="text"
+											size="12"></td>
+											<td>&nbsp;</td>
+									</tr>
+
+								</table>
+								<hr width="600"/>
+                                </div>  
     <script src="../js/jquery-3.3.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="../js/config.js"></script>
@@ -188,7 +207,7 @@
         	if(expenseReportId != null) {
         		prefillExpenseReport(expenseReportId);
         	} else {
-        		addEmptyExpenses(0, 10);
+        		addEmptyExpenses(0, 3);
         	}
         }
         
@@ -225,7 +244,7 @@
         }
         
         function fillExpenses(expenses) {
-        	addEmptyExpenses(0, (expenses.length + 5));
+        	addEmptyExpenses(0, (expenses.length));
         	$.each(expenses, function(index, expense){
         		$("#"+"expenseDate"+index).val(expense.expenseDateString);
         		$("#"+"expenseType"+index).val(expense.expenseType);
@@ -234,20 +253,11 @@
             });
         }
         
-        function addEmptyExpenses(initial = 0, count = 10) {
+        function addEmptyExpenses(initial = 0, count = 3) {
          	var i;
          	for (i = initial; i < (initial + count); i++) {
-            	var row = expensesTable.insertRow();
-             	var dateCell = row.insertCell(0);
-            	var typeCell = row.insertCell(1);
-            	var notesCell = row.insertCell(2);
-            	var amountCell = row.insertCell(3);
-            	
-            	dateCell.innerHTML = document.getElementById("expenseDateTemplate").innerHTML.replace(/COUNT/g, i);
-            	typeCell.innerHTML = document.getElementById("expenseTypeTemplate").innerHTML.replace(/COUNT/g, i);
-            	notesCell.innerHTML = document.getElementById("expenseNotesTemplate").innerHTML.replace(/COUNT/g, i);
-            	amountCell.innerHTML = document.getElementById("expenseAmountTemplate").innerHTML.replace(/COUNT/g, i);
-            	
+         		expensesDiv.insertAdjacentHTML("beforeend", document.getElementById("singleExpenseTemplate").innerHTML.replace(/COUNT/g, i));
+
             	$('#expenseDate' + i).datepicker({
         	        dateFormat: 'dd/mm/yy'
         	    });
@@ -261,16 +271,7 @@
 
         function addEmptyExpense() {
         	nextId = noOfExpenses++;
-            var row = expensesTable.insertRow();
-            var dateCell = row.insertCell(0);
-            var typeCell = row.insertCell(1);
-            var notesCell = row.insertCell(2);
-            var amountCell = row.insertCell(3);
-
-            dateCell.innerHTML = document.getElementById("expenseDateTemplate").innerHTML.replace(/COUNT/g, nextId);
-            typeCell.innerHTML = document.getElementById("expenseTypeTemplate").innerHTML.replace(/COUNT/g, nextId);
-            notesCell.innerHTML = document.getElementById("expenseNotesTemplate").innerHTML.replace(/COUNT/g, nextId);
-            amountCell.innerHTML = document.getElementById("expenseAmountTemplate").innerHTML.replace(/COUNT/g, nextId);
+        	expensesDiv.insertAdjacentHTML("beforeend", document.getElementById("singleExpenseTemplate").innerHTML.replace(/COUNT/g, nextId));
 
             $('#expenseDate' + nextId).datepicker({
         	    dateFormat: 'dd/mm/yy'
@@ -286,20 +287,22 @@
         }
 
         function deleteExpenseReport() {
-        	$.ajax({
-                url : apiURLBase + "/deleteExpenseReport",
-                type : "POST",
-                data: getJSONFormData($('#updateExpenseReportForm')),
-                dataType: "json",
-                contentType: 'application/json',
-                crossDomain: true,
-        		success: function(data) {
-        			$("#notification").html("<center><font color=\"green\">Expense Report Updated</font></center>");
-        		},
-        		error: function(data) {
-        			alert("Error updating expense report, please try again");
-        		}
-        	});
+        	if(confirm("Are you sure you want to delete this expense statement?")) {
+	        	$.ajax({
+	                url : apiURLBase + "/deleteExpenseReport",
+	                type : "POST",
+	                data: getJSONFormData($('#updateExpenseReportForm')),
+	                dataType: "json",
+	                contentType: 'application/json',
+	                crossDomain: true,
+	        		success: function(data) {
+	        			$("#notification").html("<center><font color=\"green\">Expense Report Updated</font></center>");
+	        		},
+	        		error: function(data) {
+	        			alert("Error updating expense report, please try again");
+	        		}
+	        	});
+        	}
         	return false;
         }
     </script>

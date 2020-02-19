@@ -1,6 +1,7 @@
 package com.aishtek.aishtrack.function;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import com.aishtek.aishtrack.dao.ServiceReportDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
@@ -12,9 +13,6 @@ import com.google.gson.Gson;
 public class UpdateServiceReportFeedback extends BaseFunction
     implements RequestHandler<ServerlessInput, ServerlessOutput> {
 
-  public static String technicianEmailSubject = "You have been assigned a service report";
-  public static String customerEmailSubject = "Aishtek Service Report Assigned";
-
   @Override
   public ServerlessOutput handleRequest(ServerlessInput serverlessInput, Context context) {
     ServerlessOutput output;
@@ -22,7 +20,7 @@ public class UpdateServiceReportFeedback extends BaseFunction
       try {
         Response response = getParams(serverlessInput.getBody());
         if (!Util.isNullOrEmpty(response.serviceReportCode)) {
-          ServiceReportDAO.updateFeedback(connection, response.serviceReportCode,
+          updateFeedback(connection, response.serviceReportCode,
               response.serviceRating, response.signedBy, response.customerRemarks);
         }
 
@@ -37,6 +35,12 @@ public class UpdateServiceReportFeedback extends BaseFunction
     }
 
     return output;
+  }
+
+  public void updateFeedback(Connection connection, String serviceReportCode, Integer serviceRating,
+      String signedBy, String customerRemarks) throws SQLException {
+    ServiceReportDAO.updateFeedback(connection, serviceReportCode, serviceRating, signedBy,
+        customerRemarks);
   }
 
   public Response getParams(String jsonString) {

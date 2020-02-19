@@ -42,3 +42,4 @@ target/*
 *.class
 src/main/resources/scripts/.instrumentation.sh.swp
 src/main/resources/scripts/instrumentation.sh
+serverless.template.cpgz

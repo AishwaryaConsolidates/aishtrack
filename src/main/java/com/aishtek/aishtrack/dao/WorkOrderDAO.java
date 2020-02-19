@@ -53,7 +53,9 @@ public class WorkOrderDAO extends BaseDAO {
 
     ResultSet result = preparedStatement.getGeneratedKeys();
     if (result.next()) {
-      return result.getInt(1);
+      int workOrderId = result.getInt(1);
+      createStatusHistory(connection, workOrderId, WorkStatus.CREATED_STATUS);
+      return workOrderId;
     } else {
       throw new SQLException("WorkOrder Id not generted");
     }
@@ -67,12 +69,43 @@ public class WorkOrderDAO extends BaseDAO {
     preparedStatement.setTimestamp(2, timestampFor(currentTimestamp()));
     preparedStatement.setInt(3, workOrderId);
     preparedStatement.executeUpdate();
+
+    createStatusHistory(connection, workOrderId, WorkStatus.ASSIGNED_STATUS);
   }
 
   public static void delete(Connection connection, int workOrderId) throws SQLException {
     PreparedStatement preparedStatement =
         connection.prepareStatement("update work_orders set deleted = 1 where id = ?");
     preparedStatement.setInt(1, workOrderId);
+    preparedStatement.executeUpdate();
+
+    createStatusHistory(connection, workOrderId, WorkStatus.DELETED_STATUS);
+  }
+
+  public static void updateStatusFromServiceReport(Connection connection, String status,
+      int serviceReportId) throws SQLException {
+    PreparedStatement preparedStatement = connection.prepareStatement(
+        "update work_orders set status =?, status_date = ? from work_orders wo, work_order_service_reports wosr where wosr.service_report_id = ? and wosr.work_order_id = wo.id ");
+    preparedStatement.setString(1, status);
+    preparedStatement.setTimestamp(2, timestampFor(currentTimestamp()));
+    preparedStatement.setInt(3, serviceReportId);
+    preparedStatement.executeUpdate();
+
+    preparedStatement = connection.prepareStatement(
+        "insert into work_order_status_histories (work_order_id, status) select wosr.work_order_id, ? from work_order_service_reports wosr where wosr.service_report_id = ?");
+    preparedStatement.setString(1, status);
+    preparedStatement.setInt(2, serviceReportId);
+    preparedStatement.executeUpdate();
+  }
+
+  public static void createStatusHistory(Connection connection, int workOrderId, String status)
+      throws SQLException {
+    PreparedStatement preparedStatement = connection.prepareStatement(
+        "insert into work_order_status_histories (work_order_id, status) values(?, ?)");
+
+    preparedStatement.setInt(1, workOrderId);
+    preparedStatement.setString(2, status);
+
     preparedStatement.executeUpdate();
   }
 

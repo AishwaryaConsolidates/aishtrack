@@ -26,7 +26,7 @@
                     <div class="row">
                         <div class="col-12">
                         <div id="notification"></div>
-                            <h2 class="tm-block-title d-inline-block">Visit</h2>
+                            <h2 class="tm-block-title d-inline-block">Visit <a href="#" class="showSR">(view SR)</a></h2>
                         </div>
                     </div>
                     <div class="row mt-4 tm-edit-product-row">
@@ -195,6 +195,7 @@
     <script>
         var recommendedCounter = 0;
         var replacedCounter = 0;
+        var serviceReportStatus = "";
         $(function () {
         	checkLogin();
         	includeHTML();
@@ -232,35 +233,39 @@
         		localStorage.removeItem('localVisitForm');
         	}
         	$("#submitButton").on("click", function (e) {
-        		$("#submitButton").attr("disabled", true);
-                e.preventDefault();
-                window.scrollTo(0,0);
-                $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
-                localStorage.removeItem('localVisitForm');
-                $.ajax({
-                    url : apiURLBase + "/updateVisit",
-                    type : "POST",
-                    data: getJSONFormData($('#updateVisitForm')),
-                    dataType: "json",
-                    contentType: 'application/json',
-                    crossDomain: true,
-            		success: function(data) {
-            			if(!isNaN(data)) {
-            			    $("#id").val(data);
-            			    $("#visitId").val(data);
-            			}
-            			$("#notification").html("<center><font color=\"green\">Visit Updated</font></center>");
-            			localStorage.removeItem('localVisitForm');
-            		},
-            		error: function(data) {
-            			localStorage.setItem('localVisitForm', getJSONFormData($('#updateVisitForm')));
-            			alert("Error updating visit, form stored locally, come back to this page later.");
-            		},
-            		complete: function(data) {
-            			$("#submitButton").attr("disabled", false);
-            		}
-            	});
-                return false;
+        		if(serviceReportStatus != "completed") {
+	        		$("#submitButton").attr("disabled", true);
+	                e.preventDefault();
+	                window.scrollTo(0,0);
+	                $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+	                localStorage.removeItem('localVisitForm');
+	                $.ajax({
+	                    url : apiURLBase + "/updateVisit",
+	                    type : "POST",
+	                    data: getJSONFormData($('#updateVisitForm')),
+	                    dataType: "json",
+	                    contentType: 'application/json',
+	                    crossDomain: true,
+	            		success: function(data) {
+	            			if(!isNaN(data)) {
+	            			    $("#id").val(data);
+	            			    $("#visitId").val(data);
+	            			}
+	            			$("#notification").html("<center><font color=\"green\">Visit Updated</font></center>");
+	            			localStorage.removeItem('localVisitForm');
+	            		},
+	            		error: function(data) {
+	            			localStorage.setItem('localVisitForm', getJSONFormData($('#updateVisitForm')));
+	            			alert("Error updating visit, form stored locally, come back to this page later.");
+	            		},
+	            		complete: function(data) {
+	            			$("#submitButton").attr("disabled", false);
+	            		}
+	            	});
+	                return false;
+        		} else {
+        			alert("This service report has been completed, you cannot make any more changes to it");
+        		}
               });
         	
         	$("#fileSubmitButton").on("click", function (e) {
@@ -314,11 +319,18 @@
         function checkForUpdate() {
         	urlParams = new URLSearchParams(window.location.search);
         	serviceReportId = urlParams.get('serviceReportId');
+        	serviceReportCode = urlParams.get('serviceReportCode');
+        	$(".showSR").click(function (e) {
+        		window.open(htmlURLBase + "/serviceReports/printServiceReport.html?serviceReportCode=" + serviceReportCode);
+        		return false;
+        	});
         	$("#serviceReportId").val(serviceReportId);
         	visitId = urlParams.get('visitId');
         	if(visitId != null) {
         		prefillVisit(visitId);
         		loadVisitFiles(visitId)
+        	} else {
+        		$("#visitDate").val(getToday());
         	}
         }
         
@@ -330,9 +342,10 @@
                 crossDomain: true,
         		success: function(data) {
         			visit = JSON.parse(JSON.stringify(data));
+        			serviceReportStatus = visit.serviceReportStatus;
         			fillForm(visit);
-        			fillSpareParts("recommended", visit.recommendedSpareParts)
-        			fillSpareParts("replaced", visit.replacedSpareParts)
+        			fillSpareParts("recommended", visit.recommendedSpareParts);
+        			fillSpareParts("replaced", visit.replacedSpareParts);
         		},
         		error: function(data) {
         			console.log("Error fetching visit "+ data);

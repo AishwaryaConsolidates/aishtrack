@@ -9,10 +9,13 @@ import com.aishtek.aishtrack.beans.SparePart;
 import com.aishtek.aishtrack.beans.Visit;
 import com.aishtek.aishtrack.dao.RecommendedSparePartDAO;
 import com.aishtek.aishtrack.dao.ReplacedSparePartDAO;
+import com.aishtek.aishtrack.dao.ServiceReportDAO;
 import com.aishtek.aishtrack.dao.VisitDAO;
+import com.aishtek.aishtrack.dao.WorkOrderDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
 import com.aishtek.aishtrack.utils.Util;
+import com.aishtek.aishtrack.utils.WorkStatus;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.google.gson.Gson;
@@ -70,7 +73,10 @@ public class UpdateVisit extends BaseFunction
     Visit visit =
         new Visit(0, serviceReportId, visitDate, complaint, findings, workDone, customerRemarks);
 
-    return VisitDAO.create(connection, visit);
+    int visitId = VisitDAO.create(connection, visit);
+    updateServiceReportStatus(connection, serviceReportId);
+
+    return visitId;
   }
 
   public void updateVisit(Connection connection, int id, int serviceReportId, Date visitDate,
@@ -80,6 +86,7 @@ public class UpdateVisit extends BaseFunction
         new Visit(id, serviceReportId, visitDate, complaint, findings, workDone, customerRemarks);
 
     VisitDAO.update(connection, visit);
+    updateServiceReportStatus(connection, serviceReportId);
   }
 
   public Response getParams(String jsonString) {
@@ -99,12 +106,12 @@ public class UpdateVisit extends BaseFunction
     String quantity;
     for (int i = 0; i < recommendedSparePartNumbers.size(); i++) {
       if (!Util.isNullOrEmpty(recommendedSparePartNumbers.get(i))) {
-        if (recommendedSparePartDescriptions.size() <= i) {
+        if (recommendedSparePartDescriptions.size() <= (i + 1)) {
           description = recommendedSparePartDescriptions.get(i);
         } else {
           description = "";
         }
-        if (recommendedSparePartQuantitys.size() <= i) {
+        if (recommendedSparePartQuantitys.size() <= (i + 1)) {
           quantity = recommendedSparePartQuantitys.get(i);
         } else {
           quantity = "0";
@@ -129,20 +136,27 @@ public class UpdateVisit extends BaseFunction
     for (int i = 0; i < replacedSparePartNumbers.size(); i++) {
       if (!Util.isNullOrEmpty(replacedSparePartNumbers.get(i))) {
 
-        if (replacedSparePartDescriptions.size() <= i) {
+        if (replacedSparePartDescriptions.size() <= (i + 1)) {
           description = replacedSparePartDescriptions.get(i);
         } else {
           description = "";
         }
-        if (replacedSparePartQuantitys.size() <= i) {
+        if (replacedSparePartQuantitys.size() <= (i + 1)) {
           quantity = replacedSparePartQuantitys.get(i);
         } else {
           quantity = "0";
         }
-        RecommendedSparePartDAO.create(connection, new SparePart(visitId,
+        ReplacedSparePartDAO.create(connection, new SparePart(visitId,
             replacedSparePartNumbers.get(i), description, Util.getInt(quantity)));
       }
     }
+  }
+
+  public void updateServiceReportStatus(Connection connection, int serviceReportId)
+      throws SQLException {
+    ServiceReportDAO.updateStatus(connection, serviceReportId, WorkStatus.IN_PROGRESS_STATUS);
+    WorkOrderDAO.updateStatusFromServiceReport(connection, WorkStatus.IN_PROGRESS_STATUS,
+        serviceReportId);
   }
 
   class Response {

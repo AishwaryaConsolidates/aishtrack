@@ -17,6 +17,8 @@ public class Visit extends BaseBean {
 
   // for display
   private String visitDateString;
+  private String serviceReportStatus;
+  private String serviceReportCode;
 
   public Visit(int id, int serviceReportId, Date visitDate, String complaint, String findings,
       String workDone, String customerRemarks) {
@@ -99,6 +101,22 @@ public class Visit extends BaseBean {
 
   public void setVisitDateString(String visitDateString) {
     this.visitDateString = visitDateString;
+  }
+
+  public String getServiceReportStatus() {
+    return serviceReportStatus;
+  }
+
+  public void setServiceReportStatus(String serviceReportStatus) {
+    this.serviceReportStatus = serviceReportStatus;
+  }
+
+  public String getServiceReportCode() {
+    return serviceReportCode;
+  }
+
+  public void setServiceReportCode(String serviceReportCode) {
+    this.serviceReportCode = serviceReportCode;
   }
 
 }

@@ -21,7 +21,7 @@ public class SendServiceReportFeedbackEmail extends BaseFunction
     try (Connection connection = getConnection()) {
       try {
         Response response = getParams(serverlessInput.getBody());
-        sendServiceReportFeedbackEmail(connection, Integer.parseInt(response.id));
+        sendServiceReportFeedbackEmail(connection, Integer.parseInt(response.emailServiceReportId));
         output = createSuccessOutput("");
         connection.commit();
       } catch (Exception e) {
@@ -40,7 +40,7 @@ public class SendServiceReportFeedbackEmail extends BaseFunction
     ArrayList<String> toEmails = ServiceReportDAO.getEmailForFeedback(connection, serviceReportId);
     String serviceReportCode = ServiceReportDAO.getCodeForId(connection, serviceReportId);
 
-    String[] to = (String[]) toEmails.toArray();
+    String[] to = (String[]) toEmails.toArray(new String[0]);
     String[] emailBodies = feedbackEmailBodies(connection, serviceReportCode);
     EmailSenderService.sendEmail(to, "Feedback for Aishwarya Work Order", emailBodies[0],
         emailBodies[1]);
@@ -49,7 +49,7 @@ public class SendServiceReportFeedbackEmail extends BaseFunction
   private String[] feedbackEmailBodies(Connection connection, String serviceReportCode)
       throws SQLException {
     String[] emailBodies = new String[2];
-    String feedbackLink = "";
+    String feedbackLink = feedbackURL + serviceReportCode;
     String message =
         "We have completed the work order, and, would like your feedback on how we have performed, please click on the following link and let us know how we did.";
     message = message + "<a href=\"" + feedbackLink + "\">" + feedbackLink + "</a>";
@@ -64,6 +64,6 @@ public class SendServiceReportFeedbackEmail extends BaseFunction
   }
 
   class Response {
-    private String id;
+    private String emailServiceReportId;
   }
 }

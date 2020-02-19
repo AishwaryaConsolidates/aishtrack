@@ -18,21 +18,27 @@ public class BaseFunction {
   public static final String delimiter = "!@#";
   // TODO move this somewhere, secretsmanager costs money, environment variables in not tenable as
   // its at function level
-  private static final String dbConnectURL =
-      "jdbc:postgresql://aishtek.cufbjsmbrpfk.ap-south-1.rds.amazonaws.com/aishtek";
-  private static final String dbUsername = "aishtek";
-  private static final String dbPassword = "a1shwarya";
-  protected static final String bucketName = "aishtrackfiles";
-  protected static final String fileBaseURL = "https://aishtrackfiles.s3.ap-south-1.amazonaws.com/";
-
+  // staging
   // private static final String dbConnectURL =
-  // "jdbc:postgresql://aishtek.c5z8niycvgrg.ap-south-1.rds.amazonaws.com/aishtek";
+  // "jdbc:postgresql://aishtek.cufbjsmbrpfk.ap-south-1.rds.amazonaws.com/aishtek";
   // private static final String dbUsername = "aishtek";
-  // private static final String dbPassword = "a1sht3k.com";
-  // protected static final String bucketName = "aishtrackuploadedfiles";
+  // private static final String dbPassword = "a1shwarya";
+  // protected static final String bucketName = "aishtrackfiles";
   // protected static final String fileBaseURL =
-  // "http://aishtrackuploadedfiles.s3-website.ap-south-1.amazonaws.com";
+  // "https://aishtrackfiles.s3.ap-south-1.amazonaws.com/";
+  // protected static final String feedbackURL =
+  // "https://aishtek.s3.amazonaws.com/aishtrack/serviceReports/serviceReportFeedback.html?serviceReportCode=";
 
+  // production
+  private static final String dbConnectURL =
+      "jdbc:postgresql://aishtek.c5z8niycvgrg.ap-south-1.rds.amazonaws.com/aishtek";
+  private static final String dbUsername = "aishtek";
+  private static final String dbPassword = "a1sht3k.com";
+  protected static final String bucketName = "aishtrackuploadedfiles";
+  protected static final String fileBaseURL =
+      "http://aishtrackuploadedfiles.s3-website.ap-south-1.amazonaws.com/";
+  protected static final String feedbackURL =
+      "https://aishtrack.s3.amazonaws.com/serviceReports/serviceReportFeedback.html?serviceReportCode=";
 
 
   protected Connection getConnection() throws SQLException {

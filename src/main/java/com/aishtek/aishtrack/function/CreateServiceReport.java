@@ -20,6 +20,7 @@ import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
 import com.aishtek.aishtrack.services.EmailSenderService;
 import com.aishtek.aishtrack.utils.Util;
+import com.aishtek.aishtrack.utils.WorkStatus;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.google.gson.Gson;
@@ -83,12 +84,16 @@ public class CreateServiceReport extends BaseFunction
         new ServiceReport(customer, contactPersonId, categoryId, equipmentId, notes, brand, model,
             serialNumber, partNumber, reportDate, type));
 
+    ServiceReportDAO.updateStatus(connection, serviceReportId, WorkStatus.CREATED_STATUS);
     // create service report technician
     if (technicianIds != null && technicianIds.size() > 0) {
       ServiceReportDAO.assignTechniciansToServiceReport(connection, serviceReportId, technicianIds);
 
       // change status of work order
       WorkOrderDAO.markAsAssigned(connection, workOrder.getId());
+
+      // change status of service report
+      ServiceReportDAO.updateStatus(connection, serviceReportId, WorkStatus.ASSIGNED_STATUS);
 
       ServiceReport serviceReport = ServiceReportDAO.findById(connection, serviceReportId);
       // notify technicians

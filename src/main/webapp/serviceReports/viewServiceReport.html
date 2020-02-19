@@ -49,6 +49,7 @@
                 <br/>
                 <div class="bg-white tm-block">
                 <form action="" class="tm-edit-product-form" id="updateEmailForm">
+                <input type="hidden" id="emailServiceReportId" name="emailServiceReportId"/>
                 <div class="input-group mb-3">
                    <label for="additionalEmail" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Additional Email</label>
                    <input id="additionalEmail" name="additionalEmail" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
@@ -169,6 +170,7 @@
         $(function () {
         	checkLogin();
         	includeHTML();
+        	var serviceReportStatus = "";
         	$("#categoryId").change(function () {
         		getEquipments(this.value);
             });
@@ -214,7 +216,9 @@
             		success: function(data) {
             			serviceReport = JSON.parse(JSON.stringify(data));
             			serviceReportId = serviceReport.id;
+            			serviceReportStatus = serviceReport.status;
             			$("#serviceReportId").val(serviceReportId);
+            			$("#emailServiceReportId").val(serviceReportId);
             			fillPage(serviceReport);
             			loadVisits(serviceReportId);
             			loadVisitFiles(serviceReportId);
@@ -285,8 +289,13 @@
         	}
         	
         	$("#visitButton").on("click", function (e) {
-                e.preventDefault();
-                window.open(htmlURLBase + '/visits/updateVisit.html?serviceReportId='+serviceReportId,'_visit');   
+        		if(serviceReportStatus != "completed") {
+                  e.preventDefault();
+                  window.open(htmlURLBase + '/visits/updateVisit.html?serviceReportId='+serviceReportId + "&serviceReportCode=" + serviceReportCode,'_visit');
+        		} else {
+        			e.preventDefault();
+        			alert("This service report has been completed, you cannot make any more changes to it");
+        		}
         	});
         	
         	function loadVisits(serviceReportId) {
@@ -310,7 +319,7 @@
             	$.each(visits, function(index, visit){
             		customer = JSON.parse(JSON.stringify(visit));
             		html+="<li>";
-            		html+="<a href=\"" + htmlURLBase + "/visits/updateVisit.html?visitId=" + visit.id + "\">" + visit.visitDate +"</i></a>";
+            		html+="<a href=\"" + htmlURLBase + "/visits/updateVisit.html?visitId=" + visit.id + "&serviceReportCode=" + serviceReportCode + "\">" + visit.visitDate +"</i></a>";
             		html+="<//li>";
             	});
             	$("#visits").html(html);
@@ -367,28 +376,34 @@
         	});
 
             $("#updateEquipmentButton").on("click", function (e) {
-        		$("#updateEquipmentButton").attr("disabled", true);
-                e.preventDefault();
-                window.scrollTo(0,0);
-                $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
-                $.ajax({
-                    url : apiURLBase + "/updateServiceReportEquipment",
-                    type : "POST",
-                    data: getJSONFormData($('#updateEquipmentForm')),
-                    dataType: "json",
-                    contentType: 'application/json',
-                    crossDomain: true,
-            		success: function(data) {
-            			$("#notification").html("<center><font color=\"green\">Service Report Updated</font></center>");
-            		},
-            		error: function(data) {
-            			alert("Error updating service report.");
-            		},
-            		complete: function(data) {
-            			$("#updateEquipmentButton").attr("disabled", false);
-            		}
-            	});
-                return false;
+            	if(serviceReportStatus != "completed") {
+            		$("#updateEquipmentButton").attr("disabled", true);
+                    e.preventDefault();
+                    window.scrollTo(0,0);
+                    $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+                    $.ajax({
+                        url : apiURLBase + "/updateServiceReportEquipment",
+                        type : "POST",
+                        data: getJSONFormData($('#updateEquipmentForm')),
+                        dataType: "json",
+                        contentType: 'application/json',
+                        crossDomain: true,
+                		success: function(data) {
+                			$("#notification").html("<center><font color=\"green\">Service Report Updated</font></center>");
+                		},
+                		error: function(data) {
+                			alert("Error updating service report.");
+                		},
+                		complete: function(data) {
+                			$("#updateEquipmentButton").attr("disabled", false);
+                		}
+                	});
+                    return false;
+            	} else {
+            		e.preventDefault();
+        			alert("This service report has been completed, you cannot make any more changes to it");
+            	}
+
               });
 
             $("#updateEmailButton").on("click", function (e) {

@@ -46,14 +46,18 @@ public class VisitDAO extends BaseDAO {
   }
 
   public static Visit findById(Connection connection, int visitId) throws SQLException {
-    String sql = "SELECT id, service_report_id, visit_date, complaint, findings, work_done, customer_remarks FROM visits where id = ?";
+    String sql =
+        "SELECT v.id, v.service_report_id, v.visit_date, v.complaint, v.findings, v.work_done, v.customer_remarks, sr.status, sr.code FROM visits v, service_reports sr where v.service_report_id = sr.id and v.id = ?";
 
     PreparedStatement statement = connection.prepareStatement(sql);
     statement.setInt(1, visitId);
     ResultSet result = statement.executeQuery();
     if (result.next()) {
-      return new Visit(result.getInt(1), result.getInt(2), dateFor(result.getTimestamp(3)),
+      Visit visit = new Visit(result.getInt(1), result.getInt(2), dateFor(result.getTimestamp(3)),
           result.getString(4), result.getString(5), result.getString(6), result.getString(7));
+      visit.setServiceReportStatus(result.getString(8));
+      visit.setServiceReportCode(result.getString(9));
+      return visit;
     } else {
       throw new SQLException("No visit found, ID does not exist");
     }
