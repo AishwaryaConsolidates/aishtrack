@@ -3,6 +3,7 @@ package com.aishtek.aishtrack.beans;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import com.aishtek.aishtrack.utils.Util;
 
 public class ExpenseReport extends BaseBean {
 
@@ -23,6 +24,7 @@ public class ExpenseReport extends BaseBean {
   private String advanceAmountDateString;
   private BigDecimal totalExpenseAmount;
   private BigDecimal amountDue;
+  private String expenseReportDateString;
 
   public ExpenseReport(int id, int serviceReportId, int customerId, int technicianId,
       BigDecimal advanceAmount, int settled, BigDecimal carryForwardAmount, String location,
@@ -38,14 +40,27 @@ public class ExpenseReport extends BaseBean {
     this.advanceAmountDate = advanceAmountDate;
   }
 
-  public BigDecimal getTotalExpenseAmount() {
-    totalExpenseAmount = new BigDecimal(0);
-    expenses.forEach(expense -> totalExpenseAmount.add(expense.getAmount()));
-    return totalExpenseAmount;
+  public void calculateTotalExpenseAmount() {
+    this.totalExpenseAmount = new BigDecimal(0);
+    if (expenses != null) {
+      expenses.forEach(
+          expense -> this.totalExpenseAmount = this.totalExpenseAmount.add(expense.getAmount()));
+    }
+    this.amountDue = calculateAmountDue();
   }
 
-  public BigDecimal getAmountDue() {
-    return getTotalExpenseAmount().subtract(carryForwardAmount.add(advanceAmount));
+  public BigDecimal calculateAmountDue() {
+    return this.totalExpenseAmount.subtract(getCarryForwardAmount().add(getAdvanceAmount()));
+  }
+
+  public void prepareForPrint() {
+    calculateTotalExpenseAmount();
+    if (getAdvanceAmountDate() != null) {
+      setAdvanceAmountDateString(Util.formatDate(getAdvanceAmountDate()));
+    }
+    if (getCreatedAt() != null) {
+      setExpenseReportDateString(Util.formatDate(getCreatedAt()));
+    }
   }
 
   public int getServiceReportId() {
@@ -97,6 +112,9 @@ public class ExpenseReport extends BaseBean {
   }
 
   public BigDecimal getAdvanceAmount() {
+    if (advanceAmount == null) {
+      return new BigDecimal(0);
+    }
     return advanceAmount;
   }
 
@@ -113,6 +131,9 @@ public class ExpenseReport extends BaseBean {
   }
 
   public BigDecimal getCarryForwardAmount() {
+    if (carryForwardAmount == null) {
+      return new BigDecimal(0);
+    }
     return carryForwardAmount;
   }
 
@@ -142,6 +163,30 @@ public class ExpenseReport extends BaseBean {
 
   public void setAdvanceAmountDateString(String advanceAmountDateString) {
     this.advanceAmountDateString = advanceAmountDateString;
+  }
+
+  public void setTotalExpenseAmount(BigDecimal totalExpenseAmount) {
+    this.totalExpenseAmount = totalExpenseAmount;
+  }
+
+  public void setAmountDue(BigDecimal amountDue) {
+    this.amountDue = amountDue;
+  }
+
+  public String getExpenseReportDateString() {
+    return expenseReportDateString;
+  }
+
+  public void setExpenseReportDateString(String expenseReportDateString) {
+    this.expenseReportDateString = expenseReportDateString;
+  }
+
+  public BigDecimal getTotalExpenseAmount() {
+    return totalExpenseAmount;
+  }
+
+  public BigDecimal getAmountDue() {
+    return amountDue;
   }
 
 }

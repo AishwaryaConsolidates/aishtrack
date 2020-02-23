@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
     <link rel="stylesheet" href="../css/fontawesome.min.css">
     <link rel="stylesheet" href="../css/bootstrap.min.css">
+
+    <style>
+        .striped tr:nth-child(even) {background-color: #f2f2f2;}
+    </style>
 </head>
 
 <body>
@@ -25,51 +29,59 @@
 </tr>
 
 <tr>
-<td colspan="2"><h1>Tour Expenses Statement</h1></td>
-<td colspan="1"><h1><div id="reportId"/><h1></td>
-<td colspan="1">&nbsp;</td>
+<td colspan="4"><h2>Tour Expenses Statement:&nbsp;&nbsp;<span id="reportId"/></h2></td>
 </tr>
 
 <tr>
 <td colspan="4" align="center">&nbsp;</td>
-</tr>
-
-<tr>
-<td>Location</td><td><div id="location"/></td>
-<td>Date</td><td><div id="reportDate"/></td>
-</tr>
-       	
-<tr>
-<td>Customer</td><td><div id="customerName"/></td>
-<td>Technician</td><td><div id="technicianName"/></td>
-</tr>
-
-<tr>
-<td>Carry Forward Amount</td><td><div id="carryForwardAmount"/></td>
-<td>Advance Amount</td><td><div id="advanceAmount"/></td>
-</tr>
-
-<tr>
-<td>Total Expense Amount</td><td><div id="totalExpenseAmount"/></td>
-<td>Amount Due</td><td><div id="amountDue"/></td>
-</tr>
-
-<tr>
-<td colspan="4" align="center">&nbsp;</td>
-</tr>
-
-<tr>
-<td colspan="4"><h1>Expenses</h1></td>
 </tr>
 
 <tr>
 <td colspan="4">
-    <table id="expensesTable" width="100%">
+    <table id="summaryTable" class="striped" width="100%" border=1>
+		<tr>
+		<td><b>Customer</b></td><td><div id="customerName"/></td>
+		<td><b>Carry Forward Amount</b></td><td><div id="carryForwardAmount"/></td>
+		</tr>
+
+		<tr>
+		<td><b>Technician</b></td><td><div id="technicianName"/></td>
+		<td><b>Advance Amount</b></td><td><div id="advanceAmount"/></td>
+		</tr>
+
+		<tr>
+		<td><b>Location</b></td><td><div id="location"/></td>
+		<td><b>Total Expense Amount</b></td><td><div id="totalExpenseAmount"/></td>
+		</tr>
+
+		<tr>
+		<td><b>Date</b></td><td><div id="reportDate"/></td>
+		<td><b>Amount Due</b></td><td><div id="amountDue"/></td>
+		</tr>
+
+		<tr>
+		<td><b>Advance Date</b></td><td><div id="advanceDate"/></td>
+		<td><b>Settled</b></td><td><div id="settled"/>;</td>
+		</tr>
+    </table>
+</td>
+</tr>
+<tr>
+<td colspan="4" align="center">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="4"><h2>Expenses</h2></td>
+</tr>
+
+<tr>
+<td colspan="4">
+    <table id="expensesTable" class="striped" width="100%" border=1>
 	  <tr>
-	    <td>Date</td>
-	    <td>Type</td>
-	    <td>Notes</td>
-	    <td>Amount</td>
+	    <td><b>Date</b></td>
+	    <td><b>Type</b></td>
+	    <td><b>Notes</b></td>
+	    <td><b>Amount</b></td>
 	  </tr>
    </table>
 </td>
@@ -84,7 +96,6 @@
     <script>
         $(function () {
         	checkLogin();
-        	checkForAdministrator();
         	urlParams = new URLSearchParams(window.location.search);
         	expenseReportId = urlParams.get('id');
 
@@ -108,7 +119,8 @@
         	
         	function loadExpenseReport(expenseReport) {
         		$("#reportId").html(expenseReport.id);
-        		$("#reportDate").html(expenseReport.expenseReportDate);
+        		$("#reportDate").html(expenseReport.expenseReportDateString);
+        		$("#advanceAmountDate").html(expenseReport.advanceAmountDateString);
         		$("#location").html(expenseReport.location);
         		$("#carryForwardAmount").html(expenseReport.carryForwardAmount);
         		$("#advanceAmount").html(expenseReport.advanceAmount);
@@ -116,12 +128,17 @@
         		$("#amountDue").html(expenseReport.amountDue);
         		$("#customerName").html(expenseReport.customerName);
             	$("#technicianName").html(expenseReport.technicianName);
-            	
+            	var settled = "No";
+            	if(expenseReport.settled === 1) {
+            		settled = "Yes";
+            	}
+            	$("#settled").html(settled);
         		fillExpenses(expenseReport.expenses);
             }
         	
         	function fillExpenses(expenses) {
         		var expensesTable = document.getElementById("expensesTable");
+        		rowNum = 0;
             	$.each(expenses, function(index, expense){
             		var row = expensesTable.insertRow();
                  	var dateCell = row.insertCell(0);

@@ -25,10 +25,8 @@ public class GetExpenseReport extends BaseFunction
 
         // get expense report
         ExpenseReport expenseReport = ExpenseReportDAO.findById(connection, expenseReportId);
-        if (expenseReport.getAdvanceAmountDate() != null) {
-          expenseReport
-              .setAdvanceAmountDateString(Util.formatDate(expenseReport.getAdvanceAmountDate()));
-        }
+        expenseReport.prepareForPrint();
+
         output = createSuccessOutput();
         output.setBody(new Gson().toJson(expenseReport));
       } catch (Exception e) {

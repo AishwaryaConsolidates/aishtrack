@@ -11,12 +11,14 @@ public class Expense extends BaseBean {
   private String expenseType;
   private String notes;
   private BigDecimal amount;
+  private int fileId;
 
   // for view
   private String expenseDateString;
+  private String expenseFileLink;
 
   public Expense(int id, int expenseReportId, Date expenseDate, String expenseType, String notes,
-      BigDecimal amount) {
+      BigDecimal amount, String expenseFileLink) {
     this.id = id;
     this.expenseReportId = expenseReportId;
     this.expenseDate = expenseDate;
@@ -28,6 +30,7 @@ public class Expense extends BaseBean {
     } else {
       this.expenseDateString = "";
     }
+    this.expenseFileLink = expenseFileLink;
   }
 
   public int getExpenseReportId() {
@@ -63,6 +66,9 @@ public class Expense extends BaseBean {
   }
 
   public BigDecimal getAmount() {
+    if (amount == null) {
+      return new BigDecimal(0);
+    }
     return amount;
   }
 
@@ -76,5 +82,21 @@ public class Expense extends BaseBean {
 
   public void setExpenseDateString(String expenseDateString) {
     this.expenseDateString = expenseDateString;
+  }
+
+  public int getFileId() {
+    return fileId;
+  }
+
+  public void setFileId(int fileId) {
+    this.fileId = fileId;
+  }
+
+  public String getExpenseFileLink() {
+    return expenseFileLink;
+  }
+
+  public void setExpenseFileLink(String expenseFileLink) {
+    this.expenseFileLink = expenseFileLink;
   }
 }

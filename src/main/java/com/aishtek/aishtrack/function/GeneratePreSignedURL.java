@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.util.Date;
 import com.aishtek.aishtrack.beans.File;
 import com.aishtek.aishtrack.beans.VisitFile;
+import com.aishtek.aishtrack.dao.ExpenseDAO;
 import com.aishtek.aishtrack.dao.FileDAO;
 import com.aishtek.aishtrack.dao.VisitFileDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
@@ -39,15 +40,21 @@ public class GeneratePreSignedURL extends BaseFunction
 
         // create file record
         String s3FileName =
-            response.visitId + "_" + (new Date()).getTime() + "_" + response.uploadFileName;
+            response.id + "_" + (new Date()).getTime() + "_" + response.uploadFileName;
         int fileId =
-            FileDAO.create(connection, new File(response.fileName, fileBaseURL + s3FileName));
+            FileDAO.create(connection,
+                new File(response.fileName, getFileBaseUrl(response.type) + s3FileName));
 
-        VisitFileDAO.create(connection, new VisitFile(response.visitId, fileId));
+        if (response.type.compareToIgnoreCase("visit") == 0) {
+          VisitFileDAO.create(connection, new VisitFile(response.id, fileId));
+        } else if (response.type.compareToIgnoreCase("expense") == 0) {
+          ExpenseDAO.updateFile(connection, response.id, fileId);
+        }
 
         // Generate the pre-signed URL.
         GeneratePresignedUrlRequest generatePresignedUrlRequest =
-            new GeneratePresignedUrlRequest(bucketName, s3FileName).withMethod(HttpMethod.PUT)
+            new GeneratePresignedUrlRequest(getBucket(response.type), s3FileName)
+                .withMethod(HttpMethod.PUT)
                 .withExpiration(expiration);
         URL url = s3Client.generatePresignedUrl(generatePresignedUrlRequest);
 
@@ -68,9 +75,26 @@ public class GeneratePreSignedURL extends BaseFunction
     return (new Gson()).fromJson(jsonString, Response.class);
   }
 
+  public String getBucket(String type) {
+    if (type != null && type.compareTo("expense") == 0) {
+      return expensesBucketName;
+    } else {
+      return bucketName;
+    }
+  }
+
+  public String getFileBaseUrl(String type) {
+    if (type != null && type.compareTo("expense") == 0) {
+      return expensesFileBaseURL;
+    } else {
+      return fileBaseURL;
+    }
+  }
+
   class Response {
     public String uploadFileName;
     public String fileName;
-    public Integer visitId;
+    public Integer id;
+    public String type;
   }
 }

@@ -24,8 +24,11 @@ public class BaseFunction {
   // private static final String dbUsername = "aishtek";
   // private static final String dbPassword = "a1shwarya";
   // protected static final String bucketName = "aishtrackfiles";
+  // protected static final String expensesBucketName = "aishtrackexpensefiles";
   // protected static final String fileBaseURL =
   // "https://aishtrackfiles.s3.ap-south-1.amazonaws.com/";
+  // protected static final String expensesFileBaseURL =
+  // "https://aishtrackexpensefiles.s3.ap-south-1.amazonaws.com/";
   // protected static final String feedbackURL =
   // "https://aishtek.s3.amazonaws.com/aishtrack/serviceReports/serviceReportFeedback.html?serviceReportCode=";
 
@@ -35,8 +38,11 @@ public class BaseFunction {
   private static final String dbUsername = "aishtek";
   private static final String dbPassword = "a1sht3k.com";
   protected static final String bucketName = "aishtrackuploadedfiles";
+  protected static final String expensesBucketName = "aishtrackexpensesfiles";
   protected static final String fileBaseURL =
       "http://aishtrackuploadedfiles.s3-website.ap-south-1.amazonaws.com/";
+  protected static final String expensesFileBaseURL =
+      "http://aishtrackexpensesfiles.s3-website.ap-south-1.amazonaws.com/";
   protected static final String feedbackURL =
       "https://aishtrack.s3.amazonaws.com/serviceReports/serviceReportFeedback.html?serviceReportCode=";
 

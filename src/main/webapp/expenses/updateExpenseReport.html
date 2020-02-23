@@ -105,7 +105,7 @@
 										<td><label for="firstName"
 											class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Type</label>
 											<select name="expenseType" id="expenseTypeCOUNT" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
-												<option value="Other">Expense Type</option>
+												<option value="">Expense Type</option>
 												<option value="Boarding">Boarding</option>
 												<option value="Conveyance Blr">Conveyance Blr</option>
 												<option value="Conveyance Site">Conveyance Site</option>
@@ -131,7 +131,16 @@
 											class="recalculate expAmount form-control validate col-xl-6 col-lg-6 col-md-6 col-sm-6"
 											id="expenseAmountCOUNT" name="expenseAmount" type="text"
 											size="12"></td>
-											<td>&nbsp;</td>
+										<td>
+                                        <div id="expenseFileLinkCOUNT"  style="display:none">
+
+                                        </div>
+                                        <div id="uploadExpenseFileFormCOUNT"  style="display:none">
+                                            <input type="hidden" id="expenseIdCOUNT" name="expenseId"/>
+                                            <input type="file" name="expenseFile" id="expenseFileCOUNT"/>
+                                            <button type="submit" class="btn btn-primary fileSubmitButton" id="COUNT">Upload File</button>
+                                        </div>
+                                        </td>
 									</tr>
 
 								</table>
@@ -185,6 +194,52 @@
               });
         });
         
+        function uploadFileAction(id) {
+    		$(".fileSubmitButton").attr("disabled", true);
+            window.scrollTo(0,0);
+            $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+            var getUrlParams = {};
+            getUrlParams["uploadFileName"] = $("#expenseFile"+id)[0].files[0].name;
+            getUrlParams["type"] = "expense";
+            getUrlParams["fileName"] = $("#expenseType"+id).val() + " Receipt ";
+            getUrlParams["id"] = $("#expenseId"+id).val();
+            $.ajax({
+                url : apiURLBase + "/generatePreSignedURL",
+                type : "POST",
+                data: JSON.stringify(getUrlParams),
+                dataType: "json",
+                contentType: 'application/json',
+                crossDomain: true,
+        		success: function(data) {
+        	        uploadFile(data, $("#expenseFile"+id)[0].files[0]);
+        		},
+        		error: function(data) {
+        			alert("Error getting presigned url");
+        		},
+        		complete: function(data) {
+        			$(".fileSubmitButton").attr("disabled", false);
+        		}
+        	});
+            return false;
+        }
+
+        function uploadFile(fileUploadURL, theFormFile) {
+        	$.ajax({
+                url : fileUploadURL,
+                type : "PUT",
+                contentType: theFormFile.type,
+                processData: false,
+                data: theFormFile,
+                crossDomain: true,
+        		success: function(data) {
+        			$("#notification").html("<center><font color=\"green\">Receipt Uploaded</font></center>");
+        		},
+        		error: function(data) {
+        			alert("Error upload failed");
+        		}
+        	});
+        }
+
         function recalculate() {
         	totalExpenditure = 0;
         	$(".expAmount").each(function() {
@@ -250,6 +305,19 @@
         		$("#"+"expenseType"+index).val(expense.expenseType);
         		$("#"+"expenseNote"+index).val(expense.notes);
         		$("#"+"expenseAmount"+index).val(expense.amount);
+        		if(expense.expenseFileLink) {
+        			$("#"+"expenseFileLink"+index).show();
+        			link = "<a target=\"_new\" href=\"" + expense.expenseFileLink +"\"> Expense Receipt</a>"
+        			$("#"+"expenseFileLink"+index).html(link);
+        		} else {
+        			$("#"+"uploadExpenseFileForm"+index).show();
+        			$("#"+"expenseId"+index).val(expense.id);
+        		}
+            });
+        	$(".fileSubmitButton").on("click", function (e) {
+        		e.preventDefault();
+        		uploadFileAction($(this).attr('id'));
+        		return false;
             });
         }
         

@@ -384,3 +384,48 @@ function getToday() {
     }
     return dd + '/' + mm + '/' + yyyy;
 }
+
+/* consolidate the upload file code fromm updateVisit and updateExpenseReport
+ * it will need async and wait implementation punting on that for now
+
+async function getPresignedUrl(id, uploadFileName, type, fileName) {
+    var getUrlParams = {};
+    getUrlParams["uploadFileName"] = uploadFileName;
+    getUrlParams["type"] = type;
+    getUrlParams["fileName"] = fileName;
+    getUrlParams["id"] = id;
+    $.ajax({
+        url : apiURLBase + "/generatePreSignedURL",
+        type : "POST",
+        data: JSON.stringify(getUrlParams),
+        dataType: "json",
+        contentType: 'application/json',
+        crossDomain: true,
+		success: function(data) {
+	        return data;
+		},
+		error: function(data) {
+			alert("Error getting presigned url");
+			return "";
+		}
+	});
+}
+
+async function uploadFileToS3(fileUploadURL, theFormFile) {
+	$.ajax({
+        url : fileUploadURL,
+        type : "PUT",
+        contentType: theFormFile.type,
+        processData: false,
+        data: theFormFile,
+        crossDomain: true,
+		success: function(data) {
+			return true;
+		},
+		error: function(data) {
+			alert("Error upload failed");
+			return false;
+		}
+	});
+}
+*/
