@@ -106,12 +106,12 @@ public class UpdateVisit extends BaseFunction
     String quantity;
     for (int i = 0; i < recommendedSparePartNumbers.size(); i++) {
       if (!Util.isNullOrEmpty(recommendedSparePartNumbers.get(i))) {
-        if (recommendedSparePartDescriptions.size() <= (i + 1)) {
+        if (recommendedSparePartDescriptions.size() >= (i + 1)) {
           description = recommendedSparePartDescriptions.get(i);
         } else {
           description = "";
         }
-        if (recommendedSparePartQuantitys.size() <= (i + 1)) {
+        if (recommendedSparePartQuantitys.size() >= (i + 1)) {
           quantity = recommendedSparePartQuantitys.get(i);
         } else {
           quantity = "0";
@@ -136,12 +136,12 @@ public class UpdateVisit extends BaseFunction
     for (int i = 0; i < replacedSparePartNumbers.size(); i++) {
       if (!Util.isNullOrEmpty(replacedSparePartNumbers.get(i))) {
 
-        if (replacedSparePartDescriptions.size() <= (i + 1)) {
+        if (replacedSparePartDescriptions.size() >= (i + 1)) {
           description = replacedSparePartDescriptions.get(i);
         } else {
           description = "";
         }
-        if (replacedSparePartQuantitys.size() <= (i + 1)) {
+        if (replacedSparePartQuantitys.size() >= (i + 1)) {
           quantity = replacedSparePartQuantitys.get(i);
         } else {
           quantity = "0";

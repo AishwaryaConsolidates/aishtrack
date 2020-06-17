@@ -65,7 +65,7 @@ public class ExpenseReportDAO extends BaseDAO {
   public static ExpenseReport findById(Connection connection, int expenseReportId)
       throws SQLException {
     String sql =
-        "SELECT er.id, er.service_report_id, er.customer_id, er.technician_id, c.name customer_name, (p.first_name || ' ' || p.last_name) technician_name, er.advance_amount, er.settled, er.carry_forward_amount, er.location, er.advance_amount_date "
+        "SELECT er.id, er.service_report_id, er.customer_id, er.technician_id, c.name customer_name, (p.first_name || ' ' || p.last_name) technician_name, er.advance_amount, er.settled, er.carry_forward_amount, er.location, er.advance_amount_date, er.created_at "
             + " FROM expense_reports er left outer join customers c on er.customer_id = c.id "
             + " left outer join technicians t on er.technician_id = t.id left outer join persons p on t.person_id = p.id "
             + " where er.id = ?";
@@ -77,7 +77,8 @@ public class ExpenseReportDAO extends BaseDAO {
       ExpenseReport expenseReport =
           new ExpenseReport(result.getInt(1), result.getInt(2), result.getInt(3), result.getInt(4),
               result.getBigDecimal(7), result.getInt(8), result.getBigDecimal(9),
-              result.getString(10), dateFor(result.getTimestamp(11)));
+              result.getString(10), dateFor(result.getTimestamp(11)),
+              dateFor(result.getTimestamp(12)));
       expenseReport.setExpenses(ExpenseDAO.findByExpenseReportId(connection, expenseReportId));
       expenseReport.setCustomerName(result.getString(5));
       expenseReport.setTechnicianName(result.getString(6));

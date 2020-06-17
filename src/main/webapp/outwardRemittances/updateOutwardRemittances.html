@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Update Outward Remittancer</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/tooplate.css">
+    <link rel="stylesheet" href="../vendors/jquery-ui-datepicker/jquery-ui.min.css" type="text/css" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12" w3-include-html="../partials/top_nav.html"> </div>
+        </div>
+        <br/>
+        <!-- row -->
+        <div class="row">
+            <div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
+                <div class="bg-white tm-block">
+                    <div class="row">
+                        <div class="col-12">
+                        <div id="notification"></div>
+                            <h2 class="tm-block-title d-inline-block">Outward Remittance</h2>
+                        </div>
+                    </div>
+                    <div class="row mt-4 tm-edit-product-row">
+                        <div class="col-xl-7 col-lg-7 col-md-12">
+                            <form action="" class="tm-edit-product-form" id="updateOutwardRemittanceForm">
+                               <input type="hidden" id="outwardRemittanceId" name="id"/>
+                                <div class="input-group mb-3">
+                                    <label for="category" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Supplier</label>
+                                    <select name="supplierId" id="supplierId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+
+                                    </select>
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <label for="category" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Supplier Address</label>
+                                    <select name="supplierAddressId" id="supplierAddressId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+
+                                    </select>
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <label for="fromBankAccountId" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">From Bank Account</label>
+                                    <select name="fromBankAccountId" id="fromBankAccountId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+
+                                    </select>
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <label for="category" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Supplier Bank Account</label>
+                                    <select name="supplierBankAccountId" id="supplierBankAccountId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+
+                                    </select>
+                                </div>
+  
+                               <div class="input-group mb-3">
+                                    <label for="category" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Supplier Bank Address</label>
+                                    <select name="supplierBankAddressId" id="supplierBankAddressId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+
+                                    </select>
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <label for="amount" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Amount</label>
+                                    <input id="amount" name="amount" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" value=0>
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <label for="goods" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Goods</label>
+                                    <input id="goods" name="goods" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <label for="goodsClassificationNo" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Goods Classification No</label>
+                                    <input id="goodsClassificationNo" name="goodsClassificationNo" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <label for="countryOfOrigin" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Origin Country</label>
+                                    <input id="countryOfOrigin" name="countryOfOrigin" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+                                  
+                                <div class="input-group mb-3">
+                                    <label for="currency" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Currency</label>
+                                    <input id="currency" name="currency" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+                                    
+                                <div class="input-group mb-3">
+                                    <label for="purpose" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Purpose</label>
+                                    <input id="purpose" name="purpose" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+                                                       
+                                <div class="input-group mb-3">
+                                    <label for="otherInfo" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 mb-2">OtherInfo</label>
+                                    <textarea name="otherInfo" id = "otherInfo" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" rows="2" placeholder="Notes" required></textarea>
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <label for="signaturePlace" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Signature Place</label>
+                                    <input id="signaturePlace" name="signaturePlace" type="text" value ="Bangalore" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                   <label for="signatureDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Signature Date</label>
+                                   <input class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" id="signatureDate" name="signatureDate" type="text">
+                               </div>
+                               
+                                <div class="input-group mb-3">
+                                    <div class="ml-auto col-xl-8 col-lg-8 col-md-8 col-sm-7 pl-0">
+                                        <button type="submit" class="btn btn-primary" id="submitButton">Save</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="col-xl-4 col-lg-12 tm-md-12 tm-sm-12 tm-col">
+           <div class="bg-white tm-block h-20" id="serviceReport">
+               <form action="" class="tm-edit-product-form" id="deleteWorkOrderForm">
+                   <input type="hidden" id="deleteWorkOrderId" name="deleteWorkOrderId"/>
+                   <button type="submit" class="btn btn-primary" id="deleteWorkOrderButton">Delete</button>
+               </form>
+               <br/><br/>
+               <button type="submit" class="btn btn-primary" id="printOutwardRemittance" onclick="print()">Print</button>
+           </div>
+        </div>              
+        </div>
+        <div w3-include-html="../partials/footer.html"> </div>
+    </div>
+
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/aishtrack.js"></script>
+    <script src="../vendors/jquery-ui-datepicker/jquery-ui.min.js"></script>
+    <script>
+        $(function () {
+        	/* checkLogin(); */
+        	includeHTML();
+        	getAishwaryaBankAccounts();
+        	$('#signatureDate').datepicker({
+        	    dateFormat: 'dd/mm/yy'
+        	});
+        	
+        	$("#supplierId").change(function () {
+        		getSupplierAddresses(this.value);
+        		getSupplierBankAccounts(this.value);
+            });
+        	$("#supplierbankAccountId").change(function () {
+        		getBankAccountAddresses(this.value);
+            });
+
+        	getAllInfoForPage();
+
+        	$("#submitButton").on("click", function (e) {
+        		$("#submitButton").attr("disabled", true);
+                e.preventDefault();
+                window.scrollTo(0,0);
+                $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+                $.ajax({
+                    url : apiURLBase + "/updateOutwardRemittance",
+                    type : "POST",
+                    data: getJSONFormData($('#updateOutwardRemittanceForm')),
+                    dataType: "json",
+                    contentType: 'application/json',
+                    crossDomain: true,
+            		success: function(data) {
+            			if(!isNaN(data)) {
+            			    $("#outwardRemittanceId").val(data);
+            			}
+            			$("#notification").html("<center><font color=\"green\">Remittance Updated</font></center>");
+            		},
+            		error: function(data) {
+            			alert("Error creating outward remittance.");
+            		},
+            		complete: function(data) {
+            			$("#submitButton").attr("disabled", false);
+            		}
+            	});
+                return false;
+              });
+        	
+        	$("#deleteOutwardRemmitanceButton").on("click", function (e) {
+        		if(confirm("Are you sure you want to delete this work order?")) {
+	        		$("#deleteOutwardRemmitanceButton").attr("disabled", true);
+	                e.preventDefault();
+	                window.scrollTo(0,0);
+	                $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+	                $.ajax({
+	                    url : apiURLBase + "/deleteOutwardRemittance",
+	                    type : "POST",
+	                    data: getJSONFormData($('#deleteOutwardRemmitanceForm')),
+	                    dataType: "json",
+	                    contentType: 'application/json',
+	                    crossDomain: true,
+	            		success: function(data) {
+	            			$("#notification").html("<center><font color=\"green\">Outward Remittance Deleted</font></center>");
+	            		},
+	            		error: function(data) {
+	            			alert("Error deleting outward remittance.");
+	            		},
+	            		complete: function(data) {
+	            			$("#deleteWorkOrderButton").attr("disabled", false);
+	            		}
+	            	});
+        		}
+                return false;
+              });
+        })
+
+        function checkForUpdate() {
+        	urlParams = new URLSearchParams(window.location.search);
+        	id = urlParams.get('id');
+        	if(id) {
+        		prefillOutwardRemittance(id);
+        	}
+        }
+
+        function getAllInfoForPage() {
+        	$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+        	$.when(getSuppliers()).done(function() {
+        	    checkForUpdate();
+        	});
+        	$("#notification").html("");
+        }
+        
+        function prefillOutwardRemittance(id) {
+            $.ajax({
+                url : apiURLBase + "/getOutwardRemittance?id=" + id,
+                type : "GET",
+                dataType: "json",
+                crossDomain: true,
+        		success: function(data) {
+        			remittance = JSON.parse(JSON.stringify(data));
+        			$.when(getSupplierBankAccounts(remittance.supplierId), getSupplierBankAccountAddresses(remittance.supplierBankAccountId), getSupplierAddresses(remittance.supplierId)).done(function() {
+        				
+        				fillRemittanceForm(remittance);
+                	});
+        		},
+        		error: function(data) {
+        			log("Error fetching outwar remittance");
+        		}
+        	});
+          }
+        
+        function fillRemittanceForm(remittance) {
+        	$("#outwardRemittanceId").val(remittance.id);
+        	$("#supplierId").val(remittance.supplierId);
+        	$("#supplierAddressId").val(remittance.supplierAddressId);
+        	$("#fromBankAccountId").val(remittance.fromBankAccountId);
+        	$("#supplierBankAccountId").val(remittance.supplierBankAccountId);
+        	$("#supplierBankAddressId").val(remittance.supplierBankAddressId);
+        	$("#amount").val(remittance.amount);
+        	$("#goods").val(remittance.goods);
+        	$("#goodsClassificationNo").val(remittance.goodsClassificationNo);
+        	$("#countryOfOrigin").val(remittance.countryOfOrigin);
+        	$("#currency").val(remittance.currency);
+        	$("#purpose").val(remittance.purpose);
+        	$("#otherInfo").val(remittance.otherInfo);
+        	$("#signaturePlace").val(remittance.signaturePlace);
+        	$("#signatureDate").val(remittance.signatureDateString);
+        }
+        
+        function print() {
+        	urlParams = new URLSearchParams(window.location.search);
+        	window.open(htmlURLBase + "/outwardRemittances/printOutwardRemittance.html?id=" + urlParams.get('id'));
+        }
+    </script>
+</body>
+
+</html>

@@ -25,7 +25,8 @@
           "AWSLambdaBasicExecutionRole",
           "AmazonRDSDataFullAccess",
           "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
+          "AmazonS3FullAccess",
+          "AWSSendSESEmail"
         ],
         "Environment" : {
         },
@@ -50,7 +51,8 @@
           "AWSLambdaBasicExecutionRole",
           "AmazonRDSDataFullAccess",
           "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
+          "AmazonS3FullAccess",
+          "AWSSendSESEmail"
         ],
         "Environment" : {
         },
@@ -125,7 +127,8 @@
           "AWSLambdaBasicExecutionRole",
           "AmazonRDSDataFullAccess",
           "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
+          "AmazonS3FullAccess",
+          "AWSSendSESEmail"
         ],
         "Environment" : {
         },
@@ -600,7 +603,8 @@
           "AWSLambdaBasicExecutionRole",
           "AmazonRDSDataFullAccess",
           "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
+          "AmazonS3FullAccess",
+          "AWSSendSESEmail"
         ],
         "Environment" : {
         },
@@ -675,7 +679,8 @@
           "AWSLambdaBasicExecutionRole",
           "AmazonRDSDataFullAccess",
           "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
+          "AmazonS3FullAccess",
+          "AWSSendSESEmail"
         ],
         "Environment" : {
         },
@@ -760,456 +765,6 @@
             "Properties": {
               "Path": "/serviceReportFeedback",
               "Method": "post"
-            }
-          }
-        }
-      }
-    },
-    "GetSuppliers": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.GetSuppliers",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/getSuppliers",
-              "Method": "get"
-            }
-          }
-        }
-      }
-    },
-    "GetSupplierAddresses": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.GetSupplierAddresses",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/getSupplierAddresses",
-              "Method": "get"
-            }
-          }
-        }
-      }
-    },
-    "GetBankAccounts": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.GetBankAccounts",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/getBankAccounts",
-              "Method": "get"
-            }
-          }
-        }
-      }
-    },
-    "GetBankAccountAddresses": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.GetBankAccountAddresses",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/getBankAccountAddresses",
-              "Method": "get"
-            }
-          }
-        }
-      }
-    },
-    "UpdateOutwardRemittance": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.UpdateOutwardRemittance",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/updateOutwardRemittance",
-              "Method": "post"
-            }
-          }
-        }
-      }
-    },
-    "SearchOutwardRemittances": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.SearchOutwardRemittances",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/searchOutwardRemittances",
-              "Method": "get"
-            }
-          }
-        }
-      }
-    },
-    "GetOutwardRemittance": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.GetOutwardRemittance",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/getOutwardRemittance",
-              "Method": "get"
-            }
-          }
-        }
-      }
-    },
-    "PrintOutwardRemittance": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.PrintOutwardRemittance",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/printOutwardRemittance",
-              "Method": "get"
-            }
-          }
-        }
-      }
-    },
-    "UpdateMarinePolicyDeclaration": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.UpdateMarinePolicyDeclaration",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/updateMarinePolicyDeclaration",
-              "Method": "post"
-            }
-          }
-        }
-      }
-    },
-    "GetMarinePolicies": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.GetMarinePolicies",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/getMarinePolicies",
-              "Method": "get"
-            }
-          }
-        }
-      }
-    },
-    "UpdateInlandPolicyDeclaration": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.UpdateInlandPolicyDeclaration",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/updateInlandPolicyDeclaration",
-              "Method": "post"
-            }
-          }
-        }
-      }
-    },
-    "GetInlandPolicies": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.GetInlandPolicies",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/getInlandPolicies",
-              "Method": "get"
-            }
-          }
-        }
-      }
-    },
-    "SearchMarinePolicyDeclarations": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.SearchMarinePolicyDeclarations",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/searchMarinePolicyDeclarations",
-              "Method": "get"
-            }
-          }
-        }
-      }
-    },
-    "GetMarinePolicyDeclaration": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.GetMarinePolicyDeclaration",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/getMarinePolicyDeclaration",
-              "Method": "get"
-            }
-          }
-        }
-      }
-    },
-    "SearchInlandPolicyDeclarations": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.SearchInlandPolicyDeclarations",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/searchInlandPolicyDeclarations",
-              "Method": "get"
-            }
-          }
-        }
-      }
-    },
-    "GetInlandPolicyDeclaration": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.GetInlandPolicyDeclaration",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/getInlandPolicyDeclaration",
-              "Method": "get"
-            }
-          }
-        }
-      }
-    },
-    "PrintInlandPolicyDeclarations": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.PrintInlandPolicyDeclarations",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/printInlandPolicyDeclarations",
-              "Method": "get"
-            }
-          }
-        }
-      }
-    },
-    "PrintMarinePolicyDeclarations": {
-      "Type": "AWS::Serverless::Function",
-      "Properties": {
-        "Handler": "com.aishtek.aishtrack.function.PrintMarinePolicyDeclarations",
-        "Runtime" : "java8",
-        "CodeUri" : "./target/aishtrack-1.0.0.jar",
-        "Policies": [
-          "AWSLambdaBasicExecutionRole",
-          "AmazonRDSDataFullAccess",
-          "AWSLambdaVPCAccessExecutionRole",
-          "AmazonS3FullAccess"
-        ],
-        "Environment" : {
-        },
-        "Events": {
-          "PutResource": {
-            "Type": "Api",
-            "Properties": {
-              "Path": "/printMarinePolicyDeclarations",
-              "Method": "get"
             }
           }
         }

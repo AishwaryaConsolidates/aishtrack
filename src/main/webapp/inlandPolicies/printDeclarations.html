@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Search Inland Policies</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/tooplate.css">
+    <link rel="stylesheet" type="text/css" href="../vendors/DataTables/dataTables.bootstrap4.css"/>
+    <link rel="stylesheet" href="../vendors/jquery-ui-datepicker/jquery-ui.min.css" type="text/css" />
+</head>
+
+<body>
+        <div class="container">
+            <div class="row">
+                <div class="col-12" w3-include-html="../partials/top_nav.html"> </div>
+            </div>
+            <br/>
+            <!-- row -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="bg-white tm-block h-100">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <h2 class="tm-block-title d-inline-block">Search Inland Policies
+                            </div>
+                        <form action="" class="tm-edit-product-form" id="searchInlandPoliciesForm">
+                        <div class="input-group mb-3">
+                            <label for="startDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Invoice Start Date</label>
+                            <input id="startDate" name="startDate" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" data-large-mode="true">
+                        </div>
+                        <div class="input-group mb-3">
+                            <label for="endDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Invoice End Date</label>
+                            <input id="endDate" name="endDate" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" data-large-mode="true">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <button type="submit" class="btn btn-primary" id="submitButton">Search</button>
+                            <button type="submit" class="btn btn-primary" id="printButton">Print</button>
+                        </div>
+                        </form>
+                        <div id="printDiv" class="table-responsive">
+                            <table>
+                            <tr><td colspan="2" id="provider"></td></tr>
+                            <tr><td colspan="2" id="street"></td></tr>
+                            <tr><td colspan="2" id="area"></td></tr>
+                            <tr><td colspan="2" id="city"></td></tr>
+                            <tr><td colspan="2" id="pin"></td></tr>
+                            <tr><td colspan="2">Declaration For</td></tr>
+                            <tr><td colspan="2">&nbsp;</td></tr>
+                            <tr><td colspan="2">
+                            <table border=1>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Customer Name & Address</th>
+                                        <th scope="col">Invoice No & Date</th>
+                                        <th scope="col">Description of Materials</th>
+                                        <th scope="col">Qty.</th>
+                                        <th scope="col">From</th>
+                                        <th scope="col">To</th>
+                                        <th scope="col">Lorry Receipt No. & Date</th>
+                                        <th scope="col">Amount Declared</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="results"></tbody>
+                            </table>
+                            </td></tr>
+                            <tr><td colspan="2">&nbsp;</td></tr>
+                            <tr><td colspan="2">&nbsp;</td></tr>
+                            <tr><td>Opening Balance</td><td id="openingBalance"></td></tr>
+                            <tr><td>Amount Declared</td><td id="amountDeclared"></td></tr>
+                            <tr><td>Amount Balance</td><td id="amountBalance"></td></tr>
+                            <tr><td colspan="2">&nbsp;</td></tr>
+                            <tr><td colspan="2">&nbsp;</td></tr>
+                            <tr><td id="insuranceProvider"></td><td id="forAishwarya" align="right">For AISHWARYA CONSOLIDATES PVT.LTD.</td></tr>
+                            <tr><td colspan="2">&nbsp;</td></tr>
+                            <tr><td colspan="2">&nbsp;</td></tr>
+                            <tr><td colspan="2">&nbsp;</td></tr>
+                            <tr><td colspan="2">&nbsp;</td></tr>
+                            <tr><td colspan="2">&nbsp;</td></tr>
+                            <tr><td id="insuranceIncharge">SR.DIVISIONAL MANAGER</td><td id="aishwaryaIncharge" align="right">AUTHORISED SIGNATORY</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <iframe name="print_frame" width="0" height="0" frameborder="0" src="about:blank"></iframe>
+            <div w3-include-html="../partials/footer.html"> </div>
+        </div>
+    </div>
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/aishtrack.js"></script>
+    <script src="../js/amazon-cognito-identity.min.js"></script>
+    <script type="text/javascript" src="../vendors/DataTables/datatables.min.js"></script>
+    <script src="../vendors/jquery-ui-datepicker/jquery-ui.min.js"></script>
+    <script>    
+        $(function () {
+        	$('#startDate').datepicker({
+        	    dateFormat: 'dd/mm/yy'
+        	});
+        	$('#endDate').datepicker({
+        	    dateFormat: 'dd/mm/yy'
+        	});
+        	/* checkLogin(); */
+        	includeHTML();
+
+        	// loadExpenseReports();
+        	$("#submitButton").on("click", function (e) {
+        		$("#submitButton").attr("disabled", true);
+                e.preventDefault();
+                loadDeclarations();
+                $("#submitButton").attr("disabled", false);
+                return false;
+            });
+
+        	$("#printButton").on("click", function (e) {
+        		$("#printButton").attr("disabled", true);
+                e.preventDefault();
+                
+                window.frames["print_frame"].document.body.innerHTML=document.getElementById("printDiv").innerHTML;
+                window.frames["print_frame"].window.focus();
+                window.frames["print_frame"].window.print();
+                
+                $("#printButton").attr("disabled", false);
+                return false;
+            });
+        	
+            function loadDeclarations() {
+            	$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+                $.ajax({
+                    url : apiURLBase + "/printInlandPolicyDeclarations?" + $('#searchInlandPoliciesForm').serialize(),
+                    type : "GET",
+                    dataType: "json",
+                    crossDomain: true,
+            		success: function(data) {
+            			jsonArray = JSON.parse(JSON.stringify(data));
+            			listDeclarations(jsonArray);
+            			$("#notification").html("");
+            		},
+            		error: function(data) {
+            			$("#notification").html("");
+            			log("Error fetching declarations");
+            		}
+            	});
+              }
+            
+            function listDeclarations(jsonArray) {
+            	html="";
+            	$.each(jsonArray, function(index, jsonObject){
+            		declarationReport = JSON.parse(JSON.stringify(jsonObject));
+            		document.getElementById("insuranceProvider").innerHTML = declarationReport.provider;
+            		document.getElementById("provider").innerHTML = declarationReport.provider;
+            		document.getElementById("street").innerHTML = declarationReport.policyStreet;
+            		document.getElementById("area").innerHTML = declarationReport.policyArea;
+            		document.getElementById("city").innerHTML = declarationReport.policyCity;
+            		document.getElementById("pin").innerHTML = declarationReport.policyPin;
+            		
+            		document.getElementById("openingBalance").innerHTML = declarationReport.openingBalance;
+            		document.getElementById("amountDeclared").innerHTML = declarationReport.amountDeclared;
+            		document.getElementById("amountBalance").innerHTML = declarationReport.amountBalance;
+            		$.each(declarationReport.declarations, function(index, declaration){
+            		    html+="<tr>";
+            		    html+="<td>" + declaration.customer+ "<br/>" + declaration.customerStreet + "<br/>" + declaration.customerArea + "<br/>" + declaration.customerCity + " " + declaration.customerPin + "</td>";
+            		    html+="<td>" + declaration.invoiceNumber + " " + declaration.invoiceDate + "</td>";
+            		    html+="<td>" + declaration.description + "</td>";
+            		    html+="<td>" + declaration.quantity + "</td>";
+            		    html+="<td>" + declaration.fromLocation + "</td>";
+            		    html+="<td>" + declaration.toLocation + "</td>";
+            		    html+="<td>" + declaration.receiptNumber + " " + declaration.receiptDate + "</td>";
+            		    html+="<td>" + declaration.amount + "</td>";
+            		    html+="</tr>";
+            		});
+            	});
+            	$("#results").html(html);
+            }
+        })
+    </script>
+</body>
+</html>

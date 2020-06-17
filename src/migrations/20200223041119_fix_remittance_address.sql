@@ -1,0 +1,2 @@
+ALTER TABLE outward_remittances 
+RENAME COLUMN supplier_bank_aaddress_id TO supplier_bank_address_id;

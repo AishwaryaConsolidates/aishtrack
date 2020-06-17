@@ -28,7 +28,7 @@ public class ExpenseReport extends BaseBean {
 
   public ExpenseReport(int id, int serviceReportId, int customerId, int technicianId,
       BigDecimal advanceAmount, int settled, BigDecimal carryForwardAmount, String location,
-      Date advanceAmountDate) {
+      Date advanceAmountDate, Date createdAt) {
     this.id = id;
     this.serviceReportId = serviceReportId;
     this.customerId = customerId;
@@ -38,6 +38,7 @@ public class ExpenseReport extends BaseBean {
     this.carryForwardAmount = carryForwardAmount;
     this.location = location;
     this.advanceAmountDate = advanceAmountDate;
+    this.createdAt = createdAt;
   }
 
   public void calculateTotalExpenseAmount() {

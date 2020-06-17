@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Update Declaration</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/tooplate.css">
+    <link rel="stylesheet" href="../vendors/jquery-ui-datepicker/jquery-ui.min.css" type="text/css" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12" w3-include-html="../partials/top_nav.html"> </div>
+        </div>
+        <br/>
+        <!-- row -->
+        <div class="row">
+            <div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
+                <div class="bg-white tm-block">
+                    <div class="row">
+                        <div class="col-12">
+                        <div id="notification"></div>
+                            <h2 class="tm-block-title d-inline-block">Inland Policy Declaration</h2>
+                        </div>
+                    </div>
+                    <div class="row mt-4 tm-edit-product-row">
+                        <div class="col-xl-7 col-lg-7 col-md-12">
+                            <form action="" class="tm-edit-product-form" id="updateDeclarationForm">
+                               <input type="hidden" id="id" name="id"/>
+                               <div class="input-group mb-3">
+                                    <label for="inlandPolicyId" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Inland Policy</label>
+                                    <select name="inlandPolicyId" id="inlandPolicyId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+
+                                    </select>
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <label for="customerId" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Customer</label>
+                                    <select name="customerId" id="customerId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+
+                                    </select>
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <label for="amount" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Amount</label>
+                                    <input id="amount" name="amount" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" value=0>
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <label for="invoiceNumber" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Invoice Number</label>
+                                    <input id="invoiceNumber" name="invoiceNumber" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                   <label for="invoiceDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Invoice Date</label>
+                                   <input class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" id="invoiceDate" name="invoiceDate" type="text">
+                               </div>
+                                      
+                               <div class="input-group mb-3">
+                                    <label for="receiptNumber" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Receipt Number</label>
+                                    <input id="receiptNumber" name="receiptNumber" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                   <label for="receiptDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Receipt Date</label>
+                                   <input class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" id="receiptDate" name="receiptDate" type="text">
+                               </div>
+                               
+                                <div class="input-group mb-3">
+                                    <label for="quantity" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Quantity</label>
+                                    <input id="quantity" name="quantity" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <label for="fromLocation" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">From</label>
+                                    <input id="fromLocation" name="fromLocation" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+                                  
+                                <div class="input-group mb-3">
+                                    <label for="toLocation" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">To</label>
+                                    <input id="toLocation" name="toLocation" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+                                                     
+                                <div class="input-group mb-3">
+                                    <label for="description" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 mb-2">Description</label>
+                                    <textarea name="description" id ="description" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" rows="2" placeholder="Notes" required></textarea>
+                                </div>
+                               
+                                <div class="input-group mb-3">
+                                    <div class="ml-auto col-xl-8 col-lg-8 col-md-8 col-sm-7 pl-0">
+                                        <button type="submit" class="btn btn-primary" id="submitButton">Save</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="col-xl-4 col-lg-12 tm-md-12 tm-sm-12 tm-col">
+           <div class="bg-white tm-block h-20" id="serviceReport">
+               <form action="" class="tm-edit-product-form" id="deleteForm">
+                   <input type="hidden" id="deleteId" name="deleteId"/>
+                   <button type="submit" class="btn btn-primary" id="deleteButton">Delete</button>
+               </form>
+               <br/><br/>
+           </div>
+        </div>              
+        </div>
+        <div w3-include-html="../partials/footer.html"> </div>
+    </div>
+
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/aishtrack.js"></script>
+    <script src="../vendors/jquery-ui-datepicker/jquery-ui.min.js"></script>
+    <script>
+        $(function () {
+        	/* checkLogin(); */
+        	includeHTML();
+        	getInlandPolicies();
+        	$('#invoiceDate').datepicker({
+        	    dateFormat: 'dd/mm/yy'
+        	});
+        	
+        	$('#receiptDate').datepicker({
+        	    dateFormat: 'dd/mm/yy'
+        	});
+
+        	getAllInfoForPage();
+
+        	$("#submitButton").on("click", function (e) {
+        		$("#submitButton").attr("disabled", true);
+                e.preventDefault();
+                window.scrollTo(0,0);
+                $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+                $.ajax({
+                    url : apiURLBase + "/updateInlandPolicyDeclaration",
+                    type : "POST",
+                    data: getJSONFormData($('#updateDeclarationForm')),
+                    dataType: "json",
+                    contentType: 'application/json',
+                    crossDomain: true,
+            		success: function(data) {
+            			if(!isNaN(data)) {
+            			    $("#id").val(data);
+            			}
+            			$("#notification").html("<center><font color=\"green\">Policy Updated</font></center>");
+            		},
+            		error: function(data) {
+            			alert("Error creating policy declaration.");
+            		},
+            		complete: function(data) {
+            			$("#submitButton").attr("disabled", false);
+            		}
+            	});
+                return false;
+              });
+        	
+        	$("#deleteButton").on("click", function (e) {
+        		if(confirm("Are you sure you want to delete?")) {
+	        		$("#deleteButton").attr("disabled", true);
+	                e.preventDefault();
+	                window.scrollTo(0,0);
+	                $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+	                $.ajax({
+	                    url : apiURLBase + "/deleteInlandPolicyDeclaration",
+	                    type : "POST",
+	                    data: getJSONFormData($('#deleteForm')),
+	                    dataType: "json",
+	                    contentType: 'application/json',
+	                    crossDomain: true,
+	            		success: function(data) {
+	            			$("#notification").html("<center><font color=\"green\">Declaration Deleted</font></center>");
+	            		},
+	            		error: function(data) {
+	            			alert("Error deleting declaration.");
+	            		},
+	            		complete: function(data) {
+	            			$("#deleteButton").attr("disabled", false);
+	            		}
+	            	});
+        		}
+                return false;
+              });
+        })
+
+        function checkForUpdate() {
+        	urlParams = new URLSearchParams(window.location.search);
+        	id = urlParams.get('id');
+        	if(id) {
+        		prefillDeclaration(id);
+        	}
+        }
+
+        function getAllInfoForPage() {
+        	$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+        	$.when(getCustomers()).done(function() {
+        	    checkForUpdate();
+        	});
+        	$("#notification").html("");
+        }
+        
+        function prefillDeclaration(id) {
+            $.ajax({
+                url : apiURLBase + "/getInlandPolicyDeclaration?id=" + id,
+                type : "GET",
+                dataType: "json",
+                crossDomain: true,
+        		success: function(data) {
+        			declaration = JSON.parse(JSON.stringify(data));
+        			fillDeclarationForm(declaration);
+        		},
+        		error: function(data) {
+        			log("Error fetching declaration");
+        		}
+        	});
+          }
+        
+        function fillDeclarationForm(declaration) {
+        	$("#id").val(declaration.id);
+        	$("#customerId").val(declaration.customerId);
+        	$("#amount").val(declaration.amount);
+        	$("#quantity").val(declaration.quantity);
+        	$("#invoiceNumber").val(declaration.invoiceNumber);
+        	$("#invoiceDate").val(declaration.invoiceDateString);
+        	$("#receiptNumber").val(declaration.receiptNumber);
+        	$("#receiptDate").val(declaration.receiptDateString);
+        	$("#description").val(declaration.description);  	
+        	$("#fromLocation").val(declaration.fromLocation);
+        	$("#toLocation").val(declaration.toLocation);
+        }
+    </script>
+</body>
+
+</html>

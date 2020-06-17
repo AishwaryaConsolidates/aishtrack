@@ -385,6 +385,111 @@ function getToday() {
     return dd + '/' + mm + '/' + yyyy;
 }
 
+function getSuppliers() {
+    return $.ajax({
+        url : apiURLBase + "/getSuppliers",
+        type : "GET",
+        dataType: "json",
+        crossDomain: true,
+		success: function(data) {
+			createDropdown(JSON.stringify(data), "supplierId", true);
+		},
+		error: function(data) {
+			log("Error fetching suppliers");
+		}
+	});
+}
+
+function getSupplierBankAccounts(supplierId) {
+    return $.ajax({
+        url : apiURLBase + "/getBankAccounts?supplierId="+supplierId,
+        type : "GET",
+        dataType: "json",
+        crossDomain: true,
+		success: function(data) {
+			createDropdown(JSON.stringify(data), "supplierBankAccountId", false);
+			getSupplierBankAccountAddresses($("#supplierBankAccountId option:first").val());
+		},
+		error: function(data) {
+			log("Error fetching supplier bank accounts");
+		}
+	});
+}
+
+function getAishwaryaBankAccounts() {
+    return $.ajax({
+        url : apiURLBase + "/getBankAccounts?forAishwarya=true",
+        type : "GET",
+        dataType: "json",
+        crossDomain: true,
+		success: function(data) {
+			createDropdown(JSON.stringify(data), "fromBankAccountId", false);
+		},
+		error: function(data) {
+			log("Error fetching aishwarya bank accounts");
+		}
+	});
+}
+
+function getSupplierAddresses(supplierId) {
+    return $.ajax({
+        url : apiURLBase + "/getSupplierAddresses?supplierId="+supplierId,
+        type : "GET",
+        dataType: "json",
+        crossDomain: true,
+		success: function(data) {
+			createDropdown(JSON.stringify(data), "supplierAddressId", false);
+		},
+		error: function(data) {
+			log("Error fetching supplier addresses");
+		}
+	});
+}
+
+function getSupplierBankAccountAddresses(bankAccountId) {
+    return $.ajax({
+        url : apiURLBase + "/getBankAccountAddresses?bankAccountId=" + bankAccountId,
+        type : "GET",
+        dataType: "json",
+        crossDomain: true,
+		success: function(data) {
+			createDropdown(JSON.stringify(data), "supplierBankAddressId", false);
+		},
+		error: function(data) {
+			log("Error fetching bank account addresses");
+		}
+	});
+}
+
+function getMarinePolicies() {
+    return $.ajax({
+        url : apiURLBase + "/getMarinePolicies",
+        type : "GET",
+        dataType: "json",
+        crossDomain: true,
+		success: function(data) {
+			createDropdown(JSON.stringify(data), "marinePolicyId", false);
+		},
+		error: function(data) {
+			log("Error fetching marine policies");
+		}
+	});
+}
+
+function getInlandPolicies() {
+    return $.ajax({
+        url : apiURLBase + "/getInlandPolicies",
+        type : "GET",
+        dataType: "json",
+        crossDomain: true,
+		success: function(data) {
+			createDropdown(JSON.stringify(data), "inlandPolicyId", false);
+		},
+		error: function(data) {
+			log("Error fetching inland policies");
+		}
+	});
+}
 /* consolidate the upload file code fromm updateVisit and updateExpenseReport
  * it will need async and wait implementation punting on that for now
 
