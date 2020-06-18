@@ -1,6 +1,5 @@
 package com.aishtek.aishtrack.dao;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,9 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import com.aishtek.aishtrack.beans.DeclarationsReport;
 import com.aishtek.aishtrack.beans.MarinePolicyDeclaration;
-import com.aishtek.aishtrack.beans.NameId;
 
 public class MarinePolicyDeclarationDAO extends BaseDAO {
   public static MarinePolicyDeclaration findById(Connection connection, int id)
@@ -92,8 +89,12 @@ public class MarinePolicyDeclarationDAO extends BaseDAO {
   public static ArrayList<HashMap<String, String>> searchFor(Connection connection, int supplierId,
       Date startDate, Date endDate, int marinePolicyId) throws SQLException {
     String sql =
-        "SELECT mpd.id, s.name, mpd.invoice_date, mpd.amount, mpd.currency, mpd.from_location, mpd.to_location from marine_policy_declarations mpd "
-            + "inner join suppliers s on mpd.supplier_id = s.id where mpd.deleted = 0 ";
+        "SELECT mpd.id, s.name, mpd.invoice_date, mpd.amount, mpd.currency, mpd.from_location, mpd.to_location, mpd.invoice_number, mpd.receipt_number, mpd.receipt_date, mpd.quantity, mpd.description, "
+            + " sad.street, sad.area, sad.city, sad.pincode "
+            + " from marine_policy_declarations mpd "
+            + " inner join suppliers s on mpd.supplier_id = s.id "
+            + " inner join addresses sad on mpd.supplier_address_id = sad.id "
+            + " where mpd.deleted = 0 ";
 
     if (supplierId > 0) {
       sql += " and mpd.supplier_id = ? ";
@@ -140,6 +141,16 @@ public class MarinePolicyDeclarationDAO extends BaseDAO {
       hashMap.put("currency", result.getString(5));
       hashMap.put("fromLocation", result.getString(6));
       hashMap.put("toLocation", result.getString(7));
+      hashMap.put("invoiceNumber", result.getString(8));
+      hashMap.put("receiptNumber", result.getString(9));
+      hashMap.put("receiptDate", formatDate(result.getDate(10)));
+      hashMap.put("quantity", "" + result.getInt(11));
+      hashMap.put("description", result.getString(12));
+      hashMap.put("supplierStreet", result.getString(13));
+      hashMap.put("supplierArea", result.getString(14));
+      hashMap.put("supplierCity", result.getString(15));
+      hashMap.put("supplierPin", result.getString(16));
+
       marinePolicyDeclarations.add(hashMap);
     }
     return marinePolicyDeclarations;
@@ -152,61 +163,5 @@ public class MarinePolicyDeclarationDAO extends BaseDAO {
     } else {
       marinePolicyDeclaration.setId(create(connection, marinePolicyDeclaration));
     }
-  }
-
-  public static ArrayList<NameId> getCurrentMarinePolicies(Connection connection)
-      throws SQLException {
-    String sql =
-        "SELECT id, provider from marine_policies where start_date <= NOW() and end_date >= NOW()";
-
-    PreparedStatement statement = connection.prepareStatement(sql);
-    ResultSet result = statement.executeQuery();
-
-    ArrayList<NameId> marinePolicies = new ArrayList<NameId>();
-    while (result.next()) {
-      marinePolicies.add(new NameId(result.getInt(1), result.getString(2)));
-    }
-    return marinePolicies;
-  }
-
-  public static ArrayList<DeclarationsReport> getMarinePoliciyReport(Connection connection,
-      Date startDate, Date endDate) throws SQLException {
-
-    String sql = "SELECT id, amount from marine_policies where start_date <= ? and end_date >= ?";
-
-    PreparedStatement statement = connection.prepareStatement(sql);
-
-    statement.setTimestamp(1, beginningOfDayTimestamp(startDate));
-    statement.setTimestamp(2, endOfDayTimestamp(endDate));
-    ResultSet result = statement.executeQuery();
-
-    ArrayList<DeclarationsReport> policyAmounts = new ArrayList<DeclarationsReport>();
-    while (result.next()) {
-      DeclarationsReport declarationsReport = new DeclarationsReport();
-      declarationsReport.setPolicyId(result.getInt(1));
-      declarationsReport.setAmountInsured(result.getBigDecimal(2));
-      policyAmounts.add(declarationsReport);
-    }
-    return policyAmounts;
-  }
-
-  public static BigDecimal getAmountUsed(Connection connection, int marinePolicyId, Date startDate,
-      Date endDate) throws SQLException {
-    String sql =
-        "SELECT sum(amount) from marine_policy_declarations where marine_policy_id = ? and invoice_date > ? and invoice_date <= ? and deleted = 0";
-
-    PreparedStatement statement = connection.prepareStatement(sql);
-
-    statement.setInt(1, marinePolicyId);
-    statement.setTimestamp(2, beginningOfDayTimestamp(startDate));
-    statement.setTimestamp(3, beginningOfDayTimestamp(startDate));
-
-    ResultSet result = statement.executeQuery();
-
-    BigDecimal amount = new BigDecimal(0);
-    if (result.next()) {
-      amount = result.getBigDecimal(1);
-    }
-    return amount;
   }
 }

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import com.aishtek.aishtrack.beans.DeclarationsReport;
+import com.aishtek.aishtrack.dao.InlandPolicyDAO;
 import com.aishtek.aishtrack.dao.InlandPolicyDeclarationDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
@@ -35,11 +36,11 @@ public class PrintInlandPolicyDeclarations extends BaseFunction
         }   
 
         ArrayList<DeclarationsReport> policyReports =
-            InlandPolicyDeclarationDAO.getInlandPoliciyReport(connection, startDate, endDate);
+            InlandPolicyDAO.getInlandPoliciyReports(connection, startDate, endDate);
 
         for (DeclarationsReport policyReport : policyReports) {
 
-          policyReport.setAmountUsed(InlandPolicyDeclarationDAO.getAmountUsed(connection,
+          policyReport.setAmountUsed(InlandPolicyDAO.getAmountUsed(connection,
               policyReport.getPolicyId(), startDate));
 
           policyReport.setDeclarations(

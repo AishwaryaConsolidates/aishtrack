@@ -7,8 +7,8 @@ import com.aishtek.aishtrack.beans.Address;
 import com.aishtek.aishtrack.beans.NameId;
 import com.aishtek.aishtrack.dao.AddressDAO;
 import com.aishtek.aishtrack.dao.BankAccountDAO;
-import com.aishtek.aishtrack.dao.InlandPolicyDeclarationDAO;
-import com.aishtek.aishtrack.dao.MarinePolicyDeclarationDAO;
+import com.aishtek.aishtrack.dao.InlandPolicyDAO;
+import com.aishtek.aishtrack.dao.MarinePolicyDAO;
 
 public class AishwaryaDetailsService {
 
@@ -23,11 +23,11 @@ public class AishwaryaDetailsService {
 
   public static ArrayList<NameId> getCurrentMarinePolicies(Connection connection)
       throws SQLException {
-    return MarinePolicyDeclarationDAO.getCurrentMarinePolicies(connection);
+    return MarinePolicyDAO.getCurrentMarinePolicies(connection);
   }
 
   public static ArrayList<NameId> getCurrentInlandPolicies(Connection connection)
       throws SQLException {
-    return InlandPolicyDeclarationDAO.getCurrentInlandPolicies(connection);
+    return InlandPolicyDAO.getCurrentInlandPolicies(connection);
   }
 }

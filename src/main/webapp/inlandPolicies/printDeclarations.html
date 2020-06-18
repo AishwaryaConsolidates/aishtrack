@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Search Inland Policies</title>
+    <title>Print Inland Policies</title>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
     <link rel="stylesheet" href="../css/fontawesome.min.css">
@@ -41,30 +41,31 @@
 
                         <div class="input-group mb-3">
                             <button type="submit" class="btn btn-primary" id="submitButton">Search</button>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <button type="submit" class="btn btn-primary" id="printButton">Print</button>
                         </div>
                         </form>
-                        <div id="printDiv" class="table-responsive">
+                        <div id="printDiv" class="table-responsive" style="display:none;">
                             <table>
                             <tr><td colspan="2" id="provider"></td></tr>
                             <tr><td colspan="2" id="street"></td></tr>
                             <tr><td colspan="2" id="area"></td></tr>
                             <tr><td colspan="2" id="city"></td></tr>
                             <tr><td colspan="2" id="pin"></td></tr>
-                            <tr><td colspan="2">Declaration For</td></tr>
+                            <tr><td colspan="2"><b>Declaration For</b></td></tr>
                             <tr><td colspan="2">&nbsp;</td></tr>
                             <tr><td colspan="2">
                             <table border=1>
                                 <thead>
                                     <tr>
-                                        <th scope="col">Customer Name & Address</th>
-                                        <th scope="col">Invoice No & Date</th>
-                                        <th scope="col">Description of Materials</th>
-                                        <th scope="col">Qty.</th>
-                                        <th scope="col">From</th>
-                                        <th scope="col">To</th>
-                                        <th scope="col">Lorry Receipt No. & Date</th>
-                                        <th scope="col">Amount Declared</th>
+                                        <th scope="col"><b>Customer Name & Address</b></th>
+                                        <th scope="col"><b>Invoice No & Date</b></th>
+                                        <th scope="col"><b>Description of Materials</b></th>
+                                        <th scope="col"><b>Qty.</b></th>
+                                        <th scope="col"><b>From</b></th>
+                                        <th scope="col"><b>To</b></th>
+                                        <th scope="col"><b>Lorry Receipt No. & Date</b></th>
+                                        <th scope="col"><b>Amount Declared</b></th>
                                     </tr>
                                 </thead>
                                 <tbody id="results"></tbody>
@@ -72,18 +73,18 @@
                             </td></tr>
                             <tr><td colspan="2">&nbsp;</td></tr>
                             <tr><td colspan="2">&nbsp;</td></tr>
-                            <tr><td>Opening Balance</td><td id="openingBalance"></td></tr>
-                            <tr><td>Amount Declared</td><td id="amountDeclared"></td></tr>
-                            <tr><td>Amount Balance</td><td id="amountBalance"></td></tr>
+                            <tr><td><b>Opening Balance</b></td><td id="openingBalance"></td></tr>
+                            <tr><td><b>Amount Declared</b></td><td id="amountDeclared"></td></tr>
+                            <tr><td><b>Amount Balance</b></td><td id="amountBalance"></td></tr>
                             <tr><td colspan="2">&nbsp;</td></tr>
                             <tr><td colspan="2">&nbsp;</td></tr>
-                            <tr><td id="insuranceProvider"></td><td id="forAishwarya" align="right">For AISHWARYA CONSOLIDATES PVT.LTD.</td></tr>
+                            <tr><td id="insuranceProvider"></td><td id="forAishwarya" align="right">For Aishwarya Consoldates Pvt. Ltd.</td></tr>
                             <tr><td colspan="2">&nbsp;</td></tr>
                             <tr><td colspan="2">&nbsp;</td></tr>
                             <tr><td colspan="2">&nbsp;</td></tr>
                             <tr><td colspan="2">&nbsp;</td></tr>
                             <tr><td colspan="2">&nbsp;</td></tr>
-                            <tr><td id="insuranceIncharge">SR.DIVISIONAL MANAGER</td><td id="aishwaryaIncharge" align="right">AUTHORISED SIGNATORY</td></tr>
+                            <tr><td id="insuranceIncharge">Sr.Divisional Manager</td><td id="aishwaryaIncharge" align="right">Authorised Signatory</td></tr>
                             </table>
                         </div>
                     </div>
@@ -140,6 +141,7 @@
                     dataType: "json",
                     crossDomain: true,
             		success: function(data) {
+            			$("#printDiv").show();
             			jsonArray = JSON.parse(JSON.stringify(data));
             			listDeclarations(jsonArray);
             			$("#notification").html("");
@@ -155,7 +157,7 @@
             	html="";
             	$.each(jsonArray, function(index, jsonObject){
             		declarationReport = JSON.parse(JSON.stringify(jsonObject));
-            		document.getElementById("insuranceProvider").innerHTML = declarationReport.provider;
+            		document.getElementById("insuranceProvider").innerHTML = "For " + declarationReport.provider;
             		document.getElementById("provider").innerHTML = declarationReport.provider;
             		document.getElementById("street").innerHTML = declarationReport.policyStreet;
             		document.getElementById("area").innerHTML = declarationReport.policyArea;

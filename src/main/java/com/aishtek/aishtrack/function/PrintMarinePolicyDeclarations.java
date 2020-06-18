@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import com.aishtek.aishtrack.beans.DeclarationsReport;
 import com.aishtek.aishtrack.dao.MarinePolicyDAO;
 import com.aishtek.aishtrack.dao.MarinePolicyDeclarationDAO;
@@ -34,23 +33,21 @@ public class PrintMarinePolicyDeclarations extends BaseFunction
         if (!Util.isNullOrEmpty(serverlessInput.getQueryStringParameters().get("endDate"))) {
           endDate = new SimpleDateFormat("dd/MM/yyyy")
               .parse(serverlessInput.getQueryStringParameters().get("endDate"));
-        }
+        }   
 
         ArrayList<DeclarationsReport> policyReports =
-            MarinePolicyDAO.getMarinePoliciyReport(connection, startDate, endDate);
-        for (DeclarationsReport policyReport : policyReports) {
-          policyReport.setAmountUsed(MarinePolicyDeclarationDAO.getAmountUsed(connection,
-              policyReport.getPolicyId(), startDate, endDate));
-          policyReport.setDeclarations(MarinePolicyDeclarationDAO.searchFor(connection, 0,
-              startDate, endDate, policyReport.getPolicyId()));
+            MarinePolicyDAO.getMarinePoliciyReports(connection, startDate, endDate);
 
-          HashMap<String, String> inlandPolicyDetails =
-              MarinePolicyDAO.getMarinePolicyDetails(connection, policyReport.getPolicyId());
-          policyReport.setProvider(inlandPolicyDetails.get("provider"));
-          policyReport.setPolicyStreet(inlandPolicyDetails.get("street"));
-          policyReport.setPolicyArea(inlandPolicyDetails.get("area"));
-          policyReport.setPolicyCity(inlandPolicyDetails.get("city"));
-          policyReport.setPolicyPin(inlandPolicyDetails.get("pin"));
+        for (DeclarationsReport policyReport : policyReports) {
+
+          policyReport.setAmountUsed(MarinePolicyDAO.getAmountUsed(connection,
+              policyReport.getPolicyId(), startDate));
+
+          policyReport.setDeclarations(
+              MarinePolicyDeclarationDAO.searchFor(connection, 0, startDate, endDate,
+                  policyReport.getPolicyId()));
+
+          policyReport.calculateAmounts();
         }
 
         output = createSuccessOutput();
