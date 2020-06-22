@@ -9,11 +9,20 @@ import com.aishtek.aishtrack.beans.NameId;
 
 public class SupplierDAO extends BaseDAO {
 
-  public static ArrayList<NameId> searchFor(Connection connection)
+  public static ArrayList<NameId> searchFor(Connection connection, String type)
       throws SQLException {
     String sql = "SELECT s.id, s.name from suppliers s where s.deleted = 0 ";
 
+    if (type != null) {
+      sql += " and s.type = ? ";
+    }
+
     PreparedStatement statement = connection.prepareStatement(sql);
+
+    if (type != null) {
+      statement.setString(1, type);
+    }
+
     ResultSet result = statement.executeQuery();
 
     ArrayList<NameId> suppliers = new ArrayList<NameId>();

@@ -1,0 +1,1 @@
+ALTER TABLE suppliers ADD type VARCHAR(15);

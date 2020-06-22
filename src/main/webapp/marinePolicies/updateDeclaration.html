@@ -217,7 +217,7 @@
 
         function getAllInfoForPage() {
         	$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
-        	$.when(getSuppliers()).done(function() {
+        	$.when(getOverseasSuppliers()).done(function() {
         	    checkForUpdate();
         	});
         	$("#notification").html("");

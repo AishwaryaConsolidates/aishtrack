@@ -1214,7 +1214,107 @@
           }
         }
       }
-    }
+    },
+    "UpdateDomesticRemittance": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "com.aishtek.aishtrack.function.UpdateDomesticRemittance",
+        "Runtime" : "java8",
+        "CodeUri" : "./target/aishtrack-1.0.0.jar",
+        "Policies": [
+          "AWSLambdaBasicExecutionRole",
+          "AmazonRDSDataFullAccess",
+          "AWSLambdaVPCAccessExecutionRole",
+          "AmazonS3FullAccess"
+        ],
+        "Environment" : {
+        },
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/updateDomesticRemittance",
+              "Method": "post"
+            }
+          }
+        }
+      }
+    },
+    "SearchDomesticRemittances": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "com.aishtek.aishtrack.function.SearchDomesticRemittances",
+        "Runtime" : "java8",
+        "CodeUri" : "./target/aishtrack-1.0.0.jar",
+        "Policies": [
+          "AWSLambdaBasicExecutionRole",
+          "AmazonRDSDataFullAccess",
+          "AWSLambdaVPCAccessExecutionRole",
+          "AmazonS3FullAccess"
+        ],
+        "Environment" : {
+        },
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/searchDomesticRemittances",
+              "Method": "get"
+            }
+          }
+        }
+      }
+    },
+    "GetDomesticRemittance": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "com.aishtek.aishtrack.function.GetDomesticRemittance",
+        "Runtime" : "java8",
+        "CodeUri" : "./target/aishtrack-1.0.0.jar",
+        "Policies": [
+          "AWSLambdaBasicExecutionRole",
+          "AmazonRDSDataFullAccess",
+          "AWSLambdaVPCAccessExecutionRole",
+          "AmazonS3FullAccess"
+        ],
+        "Environment" : {
+        },
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/getDomesticRemittance",
+              "Method": "get"
+            }
+          }
+        }
+      }
+    },
+    "PrintDomesticRemittance": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "com.aishtek.aishtrack.function.PrintDomesticRemittance",
+        "Runtime" : "java8",
+        "CodeUri" : "./target/aishtrack-1.0.0.jar",
+        "Policies": [
+          "AWSLambdaBasicExecutionRole",
+          "AmazonRDSDataFullAccess",
+          "AWSLambdaVPCAccessExecutionRole",
+          "AmazonS3FullAccess"
+        ],
+        "Environment" : {
+        },
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/printDomesticRemittance",
+              "Method": "get"
+            }
+          }
+        }
+      }
+    }   
   },
   "Outputs" : {
   }

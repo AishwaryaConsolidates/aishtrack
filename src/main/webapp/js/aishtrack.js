@@ -385,9 +385,24 @@ function getToday() {
     return dd + '/' + mm + '/' + yyyy;
 }
 
-function getSuppliers() {
+function getOverseasSuppliers() {
     return $.ajax({
-        url : apiURLBase + "/getSuppliers",
+        url : apiURLBase + "/getSuppliers?type=overseas",
+        type : "GET",
+        dataType: "json",
+        crossDomain: true,
+		success: function(data) {
+			createDropdown(JSON.stringify(data), "supplierId", true);
+		},
+		error: function(data) {
+			log("Error fetching suppliers");
+		}
+	});
+}
+
+function getDomesticSuppliers() {
+    return $.ajax({
+        url : apiURLBase + "/getSuppliers?type=domestic",
         type : "GET",
         dataType: "json",
         crossDomain: true,
