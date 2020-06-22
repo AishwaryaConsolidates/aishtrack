@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Domestic Remittance</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+
+    <style>
+        .striped tr:nth-child(even) {background-color: #f2f2f2;}
+    </style>
+    <style>
+        .underlined {border-bottom: 1px solid #000;}
+    </style>
+</head>
+
+<body>
+<table width="80%" align="center">
+<tr>
+<td colspan="4">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="2"><span class="fromBank"></span></td>
+<td colspan="2">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="2"><span class="fromBankBranch"></span></td>
+<td colspan="2">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="2"><span class="fromBankStreet"></span></td>
+<td colspan="2">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="2"><span class="fromBankArea"></span></td>
+<td colspan="2">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="2"><span class="fromBankCity"></span></td>
+<td colspan="2">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="2"><span class="fromBankState"></span>&nbsp;<span class="fromBankPincode"></span></td>
+<td colspan="2">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="4">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="4" align="center"><h1>NEFT/RTGS Application Form</h1></td>
+</tr>
+
+<tr>
+<td colspan="4">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="2"><b>Details of Applicant (Remitter):</b></td>
+<td colspan="2">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="4">
+<table border=1>
+<tr>
+<td colspan="2">Name</td>
+<td colspan="2">AISHWARYA CONSOLIDATES PVT.LTD.,</td>
+</tr>
+
+<tr>
+<td colspan="2">Account Number</td>
+<td colspan="2"><span class="fromBankAccountNumber"></span></td>
+</tr>
+</table>
+</td>
+</tr>
+
+<tr>
+<td colspan="4">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="2"><b>Details of Beneficiary:</b></td>
+<td colspan="2">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="4">
+<table border=1>
+
+<tr>
+<td colspan="2">Name</td>
+<td colspan="2"><span class="supplierName"></span></td>
+</tr>
+
+<tr>
+<td colspan="2">Account No</td>
+<td colspan="2"><span class="supplierBankAccountNumber"></span></td>
+</tr>
+
+<tr>
+<td colspan="2">SWIFT Code</td>
+<td colspan="2"><span class="supplierBankSwiftCode"></span></td>
+</tr>
+
+<tr>
+<td colspan="2">Name of Bank & Branch</td>
+<td colspan="2">
+  <span class="supplierBank"></span><br/>
+  <span class="supplierBankBranch"></span>
+</td>
+</tr>
+
+<tr>
+<td colspan="2">IBAN(If available)</td>
+<td colspan="2"><span class="supplierBankIban"></span></td>
+</tr>
+
+<tr>
+<td colspan="2">Any other detail</td>
+<td colspan="2"><span class="otherInfo"></span></td>
+</tr>
+
+<tr>
+<td colspan="2">Amount to be remitted: </td>
+<td colspan="2"><span class="amount"></span></td>
+</tr>
+
+</table>
+</td>
+</tr>
+
+<tr>
+<td colspan="4">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="2">Remit the amount as per the details enumerated above</td>
+<td colspan="2">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="2"><b>For AISHWARYA CONSOLIDATES PVT.LTD.,</b></td>
+<td colspan="2">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="4">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="4">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="2"><b>Authorized Signatory</b></td>
+<td colspan="2">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="4">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="2">CONDITIONS OF TRANSFER</td>
+<td colspan="2">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="4">
+1. As the remitting bank we shall not be liable for any loss or damages resulting from delay in transmission delivery or non- delivery of electronic message or any mistake, omission or error in transmission or delivery there of deciphering the message from any cause whatsoever or from its mis-interpretation or the action of the destination bank or any act beyond our control.<br/>
+2. All payment instructions should be checked carefully by the remitter.<br/>
+3. Messages received after cut-off  time will be sent on next working day.
+</td>
+
+<tr>
+<td colspan="4">&nbsp;</td>
+</tr>
+<tr>
+<td colspan="4">&nbsp;</td>
+</tr>
+
+<tr>
+<td colspan="3">
+FOR BANK'S USE ONLY<br/>
+Remittance Nr.
+</td>
+<td align="right">Authorised Signatory</td>
+</tr>
+</table>
+
+
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/aishtrack.js"></script>
+	<script>
+		$(function() {
+			/* checkLogin(); */
+			urlParams = new URLSearchParams(window.location.search);
+			domesticRemittanceId = urlParams.get('id');
+
+			prefillDomesticRemittance(domesticRemittanceId);
+
+		});
+
+		function prefillDomesticRemittance(id) {
+			$.ajax({
+				url : apiURLBase + "/printDomesticRemittance?id=" + id,
+				type : "GET",
+				dataType : "json",
+				crossDomain : true,
+				success : function(data) {
+					remittance = JSON.parse(JSON.stringify(data));
+					fillRemittance(remittance);
+				},
+				error : function(data) {
+					log("Error fetching outwar remittance");
+				}
+			});
+		}
+		
+		function fillRemittance(remittance) {
+        	$(".amount").html(remittance.amount);
+        	$(".purpose").html(remittance.purpose);
+        	$(".signatureDate").html(remittance.signatureDate);
+        	$(".supplierName").html(remittance.supplierName);
+        	$(".supplierBank").html(remittance.supplierBank);
+        	$(".supplierBankBranch").html(remittance.supplierBankBranch);
+        	$(".supplierBankOtherDetails").html(remittance.supplierBankOtherDetails);
+        	$(".supplierBankSwiftCode").html(remittance.supplierBankSwiftCode);
+        	$(".supplierBankAccountNumber").html(remittance.supplierBankAccountNumber);
+        	$(".supplierBankIban").html(remittance.supplierBankIban);
+        	$(".fromBank").html(remittance.fromBank);
+        	$(".fromBankAccountNumber").html(remittance.fromBankAccountNumber);
+        	$(".fromBankBranch").html(remittance.fromBankBranch);
+        	$(".fromBankStreet").html(remittance.fromBankStreet);
+        	$(".fromBankArea").html(remittance.fromBankArea);
+        	$(".fromBankCity").html(remittance.fromBankCity);
+        	$(".fromBankState").html(remittance.fromBankState);
+        	$(".fromBankPincode").html(remittance.fromBankPincode);
+        	$(".fromBankOtherDetails").html(remittance.fromBankOtherDetails);
+        }
+	</script>
+</body>
+
+</html>
