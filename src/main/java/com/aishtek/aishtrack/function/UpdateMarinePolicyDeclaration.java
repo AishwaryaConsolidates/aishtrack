@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import com.aishtek.aishtrack.beans.MarinePolicyDeclaration;
 import com.aishtek.aishtrack.dao.MarinePolicyDeclarationDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
@@ -52,14 +50,6 @@ public class UpdateMarinePolicyDeclaration extends BaseFunction
 
     MarinePolicyDeclarationDAO.save(connection, marinePolicyDeclaration);
     return marinePolicyDeclaration;
-  }
-
-  private Date dateFor(String date) throws ParseException {
-    if (!Util.isNullOrEmpty(date)) {
-      return new SimpleDateFormat("dd/MM/yyyy").parse(date);
-    } else {
-      return null;
-    }
   }
 
   private Response getParams(String jsonString) {

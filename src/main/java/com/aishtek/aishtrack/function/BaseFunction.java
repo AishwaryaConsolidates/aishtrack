@@ -5,11 +5,15 @@ import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import com.aishtek.aishtrack.model.ServerlessOutput;
+import com.aishtek.aishtrack.utils.Util;
 import com.google.gson.Gson;
 
 // TODO clean this up, can createSuccessOutput take object, or atleast consolidate
@@ -19,10 +23,10 @@ public class BaseFunction {
   // TODO move this somewhere, secretsmanager costs money, environment variables in not tenable as
   // its at function level
   // staging
-  private static final String dbConnectURL =
-      "jdbc:postgresql://aishtek.cufbjsmbrpfk.ap-south-1.rds.amazonaws.com/aishtek";
-  private static final String dbUsername = "aishtek";
-  private static final String dbPassword = "a1shwarya";
+  private static final String dbConnectURL = "jdbc:postgresql://78.47.31.201/aishtek_staging";
+  private static final String dbUsername = "postgres_aiswaryadb";
+  private static final String dbPassword = "aiswar_201";
+
   protected static final String bucketName = "aishtrackfiles";
   protected static final String expensesBucketName = "aishtrackexpensefiles";
   protected static final String fileBaseURL = "https://aishtrackfiles.s3.ap-south-1.amazonaws.com/";
@@ -97,5 +101,13 @@ public class BaseFunction {
 
   protected ArrayList<String> getStringList(String csv) {
     return new ArrayList<String>(Arrays.asList(csv.split(delimiter)));
+  }
+
+  protected Date dateFor(String date) throws ParseException {
+    if (!Util.isNullOrEmpty(date)) {
+      return new SimpleDateFormat("dd/MM/yyyy").parse(date);
+    } else {
+      return null;
+    }
   }
 }

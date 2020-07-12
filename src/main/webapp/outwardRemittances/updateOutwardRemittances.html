@@ -272,7 +272,7 @@
         
         function print() {
         	urlParams = new URLSearchParams(window.location.search);
-        	window.open(htmlURLBase + "/outwardRemittances/printOutwardRemittance.html?id=" + urlParams.get('id'));
+        	window.open(htmlURLBase + "/outwardRemittances/printOutwardRemittance.html?id=" + $("#outwardRemittanceId").val());
         }
     </script>
 </body>

@@ -183,7 +183,7 @@
 
         function getAllInfoForPage() {
         	$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
-        	$.when(getOverseasSuppliers()).done(function() {
+        	$.when(getDomesticSuppliers()).done(function() {
         	    checkForUpdate();
         	});
         	$("#notification").html("");
@@ -220,7 +220,7 @@
         
         function print() {
         	urlParams = new URLSearchParams(window.location.search);
-        	window.open(htmlURLBase + "/outwardRemittances/printDomesticRemittance.html?id=" + urlParams.get('id'));
+        	window.open(htmlURLBase + "/outwardRemittances/printDomesticRemittance.html?id=" + $("#domesticRemittanceId").val());
         }
     </script>
 </body>

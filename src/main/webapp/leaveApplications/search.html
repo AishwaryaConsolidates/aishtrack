@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Search Domestic Remittances</title>
+    <title>Search Leave Applications</title>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
     <link rel="stylesheet" href="../css/fontawesome.min.css">
@@ -27,22 +27,34 @@
                     <div class="bg-white tm-block h-100">
                         <div class="row">
                             <div class="col-md-12 col-sm-12">
-                                <h2 class="tm-block-title d-inline-block">Search Domestic Remittances
+                                <h2 class="tm-block-title d-inline-block">Search Leave Applications
                             </div>
-                        <form action="" class="tm-edit-product-form" id="searchDomesticRemittancesForm">
+                        <form action="" class="tm-edit-product-form" id="searchLeaveApplicationForm">
+                        <input type="hidden" id="technicianEmail" name="technicianEmail"/>
                         <div class="input-group mb-3">
-                            <label for="category" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Supplier</label>
-                            <select name="supplierId" id="supplierId" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                            <label for="technicians" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Technician</label>
+                            <select name="technicianIds" id="technicianIds" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
 
                             </select>
                         </div>
                         <div class="input-group mb-3">
-                            <label for="startDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Start Date</label>
+                            <label for="startDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Leave From Start Date</label>
                             <input id="startDate" name="startDate" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" data-large-mode="true">
                         </div>
                         <div class="input-group mb-3">
-                            <label for="endDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">End Date</label>
+                            <label for="endDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Leave From End Date</label>
                             <input id="endDate" name="endDate" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" data-large-mode="true">
+                        </div>
+                        
+                        <div class="input-group mb-3">
+                                    <label for="category" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Status</label>
+                                    <select name="status" id="status" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                        <option value="" selected>Select Status</option>
+                                        <option value="processing">Processing</option>
+                                        <option value="sanctioned_with_pay">Sanctioned With Pay</option>
+                                        <option value="sanctioned_without_pay">Sanctioned Without Pay</option>
+                                        <option value="declined">Declined</option>                           
+                                    </select>
                         </div>
 
                         <div class="input-group mb-3">
@@ -50,18 +62,22 @@
                         </div>
                         </form>
                         <div class="table-responsive">
+                        <form action="" class="tm-edit-product-form" id="updateLeaveApplicationForm">
+                        <input type="hidden" id="leaveApplicationId" name="leaveApplicationId"/>
                             <table id="resultsTable" class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
                                         <th scope="col">&nbsp;</th>
-                                        <th scope="col">Supplier</th>
-                                        <th scope="col">Bank</th>
-                                        <th scope="col">Date</th>
-                                        <th scope="col">Amount</th>
+                                        <th scope="col">Technician</th>
+                                        <th scope="col">From Date</th>
+                                        <th scope="col">To Date</th>
+                                        <th scope="col">No Of Days</th>
+                                        <th scope="col">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody id="results"></tbody>
-                            </table>  
+                            </table>
+                        </form>    
                         </div>
                     </div>
                 </div>
@@ -84,49 +100,59 @@
         	$('#endDate').datepicker({
         	    dateFormat: 'dd/mm/yy'
         	});
-        	/* checkLogin(); */
+        	checkLogin();
         	includeHTML();
-        	getDomesticSuppliers();
+        	if(isTechnician()) {
+        		$("#technicianEmail").val(getUserEmail());
+        		$option = $("<option/>", {
+        			value : 0,
+        			text : "Select....."
+        		});
+        		$("#technicianIds").append($option);
+        	} else {
+        		getTechnicians(true);
+        	}
 
         	$("#submitButton").on("click", function (e) {
         		$("#submitButton").attr("disabled", true);
                 e.preventDefault();
-                loadRemittances();
+                loadLeaveApplications();
                 $("#submitButton").attr("disabled", false);
                 return false;
             });
 
-            function loadRemittances() {
+            function loadLeaveApplications() {
             	$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
                 $.ajax({
-                    url : apiURLBase + "/searchDomesticRemittances?" + $('#searchDomesticRemittancesForm').serialize(),
+                    url : apiURLBase + "/searchLeaveApplications?" + $('#searchLeaveApplicationForm').serialize(),
                     type : "GET",
                     dataType: "json",
                     crossDomain: true,
             		success: function(data) {
             			jsonArray = JSON.parse(JSON.stringify(data));
-            			listDomesticRemittances(jsonArray);
+            			listLeaveApplications(jsonArray);
             			$("#notification").html("");
             		},
             		error: function(data) {
             			$("#notification").html("");
-            			log("Error fetching domestic remittances");
+            			log("Error fetching leave applications");
             		}
             	});
               }
             
-            function listDomesticRemittances(jsonArray) {
+            function listLeaveApplications(jsonArray) {
             	html="";
             	$.each(jsonArray, function(index, jsonObject){
-            		or = JSON.parse(JSON.stringify(jsonObject));
+            		leaveApplication = JSON.parse(JSON.stringify(jsonObject));
             		html+="<tr>";
             		html+="<td>";
-            		html+="<a target = \"_" + index +"\" href=\"" + htmlURLBase + "/outwardRemittances/updateDomesticRemittances.html?id=" + or.id + "\"><i class=\"fas fa-edit\"></i></a>";
+            		html+="<a target = \"_" + index +"\" href=\"" + htmlURLBase + "/leaveApplications/updateByAdmin.html?id=" + leaveApplication.id + "\"><i class=\"fas fa-edit\"></i></a>";
             		html+="</td>";
-            		html+="<td>" + or.supplier+ "</td>";
-            		html+="<td>" + or.bank + "</td>";
-            		html+="<td>" + or.date + "</td>";
-            		html+="<td>" + or.amount + "</td>";
+            		html+="<td>" + leaveApplication.technician + "</td>";
+            		html+="<td>" + leaveApplication.fromDate + "</td>";
+            		html+="<td>" + leaveApplication.toDate + "</td>";
+            		html+="<td>" + leaveApplication.noOfDays + "</td>";
+            		html+="<td>" + leaveApplication.status + "</td>";
             		html+="</tr>";
             	});
             	$("#results").html(html);
