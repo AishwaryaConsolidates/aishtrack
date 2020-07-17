@@ -37,21 +37,21 @@ function includeHTML() {
 function loadTopNav() {
 	var elmnt = document.getElementById("top_nav");
 	if(isTechnician()) {
-		loadHTML(elmnt, "partials/top_nav_technician.html");
+		loadHTML(elmnt, htmlURLBase + "/partials/top_nav_technician.html");
 	}
 
 	if(isManager()) {
-		loadHTML(elmnt, "partials/top_nav_service_manager.html");
+		loadHTML(elmnt, htmlURLBase + "/partials/top_nav_service_manager.html");
 	}
 
 	if(isAdministrator()) {
-		loadHTML(elmnt, "partials/top_nav_administrator.html")
+		loadHTML(elmnt, htmlURLBase + "/partials/top_nav_administrator.html")
 	}
 }
 
 function loadFooter() {
 	var elmnt = document.getElementById("footer");
-	loadHTML(elmnt, "partials/footer.html");
+	loadHTML(elmnt, htmlURLBase + "/partials/footer.html");
 }
 
 function loadHTML(elmnt, file) {
