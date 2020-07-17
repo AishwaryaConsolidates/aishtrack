@@ -16,7 +16,7 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-12" w3-include-html="../partials/top_nav.html"> </div>
+            <div class="col-12" id="top_nav"></div>
         </div>
         <br/>    
 
@@ -159,7 +159,7 @@
                          <input name="value" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
                      </div>
                      
-        <div w3-include-html="../partials/footer.html"> </div>
+        <div id="footer"> </div>
     </div>
 
     <script src="../js/jquery-3.3.1.min.js"></script>
@@ -169,7 +169,8 @@
     <script>
         $(function () {
         	checkLogin();
-        	includeHTML();
+        	loadTopNav();
+        	loadFooter();
         	var serviceReportStatus = "";
         	$("#categoryId").change(function () {
         		getEquipments(this.value);

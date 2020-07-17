@@ -34,6 +34,43 @@ function includeHTML() {
 	}
 }
 
+function loadTopNav() {
+	var elmnt = document.getElementById("top_nav");
+	if(isTechnician()) {
+		loadHTML(elmnt, "partials/top_nav_technician.html");
+	}
+
+	if(isManager()) {
+		loadHTML(elmnt, "partials/top_nav_service_manager.html");
+	}
+
+	if(isAdministrator()) {
+		loadHTML(elmnt, "partials/top_nav_administrator.html")
+	}
+}
+
+function loadFooter() {
+	var elmnt = document.getElementById("footer");
+	loadHTML(elmnt, "partials/footer.html");
+}
+
+function loadHTML(elmnt, file) {
+	var xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		if (this.readyState == 4) {
+			if (this.status == 200) {
+				elmnt.innerHTML = this.responseText;
+			}
+			if (this.status == 404) {
+				elmnt.innerHTML = "Page not found.";
+			}
+		}
+	}
+	xhttp.open("GET", file, true);
+	xhttp.send();
+	return;
+}
+
 function getCustomers(nextFunction=null) {
     return $.ajax({
         url : apiURLBase + "/getCustomers",
@@ -338,6 +375,14 @@ function checkForTechinician() {
 
 function isTechnician() {
 	if(getUserRole() === "technician"){
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function isManager() {
+	if(getUserRole() === "manager"){
 		return true;
 	} else {
 		return false;

@@ -16,7 +16,7 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-12" w3-include-html="../partials/top_nav.html"> </div>
+            <div class="col-12" id="top_nav"></div>
         </div>
         <br/>
         <!-- row -->
@@ -93,7 +93,7 @@
            </div>
         </div>
         </div>
-        <div w3-include-html="../partials/footer.html"> </div>
+        <div id="footer"> </div>
     </div>
 
                                 <div id="singleExpenseTemplate" style="display:none">
@@ -157,7 +157,8 @@
         	checkLogin();
         	$("#technicianEmail").val(getUserEmail());
 
-        	includeHTML();
+        	loadTopNav();
+        	loadFooter();
          	var expensesTable = document.getElementById("expensesTable");
          	checkForUpdate();
          	

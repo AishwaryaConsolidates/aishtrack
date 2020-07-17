@@ -58,7 +58,7 @@
                 </div>
             </div>
         </div>                    
-        <div w3-include-html="../partials/footer.html"> </div>
+        <div id="footer"> </div>
     </div>
 
     <script src="../js/jquery-3.3.1.min.js"></script>
@@ -67,7 +67,8 @@
     <script src="../js/aishtrack.js"></script>
     <script>
         $(function () {
-        	includeHTML();
+        	loadTopNav();
+        	loadFooter();
         	urlParams = new URLSearchParams(window.location.search);
         	serviceReportCode = urlParams.get('serviceReportCode');
         	$("#serviceReportCode").val(serviceReportCode);

@@ -23,7 +23,7 @@
 <body id="reportsPage">
         <div class="container">
             <div class="row">
-                <div class="col-12" w3-include-html="../partials/top_nav.html"> </div>
+                <div class="col-12" id="top_nav"></div>
             </div>
             <br/>
             <!-- row -->
@@ -54,7 +54,7 @@
                     </div>
                 </div>
             </div>
-            <div w3-include-html="../partials/footer.html"> </div>
+            <div id="footer"> </div>
         </div>
     </div>
     <script src="../js/jquery-3.3.1.min.js"></script>
@@ -65,7 +65,8 @@
     <script>    
         $(function () {
         	checkLogin();
-        	includeHTML();
+        	loadTopNav();
+        	loadFooter();
 
         	var timeoutID = null;
         	$('#customerName').keyup(function(e) {
