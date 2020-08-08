@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import com.aishtek.aishtrack.beans.MarinePolicyDeclaration;
+import com.aishtek.aishtrack.utils.Util;
 
 public class MarinePolicyDeclarationDAO extends BaseDAO {
   public static MarinePolicyDeclaration findById(Connection connection, int id)
@@ -136,14 +137,14 @@ public class MarinePolicyDeclarationDAO extends BaseDAO {
       HashMap<String, String> hashMap = new HashMap<String, String>();
       hashMap.put("id", "" + result.getInt(1));
       hashMap.put("supplier", result.getString(2));
-      hashMap.put("invoiceDate", formatDate(result.getDate(3)));
+      hashMap.put("invoiceDate", Util.formatDate(result.getDate(3)));
       hashMap.put("amount", result.getBigDecimal(4).toString());
       hashMap.put("currency", result.getString(5));
       hashMap.put("fromLocation", result.getString(6));
       hashMap.put("toLocation", result.getString(7));
       hashMap.put("invoiceNumber", result.getString(8));
       hashMap.put("receiptNumber", result.getString(9));
-      hashMap.put("receiptDate", formatDate(result.getDate(10)));
+      hashMap.put("receiptDate", Util.formatDate(result.getDate(10)));
       hashMap.put("quantity", "" + result.getInt(11));
       hashMap.put("description", result.getString(12));
       hashMap.put("supplierStreet", result.getString(13));

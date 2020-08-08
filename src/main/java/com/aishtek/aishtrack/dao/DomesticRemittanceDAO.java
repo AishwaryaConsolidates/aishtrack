@@ -169,7 +169,7 @@ public class DomesticRemittanceDAO extends BaseDAO {
       hashMap.put("id", "" + result.getInt(1));
       hashMap.put("supplier", result.getString(2));
       hashMap.put("bank", result.getString(3));
-      hashMap.put("date", formatDate(result.getDate(4)));
+      hashMap.put("date", Util.formatDate(result.getDate(4)));
       hashMap.put("amount", result.getBigDecimal(5).toString());
       domesticRemittances.add(hashMap);
     }

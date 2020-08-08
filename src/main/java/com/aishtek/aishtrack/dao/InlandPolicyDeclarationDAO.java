@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import com.aishtek.aishtrack.beans.InlandPolicyDeclaration;
+import com.aishtek.aishtrack.utils.Util;
 
 public class InlandPolicyDeclarationDAO extends BaseDAO {
   public static InlandPolicyDeclaration findById(Connection connection, int id)
@@ -131,13 +132,13 @@ public class InlandPolicyDeclarationDAO extends BaseDAO {
       HashMap<String, String> hashMap = new HashMap<String, String>();
       hashMap.put("id", "" + result.getInt(1));
       hashMap.put("customer", result.getString(2));
-      hashMap.put("invoiceDate", formatDate(result.getDate(3)));
+      hashMap.put("invoiceDate", Util.formatDate(result.getDate(3)));
       hashMap.put("amount", result.getBigDecimal(4).toString());
       hashMap.put("fromLocation", result.getString(5));
       hashMap.put("toLocation", result.getString(6));
       hashMap.put("invoiceNumber", result.getString(7));
       hashMap.put("receiptNumber", result.getString(8));
-      hashMap.put("receiptDate", formatDate(result.getDate(9)));
+      hashMap.put("receiptDate", Util.formatDate(result.getDate(9)));
       hashMap.put("quantity", "" + result.getInt(10));
       hashMap.put("description", result.getString(11));
       hashMap.put("customerStreet", result.getString(12));
