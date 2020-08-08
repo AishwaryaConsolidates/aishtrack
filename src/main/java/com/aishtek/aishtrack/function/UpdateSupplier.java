@@ -1,8 +1,6 @@
 package com.aishtek.aishtrack.function;
 
 import java.sql.Connection;
-import java.util.ArrayList;
-import com.aishtek.aishtrack.beans.NameId;
 import com.aishtek.aishtrack.dao.SupplierDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
@@ -10,7 +8,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.google.gson.Gson;
 
-public class GetSuppliers extends BaseFunction
+public class UpdateSupplier extends BaseFunction
     implements RequestHandler<ServerlessInput, ServerlessOutput> {
 
   @Override
@@ -18,13 +16,14 @@ public class GetSuppliers extends BaseFunction
     ServerlessOutput output;
     try (Connection connection = getConnection()) {
       try {
-        String type = serverlessInput.getQueryStringParameters().get("type");
-        String name = serverlessInput.getQueryStringParameters().get("name");
+        Response response = getParams(serverlessInput.getBody());
 
-        ArrayList<NameId> suppliers = SupplierDAO.searchFor(connection, type, name);
+        int supplierId = intForId(response.supplierId); // for updates
 
-        output = createSuccessOutput();
-        output.setBody(new Gson().toJson(suppliers));
+        supplierId = SupplierDAO.save(connection, supplierId, response.name, response.type);
+
+        output = createSuccessOutput("" + supplierId);
+        connection.commit();
       } catch (Exception e) {
         connection.rollback();
         output = createFailureOutput(e);
@@ -33,5 +32,15 @@ public class GetSuppliers extends BaseFunction
       output = createFailureOutput(e);
     }
     return output;
+  }
+
+  private Response getParams(String jsonString) {
+    return (new Gson()).fromJson(jsonString, Response.class);
+  }
+
+  class Response {
+    public String supplierId;
+    public String name;
+    private String type;
   }
 }

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Search Customers</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/tooplate.css">
+</head>
+
+<body>
+        <div class="container">
+            <div class="row">
+                <div class="col-12" id="top_nav"></div>
+            </div>
+            <br/>
+            <!-- row -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="bg-white tm-block h-100">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <h2 class="tm-block-title d-inline-block">Suppliers</h2><input id="supplierName" name="supplierName" type="text"/>
+                            </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped tm-table-striped-even mt-3">
+                                <thead>
+                                    <tr class="tm-bg-gray">
+                                        <th scope="col" class="text-center">Edit</th>
+                                        <th scope="col">Supplier</th>
+                                        <th scope="col">Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="results"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="footer"> </div>
+        </div>
+    </div>
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/aishtrack.js"></script>
+    <script>    
+        $(function () {
+        	checkLogin();
+        	checkForAdministrator();
+        	loadTopNav();
+        	loadFooter();
+        	var timeoutID = null;
+        	
+        	$('#supplierName').keyup(function(e) {
+                clearTimeout(timeoutID);
+                timeoutID = setTimeout(() => loadSuppliers(e.target.value), 500);
+            });
+            
+            function loadSuppliers(supplierName) {
+            	$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+                $.ajax({
+                    url : apiURLBase + "/getSuppliers?name=" + supplierName,
+                    type : "GET",
+                    dataType: "json",
+                    crossDomain: true,
+            		success: function(data) {
+            			jsonArray = JSON.parse(JSON.stringify(data));
+            			listSuppliers(jsonArray);
+            			$("#notification").html("");
+            		},
+            		error: function(data) {
+            			$("#notification").html("");
+            			log("Error fetching suppliers");
+            		}
+            	});
+              }
+            
+            function listSuppliers(jsonArray) {
+            	html = "";
+            	$.each(jsonArray, function(index, jsonObject){
+            		supplier = JSON.parse(JSON.stringify(jsonObject));
+            		html+="<tr>";
+            		html+="<td>";
+            		html+="<a href=\"" + htmlURLBase + "/suppliers/updateSupplier.html?supplierId=" + supplier.id + "\"><i class=\"fas fa-edit\"></i></a>";
+            		html+="</td>";
+            		html+="<td>" + supplier.name + "</td>";
+            		html+="<td><i class=\"fas fa-trash-alt tm-trash-icon\"></i></td>";
+            		html+="</tr>";
+            	});
+            	$("#results").html(html);
+            }
+        })
+    </script>
+</body>
+
+</html>

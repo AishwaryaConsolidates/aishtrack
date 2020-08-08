@@ -9,14 +9,14 @@ public class BankAccount extends BaseBean {
   private String branch;
   private String swiftCode;
   private String accountNumber;
+  private String encryptedAccountNumber;
   private String iban;
   private String otherDetails;
 
   private ArrayList<HashMap<String, String>> addresses;
 
-
   public BankAccount(int id, String name, String branch, String swiftCode, String accountNumber,
-      String iban, String otherDetails) {
+      String iban, String otherDetails, String encryptedAccountNumber) {
     this.id = id;
     this.name = name;
     this.branch = branch;
@@ -24,6 +24,7 @@ public class BankAccount extends BaseBean {
     this.accountNumber = accountNumber;
     this.iban = iban;
     this.otherDetails = otherDetails;
+    this.encryptedAccountNumber = encryptedAccountNumber;
   }
 
   public String getName() {
@@ -80,5 +81,13 @@ public class BankAccount extends BaseBean {
 
   public void setOtherDetails(String otherDetails) {
     this.otherDetails = otherDetails;
+  }
+
+  public String getEncryptedAccountNumber() {
+    return encryptedAccountNumber;
+  }
+
+  public void setEncryptedAccountNumber(String encryptedAccountNumber) {
+    this.encryptedAccountNumber = encryptedAccountNumber;
   }
 }

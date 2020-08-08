@@ -271,7 +271,7 @@
                 crossDomain: true,
         		success: function(data) {
         			if(!isNaN(data)) {
-        				$("#customerId").val(customerId);
+        				$("#customerId").val(data);
         			}
         			$("#notification").html("<center><font color=\"green\">Customer Created</font></center>");
         			document.location.href = 'searchCustomers.html';

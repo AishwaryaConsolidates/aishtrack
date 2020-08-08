@@ -108,7 +108,11 @@
 	function redirectTo(role) {
 		if(role==="technician") {
 			window.location.href = htmlURLBase + "/technicianIndex.html";
-		} else {
+		} else if(role==="administrator") {
+			window.location.href = htmlURLBase + "/administratorIndex.html";
+		} else if(role==="manager") {
+			window.location.href = htmlURLBase + "/serviceManagerIndex.html";
+		}  else {
 			window.location.href = htmlURLBase + "/index.html";
 		}
 	}

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import com.aishtek.aishtrack.beans.NameId;
+import com.aishtek.aishtrack.services.EncryptionService;
 
 public class BankAccountDAO extends BaseDAO {
 
@@ -32,7 +33,7 @@ public class BankAccountDAO extends BaseDAO {
   public static ArrayList<NameId> forSupplier(Connection connection, int supplierId)
       throws SQLException {
     String sql =
-        "SELECT ba.id, ba.name, ba.branch from bank_accounts ba, supplier_bank_accounts sba where ba.deleted = 0 and ba.id = sba.bank_account_id and sba.supplier_id = ? ";
+        "SELECT ba.id, ba.name, ba.branch, ba.account_number from bank_accounts ba, supplier_bank_accounts sba where ba.deleted = 0 and ba.id = sba.bank_account_id and sba.supplier_id = ? ";
 
     PreparedStatement statement = connection.prepareStatement(sql);
     statement.setInt(1, supplierId);
@@ -41,7 +42,8 @@ public class BankAccountDAO extends BaseDAO {
     ArrayList<NameId> bankAccounts = new ArrayList<NameId>();
     while (result.next()) {
       bankAccounts.add(
-          new NameId(result.getInt(1), (result.getString(2) + " (" + result.getString(3) + ")")));
+          new NameId(result.getInt(1),
+              (result.getString(2) + " (" + result.getString(3) + ") " + result.getString(4))));
     }
     return bankAccounts;
   }
@@ -78,5 +80,50 @@ public class BankAccountDAO extends BaseDAO {
           new NameId(result.getInt(1), (result.getString(2) + " (" + result.getString(3) + ")")));
     }
     return bankAccountAddresses;
+  }
+
+  public static int create(Connection connection, String name, String branch, String swiftCode,
+      String accountNumber, String iban, String otherDetails, int addressId) throws Exception {
+    PreparedStatement preparedStatement = connection.prepareStatement(
+        "insert into bank_accounts (name, branch, swift_code, account_number, iban, other_details) values(?, ?, ? ,?, ?, ?)",
+        PreparedStatement.RETURN_GENERATED_KEYS);
+    preparedStatement.setString(1, name);
+    preparedStatement.setString(2, branch);
+    preparedStatement.setString(3, swiftCode);
+    preparedStatement.setString(4, accountNumber);
+    preparedStatement.setString(5, iban);
+    preparedStatement.setString(6, otherDetails);
+    preparedStatement.executeUpdate();
+
+    ResultSet result = preparedStatement.getGeneratedKeys();
+    if (result.next()) {
+      int bankAccountId = result.getInt(1);
+
+      EncryptionService encryptionService = new EncryptionService();
+      String encryptedAccountNumber = encryptionService.encrypt(accountNumber, bankAccountId);
+      String obfuscatedAccountNumber = encryptionService.obfuscate(accountNumber);
+
+      preparedStatement = connection.prepareStatement(
+          "update bank_accounts set account_number = ?, encrypted_account_number = ? where id = ?");
+
+      preparedStatement.setString(1, obfuscatedAccountNumber);
+      preparedStatement.setString(2, encryptedAccountNumber);
+      preparedStatement.setInt(3, bankAccountId);
+      preparedStatement.executeUpdate();
+
+      createBankAccountAddress(connection, bankAccountId, addressId);
+      return bankAccountId;
+    } else {
+      throw new SQLException("Bank Account ID not generted");
+    }
+  }
+
+  public static void createBankAccountAddress(Connection connection, int bankAccountId,
+      int addressId) throws SQLException {
+    PreparedStatement preparedStatement = connection.prepareStatement(
+        "insert into bank_account_addresses (bank_account_id, address_id) values(?, ?)");
+    preparedStatement.setInt(1, bankAccountId);
+    preparedStatement.setInt(2, addressId);
+    preparedStatement.executeUpdate();
   }
 }

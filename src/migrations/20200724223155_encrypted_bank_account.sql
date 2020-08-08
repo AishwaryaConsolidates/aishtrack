@@ -1,0 +1,1 @@
+ALTER TABLE bank_accounts ADD encrypted_bank_account_number VARCHAR(128);

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Aishtrack Dashboard</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <!-- https://fonts.google.com/specimen/Open+Sans -->
+    <link rel="stylesheet" href="css/fontawesome.min.css">
+    <!-- https://fontawesome.com/ -->
+    <link rel="stylesheet" href="css/fullcalendar.min.css">
+    <!-- https://fullcalendar.io/ -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- https://getbootstrap.com/ -->
+    <link rel="stylesheet" href="css/tooplate.css">
+    <link rel="stylesheet" type="text/css" href="vendors/DataTables/dataTables.bootstrap4.css"/>
+
+</head>
+
+<body id="reportsPage">
+    <div class="" id="home">
+        <div class="container">
+            <div class="row">
+<nav class="navbar navbar-expand-xl navbar-light bg-light">
+	<a class="navbar-brand" href="/index.html">
+	<img src="https://aishtrack.s3.amazonaws.com/img/apcl_logo.png" style="width:160px;height:100px;"/>
+	</a>
+	<button class="navbar-toggler ml-auto mr-0" type="button"
+		data-toggle="collapse" data-target="#navbarSupportedContent"
+		aria-controls="navbarSupportedContent" aria-expanded="false"
+		aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+	<div class="collapse navbar-collapse" id="navbarSupportedContent">
+		<ul class="navbar-nav mx-auto">
+
+		</ul>
+		<ul class="navbar-nav">
+			<li class="nav-item"><a onclick='signout();' class="nav-link d-flex"
+				href="#"> <i class="far fa-user mr-2 tm-logout-icon"></i>
+					<span>Logout</span>
+			</a></li>
+		</ul>
+	</div>
+</nav>
+            </div>
+            <!-- row -->
+            <div class="row tm-content-row tm-mt-big">
+              <div class="col-xl-12 col-lg-10 col-md-12 col-sm-12">
+                <div class="bg-white tm-block">
+                    <div class="row">
+                        <div class="col-12">
+                        <div id="notification"></div>
+                        Welcome Manager!
+                        </div>
+                        <table class="table table-striped table-bordered" style="width:100%">
+                        <tr>
+                        <td>
+                        <table class="table table-striped table-bordered" style="width:100%">
+                        <tr><td>Work Orders</td></tr>
+                        <tr><td><a href="/workOrders/updateWorkOrder.html">Create</a></td></tr>
+                        <tr><td><a href="/workOrders/searchWorkOrders.html">Search</a></td></tr>					
+                        </table>
+                        </td>
+                        
+                        <td>
+                        <table class="table table-striped table-bordered" style="width:100%">
+                        <tr><td>Service Reports</td></tr>
+                        <tr><td><a href="/serviceReports/searchServiceReports.html">Search</a></td></tr>					
+                        </table>
+                        </td>
+                        
+                        <td>
+                        <table class="table table-striped table-bordered" style="width:100%">
+                        <tr><td>Customers</td></tr>					
+                        <tr><td><a href="/customers/updateCustomer.html">Create</a></td></tr>
+                        <tr><td><a href="/customers/searchCustomers.html">Search</a></td></tr>				
+                        </table>
+                        </td>
+                        </tr>
+
+                        <tr>
+                        <td>
+                        <table class="table table-striped table-bordered" style="width:100%">
+                        <tr><td>Leave Applications</td></tr>					
+                        <tr><td><a href="/leaveApplications/search.html">Create</a></td></tr>	
+                        </table>
+                        </td>
+                        <td>
+                        <table class="table table-striped table-bordered" style="width:100%">
+                        <tr><td>Expense Reports</td></tr>					
+                        <tr><td><a href="/expenses/searchExpenseReports.html">Create</a></td></tr>	
+                        </table>
+                        </td>
+                        <td>&nbsp;</td>
+                        </tr>
+                        
+                        
+                        
+
+				
+                        </table>
+                    </div>
+                 </div>
+               </div>
+            </div>
+            <div id="footer"> </div>
+        </div>
+    </div>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/moment.min.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/tooplate-scripts.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/aishtrack.js"></script>
+    <script type="text/javascript" src="vendors/DataTables/datatables.min.js"></script>
+    <script>
+        $(function () {
+        	/* checkLogin(); */
+        	loadFooter();
+        	
+        	$("#notification").html("<center><img src='img/Gear-3.1s-104px.gif'/></center>");
+      	    loadOpenWorkOrders();
+        	function loadOpenWorkOrders() {
+                $.ajax({
+                    url : apiURLBase + "/getWorkOrders?status=all_open",
+                    type : "GET",
+                    dataType: "json",
+                    crossDomain: true,
+            		success: function(data) {
+            			jsonArray = JSON.parse(JSON.stringify(data));
+            			listWorkOrders(jsonArray);
+            			$("#notification").html("");
+            		},
+            		error: function(data) {
+            			log("Error fetching customers");
+            		}
+            	});
+              }
+        	
+        	function listWorkOrders(jsonArray) {
+            	html = "";
+            	$.each(jsonArray, function(index, jsonObject){
+            		workOrder = JSON.parse(JSON.stringify(jsonObject));
+            		html+="<tr>";
+            		html+="<td>";
+            		html+="<a href=\"" + htmlURLBase + "/workOrders/updateWorkOrder.html?workOrderId=" + workOrder.id + "\"><i class=\"fas fa-edit\"></i></a>";
+            		html+="</td>";
+            		html+="<td>" + workOrder.customer + "</td>";
+            		html+="<td class=\"text-center\">" + workOrder.type + "</td>";
+            		html+="<td class=\"text-center\">" + workOrder.status + "</td>";
+            		html+="<td>" + workOrder.category + "</td>";
+            		html+="<td>" + workOrder.equipment + "</td>";
+            		html+="<td>" + workOrder.technicians + "</td>";
+            		html+="</tr>";
+            	});
+            	$("#openWorkOrdersBody").html(html);
+            	$('#openWorkOrders').DataTable();
+            }
+        })
+    </script>
+</body>
+</html>

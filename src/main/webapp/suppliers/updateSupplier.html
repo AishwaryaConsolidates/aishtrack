@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Update Supplier</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/tooplate.css">
+    <link rel="stylesheet" type="text/css" href="../vendors/DataTables/dataTables.bootstrap4.css"/>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12" id="top_nav"></div>
+        </div>
+
+         <div class="row tm-content-row tm-mt-big">
+           <div id="updateCustomerDiv" class="bg-white tm-block col-9">
+           <h2 class="tm-block-title d-inline-block">Edit Supplier</h2>
+           <form id="createSupplierForm" action="" class="tm-edit-product-form">
+           <input type="hidden" id="supplierId" name="supplierId"/>
+               <div class="input-group mb-3">
+                   <label for="name" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Name</label>
+                   <input id="name" name="name" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+               </div>
+               <div class="input-group mb-3">
+                   <label for="nickName" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Location</label>
+                   <select name="type" id="type" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                       <option value="overseas" selected>Overseas</option>
+                       <option value="domestic">Domestic</option>
+                   </select>
+               </div>
+
+               <div class="input-group mb-3">
+                   <div class="ml-auto col-xl-8 col-lg-8 col-md-8 col-sm-7 pl-0">
+                       <button type="submit" class="btn btn-primary" id="createSupplier">Save</button>
+                   </div>
+               </div>
+           </form>
+           </div>
+           </div>
+
+        <div class="row tm-content-row tm-mt-big">
+           <div id="addressDiv" class="bg-white tm-block col-9">
+           <h2 class="tm-block-title d-inline-block">Addresses <i class="far fa-plus-square" id="toggleAddAddressDiv" onclick="toggleAddAddressDiv()"></i></h2>
+           <div id="listAddressesDiv"></div>
+           <div id="addAddressDiv">
+	           <form id="addAddressForm" action="" class="tm-edit-product-form">
+	           <input type="hidden" id="addressSupplierId" name="supplierId"/>
+	               <div class="input-group mb-3">
+	                   <label for="street" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Street</label>
+	                   <input id="street" name="street" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+	               </div>
+	               <div class="input-group mb-3">
+	                   <label for="area" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Area</label>
+	                   <input id="area" name="area" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+	               </div>
+	               <div class="input-group mb-3">
+	                   <label for="city" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">City</label>
+	                   <input id="city" name="city" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+	               </div>
+	               <div class="input-group mb-3">
+	                   <label for="state" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">State</label>
+	                   <input id="state" name="state" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+	               </div>
+	               <div class="input-group mb-3">
+	                   <label for="pincode" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Pincode</label>
+	                   <input id="pincode" name="pincode" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+	               </div>
+	               <div class="input-group mb-3">
+	                   <div class="ml-auto col-xl-8 col-lg-8 col-md-8 col-sm-7 pl-0">
+	                       <button type="submit" class="btn btn-primary" id="addAddress">Add Address</button>
+	                   </div>
+	               </div>              
+	           </form>
+           </div>
+           </div>
+       </div>
+           
+       <div class="row tm-content-row tm-mt-big">
+           <div id="bankAccountsDiv" class="bg-white tm-block col-9">
+           <h2 class="tm-block-title d-inline-block">Bank Accounts <i class="far fa-plus-square" id="toggleAddBankAccountDiv" onclick="toggleAddBankAccountDiv()"></i></h2>
+           <div id="listBankAccountsDiv"></div>
+           <div id="addBankAccountDiv">
+	           <form id="addBankAccountForm" action="" class="tm-edit-product-form">
+	           <input type="hidden" id="bankAccountSupplierId" name="supplierId"/>
+	               <div class="input-group mb-3">
+	                   <label for="name" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Name</label>
+	                   <input id="name" name="name" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+	               </div>
+	               
+	               <div class="input-group mb-3">
+	                   <label for="branch" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Branch</label>
+	                   <input id="branch" name="branch" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+	               </div>
+	               
+	               <div class="input-group mb-3">
+	                   <label for="swiftCode" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Swift Code</label>
+	                   <input id="swiftCode" name="swiftCode" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+	               </div>
+	               
+	               <div class="input-group mb-3">
+	                   <label for="accountNumber" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Account Number</label>
+	                   <input id="accountNumber" name="accountNumber" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+	               </div>
+	               
+	               <div class="input-group mb-3">
+	                   <label for="iban" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">IBAN</label>
+	                   <input id="iban" name="iban" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+	               </div>
+	               
+	               <div class="input-group mb-3">
+	                   <label for="accountDetails" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Account Details</label>
+	                   <input id="accountDetails" name="accountDetails" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+	               </div>
+	               
+	               <div class="input-group mb-3">
+	                   <label for="street" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Street</label>
+	                   <input id="street" name="street" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+	               </div>
+	               <div class="input-group mb-3">
+	                   <label for="area" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Area</label>
+	                   <input id="area" name="area" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+	               </div>
+	               <div class="input-group mb-3">
+	                   <label for="city" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">City</label>
+	                   <input id="city" name="city" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+	               </div>
+	               <div class="input-group mb-3">
+	                   <label for="state" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">State</label>
+	                   <input id="state" name="state" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+	               </div>
+	               <div class="input-group mb-3">
+	                   <label for="pincode" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Pincode</label>
+	                   <input id="pincode" name="pincode" type="text" class="form-control validate col-xl-4 col-lg-8 col-md-8 col-sm-7">
+	               </div>
+	               <div class="input-group mb-3">
+	                   <div class="ml-auto col-xl-8 col-lg-8 col-md-8 col-sm-7 pl-0">
+	                       <button type="submit" class="btn btn-primary" id="addBankAccount">Save</button>
+	                   </div>
+	               </div>              
+	           </form>
+           </div>
+           </div>
+       </div>
+        
+        <div id="footer"> </div>
+    </div>
+
+    <script src="../js/jquery-3.3.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/aishtrack.js"></script>
+    <script type="text/javascript" src="../vendors/DataTables/datatables.min.js"></script>
+    <script type="../js/crypto-js.min-4.0.0.js">
+    <script>
+        $(function () {
+        	/* checkLogin(); */
+        	/* checkForAdministrator(); */
+        	getSupplierInfo();
+        	loadTopNav();
+        	loadFooter();
+        })
+
+        $("#createSupplier").on("click", function (e) {
+    		$("#createSupplier").attr("disabled", true);
+            e.preventDefault();
+            window.scrollTo(0,0);
+            $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+            $.ajax({
+                url : apiURLBase + "/updateSupplier",
+                type : "POST",
+                data: getJSONFormData($('#createSupplierForm')),
+                dataType: "json",
+                contentType: 'application/json',
+                crossDomain: true,
+        		success: function(data) {
+        			if(!isNaN(data)) {
+        				$("#supplierId").val(data);
+        				$("#addressSupplierId").val(data);
+        			    $("#bankAccountSupplierId").val(data);
+        			}
+        			$("#notification").html("<center><font color=\"green\">Supplier Created</font></center>");
+        		},
+        		error: function(data) {
+        			alert("Error creating supplier");
+        		},
+        		complete: function(data) {
+        			$("#createSupplier").attr("disabled", false);
+        		}
+        	});
+            return false;
+        });
+
+        $("#addAddress").on("click", function (e) {
+    		$("#addAddress").attr("disabled", true);
+            e.preventDefault();
+            window.scrollTo(0,0);
+            $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+            $.ajax({
+                url : apiURLBase + "/createSupplierAddress",
+                type : "POST",
+                data: getJSONFormData($('#addAddressForm')),
+                dataType: "json",
+                contentType: 'application/json',
+                crossDomain: true,
+        		success: function(data) {
+        			addresses = JSON.parse(JSON.stringify(data));
+    			    listAddresses(addresses);
+    			    $("#addAddressDiv").hide();
+        		    $("#listAddressesDiv").show();
+        			$("#notification").html("<center><font color=\"green\">Address Created</font></center>");
+        		},
+        		error: function(data) {
+        			alert("Error creating address");
+        		},
+        		complete: function(data) {
+        			$("#addAddress").attr("disabled", false);
+        		}
+        	});
+            return false;
+        });
+        
+        $("#addBankAccount").on("click", function (e) {
+    		$("#addBankAccount").attr("disabled", true);
+            e.preventDefault();
+            window.scrollTo(0,0);
+            $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+            var cypherKey = "";
+            while(
+var person = prompt("Please enter your name", "Harry Potter");
+            $.ajax({
+                url : apiURLBase + "/createSupplierBankAccount",
+                type : "POST",
+                data: getJSONFormData($('#addBankAccountForm')),
+                dataType: "json",
+                contentType: 'application/json',
+                crossDomain: true,
+        		success: function(data) {
+        			bankAccounts = JSON.parse(JSON.stringify(data));
+    			    listBankAccounts(bankAccounts);
+    			    $("#addBankAccountDiv").hide();
+        		    $("#listBankAccountsDiv").show();
+        			$("#notification").html("<center><font color=\"green\">Bank Account Created</font></center>");
+        		},
+        		error: function(data) {
+        			alert("Error creating bank account");
+        		},
+        		complete: function(data) {
+        			$("#addBankAccount").attr("disabled", false);
+        		}
+        	});
+            return false;
+        });
+        
+        function prefillSupplierData(supplierId) {
+        	$("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
+            $.ajax({
+                url : apiURLBase + "/getSupplier?supplierId=" + supplierId,
+                type : "GET",
+                dataType: "json",
+                crossDomain: true,
+        		success: function(data) {
+        			supplier = JSON.parse(JSON.stringify(data));
+        			fillSupplierForm(supplier);
+        			listAddresses(supplier.addresses);
+        			listBankAccounts(supplier.bankAccounts);
+        			$("#notification").html("");
+        		},
+        		error: function(data) {
+        			$("#notification").html("");
+        			log("Error fetching supplier");
+        		}
+        	});
+          }
+        
+        function getSupplierInfo() {
+        	urlParams = new URLSearchParams(window.location.search);
+        	supplierId = urlParams.get('supplierId');
+
+        	if(supplierId != null) {
+            	$("#supplierId").val(supplierId);
+    			$("#addressSupplierId").val(supplierId);
+    		    $("#bankAccountSupplierId").val(supplierId);
+    		    
+    		    $("#addAddressDiv").hide();
+    		    $("#listAddressesDiv").show();
+    		    $("#addBankAccountDiv").hide();
+    		    $("#listBankAccountsDiv").show();
+    		    
+    		    prefillSupplierData(supplierId);
+        	} else {
+        		$("#addAddressDiv").hide();
+        		$("#listAddressesDiv").hide();
+        		$("#addBankAccountDiv").hide();
+    		    $("#listBankAccountsDiv").hide();
+        	}
+        }
+        
+        function toggleAddAddressDiv(){
+        	$("#addAddressDiv").toggle();
+        }
+        
+        function toggleAddBankAccountDiv(){
+        	$("#addBankAccountDiv").toggle();
+        }
+        
+        function fillSupplierForm(supplier) {
+        	$("#name").val(supplier.name);
+        	$("#type").val(supplier.type);
+        }
+
+        function listAddresses(addresses) {
+        	html = "<table width='100%' class='table-striped'><tr><td>Address</td><td>Delete</td></tr>";
+        	$.each(addresses, function(index, address){
+        		html+="<tr>";
+        		html+="<td>"+address.street + ", "  + address.area + ", " + address.city + ", " + address.state + ", " + address.pincode + "</td>";
+        		html+="<td><i class=\"fas fa-trash-alt tm-trash-icon\"></i></td>";
+        		html+="</tr>";
+        	});
+        	html+="</table>";
+        	$("#listAddressesDiv").html(html);
+        }
+        
+        function listBankAccounts(bankAccounts) {
+        	html = "<table width='100%' class='table-striped'><tr><td>View</td><td>Account</td><td>Delete</td></tr>";
+	        $.each(bankAccounts, function(index, bankAccount){
+	        	html+="<tr>";
+	        	html+="<td><i class=\"fas fa-edit\"></i></td>";
+	        	html+="<td>"+bankAccount.name + "</td>";
+	        	html+="<td><i class=\"fas fa-trash-alt tm-trash-icon\"></i></td>";
+	        	html+="</tr>";
+	        });
+        	html+="</table>";
+        	$("#listBankAccountsDiv").html(html);
+        }
+    </script>
+</body>
+
+</html>

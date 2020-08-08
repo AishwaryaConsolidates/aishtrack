@@ -110,4 +110,12 @@ public class BaseFunction {
       return null;
     }
   }
+
+  protected int intForId(String id) throws ParseException {
+    if (!Util.isNullOrEmpty(id)) {
+      return Integer.parseInt(id);
+    } else {
+      return 0;
+    }
+  }
 }

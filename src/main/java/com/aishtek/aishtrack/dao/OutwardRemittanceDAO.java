@@ -40,8 +40,8 @@ public class OutwardRemittanceDAO extends BaseDAO {
             + " sbad.street, sbad.area, sbad.city, sbad.state, sbad.pincode, "
             + " fad.street, fad.area, fad.city, fad.state, fad.pincode, "
             + " fbad.street, fbad.area, fbad.city, fbad.state, fbad.pincode, "
-            + " sb.name, sb.branch, sb.swift_code, sb.account_number, sb.iban, sb.other_details, "
-            + " fb.name, fb.branch, fb.swift_code, fb.account_number, fb.iban, fb.other_details "
+            + " sb.name, sb.branch, sb.swift_code, sb.account_number, sb.iban, sb.other_details, sb.encrypted_account_number, sb.id,"
+            + " fb.name, fb.branch, fb.swift_code, fb.account_number, fb.iban, fb.other_details, fb.encrypted_account_number, fb.id "
             + " FROM outward_remittances otr inner join suppliers s on otr.supplier_id = s.id "
             + " INNER JOIN addresses sa on otr.supplier_address_id = sa.id "
             + " INNER JOIN addresses sbad on otr.supplier_bank_address_id = sbad.id "
@@ -99,13 +99,17 @@ public class OutwardRemittanceDAO extends BaseDAO {
       hashMap.put("supplierBankAccountNumber", result.getString(35));
       hashMap.put("supplierBankIban", result.getString(36));
       hashMap.put("supplierBankOtherDetails", result.getString(37));
+      hashMap.put("supplierBankAccountNumberEncrypted", result.getString(38));
+      hashMap.put("supplierBankAccountId", "" + result.getInt(39));
 
-      hashMap.put("fromBank", result.getString(38));
-      hashMap.put("fromBankBranch", result.getString(39));
-      hashMap.put("fromBankSwiftCode", result.getString(40));
-      hashMap.put("fromBankAccountNumber", result.getString(41));
-      hashMap.put("fromBankIban", result.getString(42));
-      hashMap.put("fromBankOtherDetails", result.getString(43));
+      hashMap.put("fromBank", result.getString(40));
+      hashMap.put("fromBankBranch", result.getString(41));
+      hashMap.put("fromBankSwiftCode", result.getString(42));
+      hashMap.put("fromBankAccountNumber", result.getString(43));
+      hashMap.put("fromBankIban", result.getString(44));
+      hashMap.put("fromBankOtherDetails", result.getString(45));
+      hashMap.put("fromBankAccountNumberEncrypted", result.getString(46));
+      hashMap.put("fromrBankAccountId", "" + result.getInt(47));
 
       return hashMap;
     } else {
