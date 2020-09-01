@@ -16,7 +16,7 @@ public class BankAccount extends BaseBean {
   private ArrayList<HashMap<String, String>> addresses;
 
   public BankAccount(int id, String name, String branch, String swiftCode, String accountNumber,
-      String iban, String otherDetails, String encryptedAccountNumber) {
+      String iban, String otherDetails, String encryptedAccountNumber, int deleted) {
     this.id = id;
     this.name = name;
     this.branch = branch;
@@ -25,6 +25,7 @@ public class BankAccount extends BaseBean {
     this.iban = iban;
     this.otherDetails = otherDetails;
     this.encryptedAccountNumber = encryptedAccountNumber;
+    this.deleted = deleted;
   }
 
   public String getName() {

@@ -5,30 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
+import com.aishtek.aishtrack.beans.BankAccount;
 import com.aishtek.aishtrack.beans.NameId;
 import com.aishtek.aishtrack.services.EncryptionService;
 
 public class BankAccountDAO extends BaseDAO {
-
-  public static ArrayList<HashMap<String, String>> searchFor(Connection connection)
-      throws SQLException {
-    String sql = "SELECT ba.id, ba.name, ba.branch from bank_accounts where ba.deleted = 0 ";
-
-    PreparedStatement statement = connection.prepareStatement(sql);
-    ResultSet result = statement.executeQuery();
-
-    ArrayList<HashMap<String, String>> bankAccounts =
-        new ArrayList<HashMap<String, String>>();
-    while (result.next()) {
-      HashMap<String, String> hashMap = new HashMap<String, String>();
-      hashMap.put("id", "" + result.getInt(1));
-      hashMap.put("name", result.getString(2));
-      hashMap.put("branch", result.getString(3));
-      bankAccounts.add(hashMap);
-    }
-    return bankAccounts;
-  }
 
   public static ArrayList<NameId> forSupplier(Connection connection, int supplierId)
       throws SQLException {
@@ -125,5 +107,45 @@ public class BankAccountDAO extends BaseDAO {
     preparedStatement.setInt(1, bankAccountId);
     preparedStatement.setInt(2, addressId);
     preparedStatement.executeUpdate();
+  }
+
+  public static void deleteBankAccount(Connection connection, int bankAccountId)
+      throws SQLException {
+    PreparedStatement preparedStatement =
+        connection.prepareStatement("update bank_accounts set deleted = 1 where id = ?");
+    preparedStatement.setInt(1, bankAccountId);
+    preparedStatement.executeUpdate();
+  }
+
+  public static void createAishwaryaBankAccount(Connection connection, int bankAccountId,
+      Date startDate, Date endDate)
+      throws SQLException {
+    PreparedStatement preparedStatement = connection.prepareStatement(
+        "insert into aishwarya_bank_accounts (bank_account_id, start_date, end_date) values(?, ?, ?)");
+    preparedStatement.setInt(1, bankAccountId);
+    preparedStatement.setTimestamp(2, timestampFor(startDate));
+    preparedStatement.setTimestamp(3, timestampFor(endDate));
+    preparedStatement.executeUpdate();
+  }
+
+  public static BankAccount findById(Connection connection, int id) throws SQLException {
+    String sql =
+        "SELECT ba.id, ba.name, ba.branch, ba.swift_code, ba.account_number, ba.iban, ba.other_details, ba.encrypted_account_number, ba.deleted "
+            + " FROM bank_accounts ba WHERE ba.id = ? ";
+
+    PreparedStatement statement = connection.prepareStatement(sql);
+    statement.setInt(1, id);
+    ResultSet result = statement.executeQuery();
+
+    if (result.next()) {
+      BankAccount bankAccount = new BankAccount(result.getInt(1), result.getString(2),
+          result.getString(3), result.getString(4), result.getString(5), result.getString(6),
+          result.getString(7), result.getString(8), result.getInt(9));
+
+
+      return bankAccount;
+    } else {
+      throw new SQLException("No Bank Account for Id");
+    }
   }
 }

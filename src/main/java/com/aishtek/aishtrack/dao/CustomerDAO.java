@@ -32,28 +32,30 @@ public class CustomerDAO extends BaseDAO {
 
   public static int create(Connection connection, Customer customer) throws SQLException {
     PreparedStatement preparedStatement = connection.prepareStatement(
-        "insert into customers (name, nick_name, address_id) values(?, ?, ?)",
+        "insert into customers (name, nick_name, address_id, gst_in) values(?, ?, ?, ?)",
         PreparedStatement.RETURN_GENERATED_KEYS);
     preparedStatement.setString(1, customer.getName());
     preparedStatement.setString(2, customer.getNickName());
     preparedStatement.setInt(3, customer.getAddressId());
+    preparedStatement.setString(4, customer.getGstIN());
     preparedStatement.executeUpdate();
 
     ResultSet result = preparedStatement.getGeneratedKeys();
     if (result.next()) {
       return result.getInt(1);
     } else {
-      throw new SQLException("Service Report ID not generted");
+      throw new SQLException("Customer ID not generted");
     }
   }
 
   public static void update(Connection connection, Customer customer) throws SQLException {
     PreparedStatement preparedStatement = connection.prepareStatement(
-        "update customers set name =?, nick_name =?, deleted = ? where id = ?");
+        "update customers set name =?, nick_name =?, deleted = ?, gst_in= ? where id = ?");
     preparedStatement.setString(1, customer.getName());
     preparedStatement.setString(2, customer.getNickName());
     preparedStatement.setInt(3, customer.getDeleted());
-    preparedStatement.setInt(4, customer.getId());
+    preparedStatement.setString(4, customer.getGstIN());
+    preparedStatement.setInt(5, customer.getId());
     preparedStatement.executeUpdate();
   }
 
@@ -116,7 +118,7 @@ public class CustomerDAO extends BaseDAO {
     String sql =
         "SELECT cp.id, p.first_name, p.last_name, p.designation, p.phone, p.email, p.mobile, p.alternate_phone "
         + " from customer_persons cp inner join persons p on cp.person_id = p.id "
-        + " where cp.customer_id = ? " + " order by p.last_name, p.first_name";
+            + " where cp.customer_id = ? " + " order by p.last_name ASC, p.first_name ASC";
 
     PreparedStatement statement = connection.prepareStatement(sql);
     statement.setInt(1, customerId);

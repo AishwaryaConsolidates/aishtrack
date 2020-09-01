@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import com.aishtek.aishtrack.beans.Address;
 
 public class AddressDAO extends BaseDAO {
@@ -62,6 +63,32 @@ public class AddressDAO extends BaseDAO {
       return address;
     } else {
       throw new SQLException("No current Aishwarya address in the database");
+    }
+  }
+
+  public static int createAishwaryaAddress(Connection connection, Address address, Date startDate,
+      Date endDate) throws SQLException {
+    int addressId = create(connection, address);
+
+    PreparedStatement preparedStatement = connection.prepareStatement(
+        "insert into aishwarya_addresses (address_id, start_date, end_date) values (?, ?, ?)",
+        PreparedStatement.RETURN_GENERATED_KEYS);
+    preparedStatement.setInt(1, addressId);
+    preparedStatement.setTimestamp(2, timestampFor(startDate));
+    preparedStatement.setTimestamp(3, timestampFor(endDate));
+
+    int affectedRows = preparedStatement.executeUpdate();
+    if (affectedRows == 0) {
+      throw new SQLException("Creating address failed, no rows affected.");
+    }
+    try (ResultSet result = preparedStatement.getGeneratedKeys()) {
+      if (result.next()) {
+        return result.getInt(1);
+      } else {
+        throw new SQLException("Aishwarya Address Id not generted");
+      }
+    } catch (SQLException sqle) {
+      throw sqle;
     }
   }
 }

@@ -31,13 +31,11 @@ public class CustomerDAOSearchTest extends BaseIntegrationTest {
   @Test
   public void returnsAllCustomersForNullName() throws SQLException {
     try (Connection connection = getConnection()) {
-      int customerId = createTestCustomer(connection);
+      createTestCustomer(connection);
 
       ArrayList<Customer> customers = CustomerDAO.searchFor(connection, null);
 
-      assertEquals(customers.size(), 1);
-      assertEquals(customers.get(0).getId(), customerId);
-      assertEquals(customers.get(0).getName(), "Bajji Corner");
+      assertEquals(customers.size(), 5);
 
       connection.rollback();
     } catch (SQLException e) {

@@ -34,4 +34,47 @@ public class CategoryDAO extends BaseDAO {
     }
     return equipments;
   }
+
+  public static int createCategory(Connection connection, String category) throws SQLException {
+    PreparedStatement preparedStatement = connection.prepareStatement(
+        "insert into categories (name) values (?)", PreparedStatement.RETURN_GENERATED_KEYS);
+    preparedStatement.setString(1, category);
+
+    int affectedRows = preparedStatement.executeUpdate();
+    if (affectedRows == 0) {
+      throw new SQLException("Creating category failed, no rows affected.");
+    }
+    try (ResultSet result = preparedStatement.getGeneratedKeys()) {
+      if (result.next()) {
+        return result.getInt(1);
+      } else {
+        throw new SQLException("category Id not generted");
+      }
+    } catch (SQLException sqle) {
+      throw sqle;
+    }
+  }
+
+  public static int createEquipment(Connection connection, int categoryId, String equipment)
+      throws SQLException {
+    PreparedStatement preparedStatement =
+        connection.prepareStatement("insert into equipments (category_id, name) values (?, ?)",
+            PreparedStatement.RETURN_GENERATED_KEYS);
+    preparedStatement.setInt(1, categoryId);
+    preparedStatement.setString(2, equipment);
+
+    int affectedRows = preparedStatement.executeUpdate();
+    if (affectedRows == 0) {
+      throw new SQLException("Creating equipment failed, no rows affected.");
+    }
+    try (ResultSet result = preparedStatement.getGeneratedKeys()) {
+      if (result.next()) {
+        return result.getInt(1);
+      } else {
+        throw new SQLException("equipment Id not generted");
+      }
+    } catch (SQLException sqle) {
+      throw sqle;
+    }
+  }
 }
