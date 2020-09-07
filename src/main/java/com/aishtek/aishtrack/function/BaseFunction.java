@@ -23,9 +23,10 @@ public class BaseFunction {
   // TODO move this somewhere, secretsmanager costs money, environment variables in not tenable as
   // its at function level
   // staging
-  private static final String dbConnectURL = "jdbc:postgresql://78.47.31.201/aishtek_staging";
-  private static final String dbUsername = "postgres_aiswaryadb";
-  private static final String dbPassword = "aiswar_201";
+  private static final String dbConnectURL =
+      "jdbc:postgresql://78.47.31.201:54320/aishwary_staging";
+  private static final String dbUsername = "aishwary_stagelogin";
+  private static final String dbPassword = "x0n9jNsP";
 
   protected static final String bucketName = "aishtrackfiles";
   protected static final String expensesBucketName = "aishtrackexpensefiles";

@@ -1492,6 +1492,58 @@
           }
         }
       }
+    },
+    "ImportLocalServiceProviders": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "com.aishtek.aishtrack.function.ImportLocalServiceProviders",
+        "Runtime" : "java8",
+        "CodeUri" : "./target/aishtrack-1.0.0.jar",
+        "Policies": [
+          "AWSLambdaBasicExecutionRole",
+          "AmazonRDSDataFullAccess",
+          "AWSLambdaVPCAccessExecutionRole",
+          "AmazonS3FullAccess",
+          "SecretsManagerReadWrite"
+        ],
+        "Environment" : {
+        },
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/importLocalServiceProviders",
+              "Method": "get"
+            }
+          }
+        }
+      }
+    },
+    "CreateAishwaryaBankAccount": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "com.aishtek.aishtrack.function.CreateAishwaryaBankAccount",
+        "Runtime" : "java8",
+        "CodeUri" : "./target/aishtrack-1.0.0.jar",
+        "Policies": [
+          "AWSLambdaBasicExecutionRole",
+          "AmazonRDSDataFullAccess",
+          "AWSLambdaVPCAccessExecutionRole",
+          "AmazonS3FullAccess",
+          "SecretsManagerReadWrite"
+        ],
+        "Environment" : {
+        },
+        "Events": {
+          "PutResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/createAishwaryaBankAccount",
+              "Method": "get"
+            }
+          }
+        }
+      }
     }
   },
   "Outputs" : {

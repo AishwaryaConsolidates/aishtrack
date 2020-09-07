@@ -73,18 +73,8 @@ public class ServiceReport extends BaseBean {
 
     this.id = id;
     this.code = code;
-    this.customerId = customerId;
-    this.addressId = addressId;
-    this.contactPersonId = contactPersonId;
-    this.reportDate = reportDate;
     this.status = status;
     this.statusDate = statusDate;
-    this.brand = brand;
-    this.model = model;
-    this.serialNumber = serialNumber;
-    this.serviceRating = serviceRating;
-    this.notes = notes;
-    this.deleted = deleted;
   }
 
   public int getCustomerId() {

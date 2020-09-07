@@ -33,7 +33,7 @@ public class BankAccountDAO extends BaseDAO {
   public static ArrayList<NameId> getCurrentAishwaryaBankAccounts(Connection connection)
       throws SQLException {
     String sql =
-        "SELECT ba.id, ba.name, ba.branch from bank_accounts ba, aishwarya_bank_accounts aba "
+        "SELECT ba.id, ba.name, ba.branch, ba.account_number from bank_accounts ba, aishwarya_bank_accounts aba "
             + "where ba.deleted = 0 and ba.id = aba.bank_account_id and aba.start_date <= NOW() and aba.end_date >= NOW()";
 
     PreparedStatement statement = connection.prepareStatement(sql);
@@ -42,7 +42,8 @@ public class BankAccountDAO extends BaseDAO {
     ArrayList<NameId> bankAccounts = new ArrayList<NameId>();
     while (result.next()) {
       bankAccounts.add(
-          new NameId(result.getInt(1), (result.getString(2) + " (" + result.getString(3) + ")")));
+          new NameId(result.getInt(1),
+              (result.getString(2) + " (" + result.getString(3) + ")" + result.getString(4))));
     }
     return bankAccounts;
   }

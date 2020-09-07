@@ -114,6 +114,10 @@ public class EncryptionService {
   }
 
   public String obfuscate(String aString) {
-    return "*****" + aString.substring(aString.length() - 4);
+    if (aString.length() > 4) {
+      return "*****" + aString.substring(aString.length() - 4);
+    } else {
+      return aString;
+    }
   }
 }

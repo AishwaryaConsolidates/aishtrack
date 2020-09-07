@@ -1,5 +1,6 @@
 package com.aishtek.aishtrack.test;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,12 +10,16 @@ import java.util.Date;
 import org.apache.commons.lang3.RandomStringUtils;
 import com.aishtek.aishtrack.beans.Address;
 import com.aishtek.aishtrack.beans.Customer;
+import com.aishtek.aishtrack.beans.DomesticRemittance;
 import com.aishtek.aishtrack.beans.Person;
 import com.aishtek.aishtrack.beans.ServiceReport;
 import com.aishtek.aishtrack.beans.WorkOrder;
 import com.aishtek.aishtrack.dao.AddressDAO;
 import com.aishtek.aishtrack.dao.BankAccountDAO;
+import com.aishtek.aishtrack.dao.CategoryDAO;
 import com.aishtek.aishtrack.dao.CustomerDAO;
+import com.aishtek.aishtrack.dao.DomesticRemittanceDAO;
+import com.aishtek.aishtrack.dao.ExpenseReportDAO;
 import com.aishtek.aishtrack.dao.PersonDAO;
 import com.aishtek.aishtrack.dao.ServiceReportDAO;
 import com.aishtek.aishtrack.dao.SupplierDAO;
@@ -58,8 +63,11 @@ public class BaseIntegrationTest {
     if (personId == 0) {
       personId = createTestPerson(connection);
     }
+    int categoryId = CategoryDAO.createCategory(connection, "canine");
+    int equipmentId = CategoryDAO.createEquipment(connection, categoryId, "belt");
+
     WorkOrder workOrder = new WorkOrder(customerId, personId, "installation",
-        "install sonething notes", 1, 1, "brand a",
+        "install sonething notes", categoryId, equipmentId, "brand a",
         "model10", "serno1001", "partno101", createTestAddress(connection));
 
     return WorkOrderDAO.create(connection, workOrder);
@@ -76,9 +84,13 @@ public class BaseIntegrationTest {
     if (addressId == 0) {
       addressId = createTestAddress(connection);
     }
+
     ServiceReport serviceReport = new ServiceReport(0, "588bc7ff-8aeb-4cf8-94b1-04cb294a840c",
         customerId, addressId, personId, new Date(), "created", new Date(), "brand101", "model111",
         "serialno101", 5, "some notes", 0, "installation");
+    serviceReport.setCategoryId(CategoryDAO.createCategory(connection, "Asinine"));
+    serviceReport.setEquipmentId(
+        CategoryDAO.createEquipment(connection, serviceReport.getCategoryId(), "Shoe"));
     return ServiceReportDAO.create(connection,
         createTestWorkOrder(connection, customerId, personId),
         serviceReport);
@@ -105,6 +117,29 @@ public class BaseIntegrationTest {
 
   public int createSupplier(Connection connection, String type) throws SQLException {
     return SupplierDAO.create(connection, "Supplier " + randomNumber(5), type);
+  }
+
+  public int createDomesticRemittance(Connection connection) throws Exception {
+    int fromBankAccountId = createBankAccount(connection);
+    int supplierBankAccountId = createBankAccount(connection);
+    int fromBankAddressId = createTestAddress(connection);
+    int supplierId = createSupplier(connection, "domestic");
+
+    BigDecimal amount = new BigDecimal(20);
+    String purpose = "Test";
+    Date signatureDate = new Date();
+    DomesticRemittance domesticRemittance = new DomesticRemittance(0, fromBankAccountId,
+        fromBankAddressId, supplierId, supplierBankAccountId, amount, purpose, signatureDate, 0);
+
+    return DomesticRemittanceDAO.create(connection, domesticRemittance);
+  }
+
+  public int getExpenseReport(Connection connection) throws SQLException {
+    int customerId = createTestCustomer(connection);
+    int technicianId = createTestTechnician(connection);
+    int serviceReportId = createTestServiceReport(connection, customerId, 0, 0);
+    return ExpenseReportDAO.create(connection, serviceReportId, customerId, technicianId,
+        new BigDecimal(1000), new BigDecimal(200), "Bangalore", new Date());
   }
 
   public static Timestamp currentTimestamp() {
