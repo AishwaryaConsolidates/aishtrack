@@ -107,46 +107,6 @@ public class ExpenseReportDAO extends BaseDAO {
     return expenseReports;
   }
 
-  public static ArrayList<HashMap<String, String>> getExpenseReportsForCustomer(
-      Connection connection, int customerId) throws SQLException {
-    String sql =
-        "SELECT er.id, tpr.first_name, tpr.last_name from expense_reports er left outer join technicians t on er.technician_id = t.id left outer join persons tpr on t.person_id = tpr.id where er.deleted = 0 and sr.customer_id = ?";
-
-    PreparedStatement statement = connection.prepareStatement(sql);
-    statement.setInt(1, customerId);
-
-    ResultSet result = statement.executeQuery();
-
-    ArrayList<HashMap<String, String>> expenseReports = new ArrayList<HashMap<String, String>>();
-    while (result.next()) {
-      HashMap<String, String> hashMap = new HashMap<String, String>();
-      hashMap.put("id", "" + result.getInt(1));
-      hashMap.put("technician", result.getString(2) + " " + result.getString(3));
-      expenseReports.add(hashMap);
-    }
-    return expenseReports;
-  }
-
-  public static ArrayList<HashMap<String, String>> getExpenseReportsForTechnician(
-      Connection connection, int technicianId) throws SQLException {
-    String sql =
-        "SELECT er.id, tpr.first_name, tpr.last_name from expense_reports er left outer join technicians t on er.technician_id = t.id left outer join persons tpr on t.person_id = tpr.id where er.deleted = 0 and er.technician_id = ?";
-
-    PreparedStatement statement = connection.prepareStatement(sql);
-    statement.setInt(1, technicianId);
-
-    ResultSet result = statement.executeQuery();
-
-    ArrayList<HashMap<String, String>> expenseReports = new ArrayList<HashMap<String, String>>();
-    while (result.next()) {
-      HashMap<String, String> hashMap = new HashMap<String, String>();
-      hashMap.put("id", "" + result.getInt(1));
-      hashMap.put("technician", result.getString(2) + " " + result.getString(3));
-      expenseReports.add(hashMap);
-    }
-    return expenseReports;
-  }
-
   public static ArrayList<HashMap<String, String>> searchFor(Connection connection,
       int technicianId, int customerId, int settled, Date startDate, Date endDate)
       throws SQLException {
@@ -159,7 +119,7 @@ public class ExpenseReportDAO extends BaseDAO {
     if (customerId > 0) {
       sql += " and er.customer_id = ? ";
     }
-    if (settled >= 0) {
+    if (settled > 0) {
       sql += " and er.settled = ? ";
     }
     if (endDate != null) {

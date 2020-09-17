@@ -165,4 +165,11 @@ public class MarinePolicyDeclarationDAO extends BaseDAO {
       marinePolicyDeclaration.setId(create(connection, marinePolicyDeclaration));
     }
   }
+
+  public static void delete(Connection connection, int id) throws SQLException {
+    PreparedStatement preparedStatement = connection
+        .prepareStatement("update marine_policy_declarations set deleted = 1 where id = ?");
+    preparedStatement.setInt(1, id);
+    preparedStatement.executeUpdate();
+  }
 }

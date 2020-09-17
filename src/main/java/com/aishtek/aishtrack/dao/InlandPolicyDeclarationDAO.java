@@ -33,7 +33,6 @@ public class InlandPolicyDeclarationDAO extends BaseDAO {
       }
   }
 
-
   public static int create(Connection connection, InlandPolicyDeclaration inlandPolicyDeclaration)
       throws SQLException {
     PreparedStatement preparedStatement = connection.prepareStatement(
@@ -157,5 +156,12 @@ public class InlandPolicyDeclarationDAO extends BaseDAO {
     } else {
       inlandPolicyDeclaration.setId(create(connection, inlandPolicyDeclaration));
     }
+  }
+
+  public static void delete(Connection connection, int id) throws SQLException {
+    PreparedStatement preparedStatement = connection
+        .prepareStatement("update inland_policy_declarations set deleted = 1 where id = ?");
+    preparedStatement.setInt(1, id);
+    preparedStatement.executeUpdate();
   }
 }

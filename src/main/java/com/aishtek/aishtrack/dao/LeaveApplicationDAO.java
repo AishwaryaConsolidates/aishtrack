@@ -92,17 +92,19 @@ public class LeaveApplicationDAO extends BaseDAO {
     return leaveApplications;
   }
 
-  public static void save(Connection connection, LeaveApplication leaveApplication)
+  public static int save(Connection connection, LeaveApplication leaveApplication)
       throws SQLException {
     if (leaveApplication.getId() > 0) {
       update(connection, leaveApplication);
+      return leaveApplication.getId();
     } else {
       leaveApplication.setStatus("processing");
       leaveApplication.setId(create(connection, leaveApplication));
+      return leaveApplication.getId();
     }
   }
 
-  private static int create(Connection connection, LeaveApplication leaveApplication)
+  public static int create(Connection connection, LeaveApplication leaveApplication)
       throws SQLException {
     PreparedStatement preparedStatement = connection.prepareStatement(
         "insert into leave_applications (technician_id, from_date, to_date, reason, status) values(?, ?, ?, ?, ?)",
@@ -139,8 +141,5 @@ public class LeaveApplicationDAO extends BaseDAO {
     preparedStatement.setInt(8, leaveApplication.getId());
 
     preparedStatement.executeUpdate();
-
   }
-
-
 }

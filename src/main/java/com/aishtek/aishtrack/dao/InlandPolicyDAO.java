@@ -73,4 +73,27 @@ public class InlandPolicyDAO extends BaseDAO {
     }
     return inlandPolicies;
   }
+
+  public static int create(Connection connection, int addressId, int contactPersonId,
+      String provider, BigDecimal amount, Date startDate, Date endDate) throws SQLException {
+    PreparedStatement preparedStatement = connection.prepareStatement(
+        "insert into inland_policies (address_id, contact_person_id, provider, amount, start_date, end_date) values(?, ?, ?, ?, ?, ?)",
+        PreparedStatement.RETURN_GENERATED_KEYS);
+
+    preparedStatement.setInt(1, addressId);
+    preparedStatement.setInt(2, contactPersonId);
+    preparedStatement.setString(3, provider);
+    preparedStatement.setBigDecimal(4, amount);
+    preparedStatement.setTimestamp(5, timestampFor(startDate));
+    preparedStatement.setTimestamp(6, timestampFor(endDate));
+
+    preparedStatement.executeUpdate();
+
+    ResultSet result = preparedStatement.getGeneratedKeys();
+    if (result.next()) {
+      return result.getInt(1);
+    } else {
+      throw new SQLException("Policy ID not generted");
+    }
+  }
 }

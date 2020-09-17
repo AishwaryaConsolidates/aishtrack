@@ -3,8 +3,11 @@ package com.aishtek.aishtrack.test;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -20,6 +23,8 @@ import com.aishtek.aishtrack.dao.CategoryDAO;
 import com.aishtek.aishtrack.dao.CustomerDAO;
 import com.aishtek.aishtrack.dao.DomesticRemittanceDAO;
 import com.aishtek.aishtrack.dao.ExpenseReportDAO;
+import com.aishtek.aishtrack.dao.InlandPolicyDAO;
+import com.aishtek.aishtrack.dao.MarinePolicyDAO;
 import com.aishtek.aishtrack.dao.PersonDAO;
 import com.aishtek.aishtrack.dao.ServiceReportDAO;
 import com.aishtek.aishtrack.dao.SupplierDAO;
@@ -27,6 +32,8 @@ import com.aishtek.aishtrack.dao.TechnicianDAO;
 import com.aishtek.aishtrack.dao.WorkOrderDAO;
 
 public class BaseIntegrationTest {
+
+  protected DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
   public Connection getConnection() throws SQLException {
     Connection connection =
@@ -142,6 +149,20 @@ public class BaseIntegrationTest {
         new BigDecimal(1000), new BigDecimal(200), "Bangalore", new Date());
   }
 
+  public int createTestInlandPolicy(Connection connection, String provider) throws SQLException {
+    int addressId = createTestAddress(connection);
+    int contactPersonId = createTestPerson(connection);
+    return InlandPolicyDAO.create(connection, addressId, contactPersonId, provider,
+        new BigDecimal(1000), yesterday(), tomorrow());
+  }
+
+  public int createTestMarinePolicy(Connection connection, String provider) throws SQLException {
+    int addressId = createTestAddress(connection);
+    int contactPersonId = createTestPerson(connection);
+    return MarinePolicyDAO.create(connection, addressId, contactPersonId, provider,
+        new BigDecimal(1000), yesterday(), tomorrow());
+  }
+
   public static Timestamp currentTimestamp() {
     return new Timestamp(new Date().getTime());
   }
@@ -168,5 +189,14 @@ public class BaseIntegrationTest {
     Calendar tomorrow = Calendar.getInstance();
     tomorrow.add(Calendar.DATE, 1);
     return tomorrow.getTime();
+  }
+
+  public Date today() {
+    return new Date();
+  }
+
+  public static void runSQL(Connection connection, String sql) throws SQLException {
+    PreparedStatement preparedStatement = connection.prepareStatement(sql);
+    preparedStatement.executeUpdate();
   }
 }

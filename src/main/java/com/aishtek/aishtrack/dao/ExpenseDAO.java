@@ -45,7 +45,7 @@ public class ExpenseDAO extends BaseDAO {
     String sql =
         "SELECT expenses.id, expense_report_id, expense_date, expense_type, notes, amount, f.location "
             + "FROM expenses left outer join files f on expenses.file_id = f.id "
-            + "where expense_report_id = ?";
+            + "where expense_report_id = ? order by expense_date asc ";
 
     PreparedStatement statement = connection.prepareStatement(sql);
     statement.setInt(1, expenseReportId);

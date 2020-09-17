@@ -26,6 +26,10 @@ public class Util {
   }
 
   public static String formatDate(Date date) {
-    return (new SimpleDateFormat("dd/MM/yyyy")).format(date);
+    if (date != null) {
+      return (new SimpleDateFormat("dd/MM/yyyy")).format(date);
+    } else {
+      return "";
+    }
   }
 }
