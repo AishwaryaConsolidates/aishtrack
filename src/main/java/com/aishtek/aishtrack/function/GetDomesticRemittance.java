@@ -25,6 +25,7 @@ public class GetDomesticRemittance extends BaseFunction
         // get visit
         DomesticRemittance remittance = DomesticRemittanceDAO.findById(connection, id);
         remittance.setSignatureDateString(Util.formatDate(remittance.getSignatureDate()));
+        remittance.setChequeDateString(Util.formatDate(remittance.getChequeDate()));
 
         output = createSuccessOutput();
         output.setBody(new Gson().toJson(remittance));

@@ -14,8 +14,10 @@ import org.apache.commons.lang3.RandomStringUtils;
 import com.aishtek.aishtrack.beans.Address;
 import com.aishtek.aishtrack.beans.Customer;
 import com.aishtek.aishtrack.beans.DomesticRemittance;
+import com.aishtek.aishtrack.beans.OutwardRemittance;
 import com.aishtek.aishtrack.beans.Person;
 import com.aishtek.aishtrack.beans.ServiceReport;
+import com.aishtek.aishtrack.beans.Visit;
 import com.aishtek.aishtrack.beans.WorkOrder;
 import com.aishtek.aishtrack.dao.AddressDAO;
 import com.aishtek.aishtrack.dao.BankAccountDAO;
@@ -25,10 +27,12 @@ import com.aishtek.aishtrack.dao.DomesticRemittanceDAO;
 import com.aishtek.aishtrack.dao.ExpenseReportDAO;
 import com.aishtek.aishtrack.dao.InlandPolicyDAO;
 import com.aishtek.aishtrack.dao.MarinePolicyDAO;
+import com.aishtek.aishtrack.dao.OutwardRemittanceDAO;
 import com.aishtek.aishtrack.dao.PersonDAO;
 import com.aishtek.aishtrack.dao.ServiceReportDAO;
 import com.aishtek.aishtrack.dao.SupplierDAO;
 import com.aishtek.aishtrack.dao.TechnicianDAO;
+import com.aishtek.aishtrack.dao.VisitDAO;
 import com.aishtek.aishtrack.dao.WorkOrderDAO;
 
 public class BaseIntegrationTest {
@@ -135,8 +139,11 @@ public class BaseIntegrationTest {
     BigDecimal amount = new BigDecimal(20);
     String purpose = "Test";
     Date signatureDate = new Date();
+    String chequeNumber = "Test";
+    Date chequeDate = new Date();
     DomesticRemittance domesticRemittance = new DomesticRemittance(0, fromBankAccountId,
-        fromBankAddressId, supplierId, supplierBankAccountId, amount, purpose, signatureDate, 0);
+        fromBankAddressId, supplierId, supplierBankAccountId, amount, purpose, signatureDate, 0,
+        chequeNumber, chequeDate);
 
     return DomesticRemittanceDAO.create(connection, domesticRemittance);
   }
@@ -158,8 +165,7 @@ public class BaseIntegrationTest {
 
   public int createTestMarinePolicy(Connection connection, String provider) throws SQLException {
     int addressId = createTestAddress(connection);
-    int contactPersonId = createTestPerson(connection);
-    return MarinePolicyDAO.create(connection, addressId, contactPersonId, provider,
+    return MarinePolicyDAO.create(connection, addressId, provider,
         new BigDecimal(1000), yesterday(), tomorrow());
   }
 
@@ -198,5 +204,44 @@ public class BaseIntegrationTest {
   public static void runSQL(Connection connection, String sql) throws SQLException {
     PreparedStatement preparedStatement = connection.prepareStatement(sql);
     preparedStatement.executeUpdate();
+  }
+
+  public int createOutwardRemittance(Connection connection, int supplierId) throws Exception {
+    if (supplierId == 0) {
+      supplierId = createSupplier(connection, "domestic");
+    }
+    int fromBankAccountId = createBankAccount(connection);
+    int fromBankAddressId = createTestAddress(connection);
+    int fromAddressId = createTestAddress(connection);
+    int supplierAddressId = createTestAddress(connection);
+    int supplierBankAddressId = createTestAddress(connection);
+    int supplierBankAccountId = createBankAccount(connection);
+    BigDecimal amount = new BigDecimal(200);
+    String goods = "goods";
+    String goodsClassificationNo = "goodsClassificationNo";
+    String countryOfOrigin = "countryOfOrigin";
+    String currency = "currency";
+    String purpose = "purpose";
+    String otherInfo = "otherInfo";
+    String signaturePlace = "signaturePlace";
+    Date signatureDate = new Date();
+
+    OutwardRemittance outwardRemittance = new OutwardRemittance(0, fromBankAccountId,
+        fromBankAddressId, fromAddressId, supplierId, supplierAddressId, supplierBankAccountId,
+        supplierBankAddressId, amount, goods, goodsClassificationNo, countryOfOrigin, currency,
+        purpose, otherInfo, signaturePlace, signatureDate, 0);
+
+    return OutwardRemittanceDAO.create(connection, outwardRemittance);
+
+  }
+
+  public int createTestVisit(Connection connection, int serviceReportId) throws SQLException {
+    if (serviceReportId == 0) {
+      serviceReportId = createTestServiceReport(connection, 0, 0, 0);
+    }
+    Visit visit = new Visit(0, serviceReportId, today(), "complaint", "findings",
+        "workDone", "customerRemarks");
+
+    return VisitDAO.create(connection, visit);
   }
 }

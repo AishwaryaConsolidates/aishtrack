@@ -29,8 +29,11 @@ public class DomesticRemittanceDAOTest extends BaseIntegrationTest {
       BigDecimal amount = new BigDecimal(20);
       String purpose = "Test";
       Date signatureDate = new Date();
+      String chequeNumber = "Test";
+      Date chequeDate = new Date();
       DomesticRemittance domesticRemittance = new DomesticRemittance(0, fromBankAccountId,
-          fromBankAddressId, supplierId, supplierBankAccountId, amount, purpose, signatureDate, 0);
+          fromBankAddressId, supplierId, supplierBankAccountId, amount, purpose, signatureDate, 0,
+          chequeNumber, chequeDate);
 
       int id = DomesticRemittanceDAO.create(connection, domesticRemittance);
 
@@ -45,6 +48,10 @@ public class DomesticRemittanceDAOTest extends BaseIntegrationTest {
       DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
       assertEquals(formatter.format(createdDomesticRemittance.getSignatureDate()),
           formatter.format(signatureDate));
+      assertEquals(createdDomesticRemittance.getChequeNumber(), chequeNumber);
+      assertEquals(formatter.format(createdDomesticRemittance.getChequeDate()),
+          formatter.format(chequeDate));
+
       assertEquals(createdDomesticRemittance.getDeleted(), 0);
 
       connection.rollback();
@@ -71,6 +78,8 @@ public class DomesticRemittanceDAOTest extends BaseIntegrationTest {
       createdDomesticRemittance.setSupplierId(newSupplierId);
       createdDomesticRemittance.setPurpose("Update test");
       createdDomesticRemittance.setSignatureDate(formatter.parse("05/09/2020"));
+      createdDomesticRemittance.setChequeNumber("Update test");
+      createdDomesticRemittance.setChequeDate(formatter.parse("05/09/2020"));
 
       DomesticRemittanceDAO.update(connection, createdDomesticRemittance);
       createdDomesticRemittance = DomesticRemittanceDAO.findById(connection, id);
@@ -86,7 +95,9 @@ public class DomesticRemittanceDAOTest extends BaseIntegrationTest {
 
       assertEquals(formatter.format(createdDomesticRemittance.getSignatureDate()), "05/09/2020");
       assertEquals(createdDomesticRemittance.getDeleted(), 0);
+      assertEquals(createdDomesticRemittance.getChequeNumber(), "Update test");
 
+      assertEquals(formatter.format(createdDomesticRemittance.getChequeDate()), "05/09/2020");
       connection.rollback();
     } catch (SQLException e) {
       System.out.println(e);
@@ -114,6 +125,10 @@ public class DomesticRemittanceDAOTest extends BaseIntegrationTest {
       assertEquals(hashMap.get("purpose"), "Test");
       assertEquals(hashMap.get("signatureDate"),
           Util.formatDate(domesticRemittance.getSignatureDate()));
+
+      assertEquals(hashMap.get("chequeNumber"), "Test");
+      assertEquals(hashMap.get("chequeDate"), Util.formatDate(domesticRemittance.getChequeDate()));
+
       assertEquals(hashMap.get("supplierName"), supplier.getName());
 
       assertEquals(hashMap.get("fromBankStreet"), fromBankAddress.getStreet());
@@ -140,7 +155,7 @@ public class DomesticRemittanceDAOTest extends BaseIntegrationTest {
       assertEquals(hashMap.get("fromBankOtherDetails"), fromBankAccount.getOtherDetails());
       assertEquals(hashMap.get("fromBankAccountNumberEncrypted"),
           fromBankAccount.getEncryptedAccountNumber());
-      assertEquals(hashMap.get("fromrBankAccountId"), "" + fromBankAccount.getId());
+      assertEquals(hashMap.get("fromBankAccountId"), "" + fromBankAccount.getId());
       
       connection.rollback();
     } catch (SQLException e) {

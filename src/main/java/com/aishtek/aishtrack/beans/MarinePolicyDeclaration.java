@@ -8,7 +8,9 @@ public class MarinePolicyDeclaration extends BaseBean {
   private int marinePolicyId;
   private int supplierId;
   private int supplierAddressId;
-  private BigDecimal amount;
+  private BigDecimal amount = new BigDecimal(0);
+  private BigDecimal exchangeRate = new BigDecimal(0);
+  private BigDecimal dutyAmount = new BigDecimal(0);
   private String currency;
   private String description;
   private int quantity;
@@ -22,11 +24,14 @@ public class MarinePolicyDeclaration extends BaseBean {
   // for view
   String invoiceDateString;
   String receiptDateString;
+  // calculated
+  private BigDecimal amountDeclared = new BigDecimal(0);
+  private BigDecimal totalAmount = new BigDecimal(0);
 
   public MarinePolicyDeclaration(int id, int marinePolicyId, int supplierId, int supplierAddressId,
       BigDecimal amount, String currency, String description, int quantity, String toLocation,
       String fromLocation, String invoiceNumber, Date invoiceDate, String receiptNumber,
-      Date receiptDate, int deleted) {
+      Date receiptDate, int deleted, BigDecimal exchangeRate, BigDecimal dutyAmount) {
 
     this.id = id;
     this.marinePolicyId = marinePolicyId;
@@ -43,6 +48,10 @@ public class MarinePolicyDeclaration extends BaseBean {
     this.receiptNumber = receiptNumber;
     this.receiptDate = receiptDate;
     this.deleted = deleted;
+    this.dutyAmount = dutyAmount;
+    this.exchangeRate = exchangeRate;
+
+    setAmountDeclared();
   }
 
   public int getMarinePolicyId() {
@@ -75,6 +84,7 @@ public class MarinePolicyDeclaration extends BaseBean {
 
   public void setAmount(BigDecimal amount) {
     this.amount = amount;
+    setAmountDeclared();
   }
 
   public String getCurrency() {
@@ -163,6 +173,41 @@ public class MarinePolicyDeclaration extends BaseBean {
 
   public void setReceiptDateString(String receiptDateString) {
     this.receiptDateString = receiptDateString;
+  }
+
+  public BigDecimal getExchangeRate() {
+    return exchangeRate;
+  }
+
+  public void setExchangeRate(BigDecimal exchangeRate) {
+    this.exchangeRate = exchangeRate;
+  }
+
+  public BigDecimal getDutyAmount() {
+    return dutyAmount;
+  }
+
+  public void setDutyAmount(BigDecimal dutyAmount) {
+    this.dutyAmount = dutyAmount;
+    setTotalAmount();
+  }
+
+  public BigDecimal getAmountDeclared() {
+    return amountDeclared;
+  }
+
+  public void setAmountDeclared() {
+    this.amountDeclared = amount.multiply(exchangeRate).setScale(2, BigDecimal.ROUND_HALF_EVEN);
+    setTotalAmount();
+  }
+
+  public BigDecimal getTotalAmount() {
+    return totalAmount;
+  }
+
+  public void setTotalAmount() {
+    this.totalAmount =
+        getAmountDeclared().add(getDutyAmount()).setScale(2, BigDecimal.ROUND_HALF_EVEN);
   }
 
 

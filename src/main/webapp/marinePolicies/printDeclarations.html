@@ -65,7 +65,9 @@
                                         <th scope="col"><b>From</b></th>
                                         <th scope="col"><b>To</b></th>
                                         <th scope="col"><b>Receipt No. & Date</b></th>
+                                        <th scope="col"><b>Currency</b></th>
                                         <th scope="col"><b>Amount Declared</b></th>
+                                        <th scope="col"><b>Duty Amount</b></th>
                                     </tr>
                                 </thead>
                                 <tbody id="results"></tbody>
@@ -177,7 +179,9 @@
             		    html+="<td>" + declaration.fromLocation + "</td>";
             		    html+="<td>" + declaration.toLocation + "</td>";
             		    html+="<td>" + declaration.receiptNumber + " " + declaration.receiptDate + "</td>";
-            		    html+="<td>" + declaration.amount + " " + declaration.currency + "</td>";
+            		    html+="<td>" + declaration.currency + " " + declaration.amount + " @ " + declaration.exchangeRate + "</td>";
+            		    html+="<td>" + declaration.amountDeclared + "</td>";
+            		    html+="<td>" + declaration.totalAmount + "</td>";
             		    html+="</tr>";
             		});
             	});

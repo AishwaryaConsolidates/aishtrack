@@ -16,11 +16,12 @@ public class PersonDAOTest extends BaseIntegrationTest {
   private String phone = "9999999999";
   private String mobile = "8888888888";
   private String alternatePhone = "7777777777";
+
   @Test
-  public void createSavesThePerson() throws SQLException {
+  public void createAndFindByIdTest() throws SQLException {
     try (Connection connection = getConnection()) {
       Person person =
-          new Person(firstName, lastName, designation, email, phone, mobile, alternatePhone);
+          new Person(firstName, lastName, designation, phone, email, mobile, alternatePhone);
       int personId = PersonDAO.create(connection, person);
 
       person = PersonDAO.findById(connection, personId);

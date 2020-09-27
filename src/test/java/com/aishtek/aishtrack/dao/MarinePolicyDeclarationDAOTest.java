@@ -23,7 +23,8 @@ public class MarinePolicyDeclarationDAOTest extends BaseIntegrationTest {
       MarinePolicyDeclaration marinePolicyDeclaration =
           new MarinePolicyDeclaration(0, marinePolicyId, supplierId, supplierAddressId,
               new BigDecimal(20), "Dollar", "Description", 7, "toLocation", "fromLocation",
-              "invoiceNumber", yesterday(), "receiptNumber", yesterday(), 0);
+              "invoiceNumber", yesterday(), "receiptNumber", yesterday(), 0, new BigDecimal(10),
+              new BigDecimal(5));
 
       int marinePolicyDeclarationId =
           MarinePolicyDeclarationDAO.create(connection, marinePolicyDeclaration);
@@ -46,6 +47,12 @@ public class MarinePolicyDeclarationDAOTest extends BaseIntegrationTest {
       assertEquals(formatter.format(updatedMarinePolicyDeclaration.getReceiptDate()),
           formatter.format(yesterday()));
 
+      assertEquals(updatedMarinePolicyDeclaration.getDutyAmount().toString(), "5.00");
+      assertEquals(updatedMarinePolicyDeclaration.getExchangeRate().toString(), "10.00");
+      assertEquals(updatedMarinePolicyDeclaration.getAmountDeclared(), new BigDecimal("200.00"));
+      assertEquals(updatedMarinePolicyDeclaration.getTotalAmount().toString(), "205.00");
+
+
       connection.rollback();
     } catch (SQLException e) {
       System.out.println(e);
@@ -63,7 +70,8 @@ public class MarinePolicyDeclarationDAOTest extends BaseIntegrationTest {
       MarinePolicyDeclaration marinePolicyDeclaration =
           new MarinePolicyDeclaration(0, marinePolicyId, supplierId, supplierAddressId,
               new BigDecimal(20), "Dollar", "Description", 7, "toLocation", "fromLocation",
-              "invoiceNumber", yesterday(), "receiptNumber", yesterday(), 0);
+              "invoiceNumber", yesterday(), "receiptNumber", yesterday(), 0, new BigDecimal(10),
+              new BigDecimal(5));
       int marinePolicyDeclarationId =
           MarinePolicyDeclarationDAO.create(connection, marinePolicyDeclaration);
 
@@ -72,6 +80,8 @@ public class MarinePolicyDeclarationDAOTest extends BaseIntegrationTest {
 
       createdMarinePolicyDeclaration.setId(marinePolicyDeclarationId);
       createdMarinePolicyDeclaration.setAmount(new BigDecimal(40));
+      createdMarinePolicyDeclaration.setDutyAmount(new BigDecimal(20));
+      createdMarinePolicyDeclaration.setExchangeRate(new BigDecimal(6));
       createdMarinePolicyDeclaration.setDescription("Description 202");
       createdMarinePolicyDeclaration.setQuantity(25);
       createdMarinePolicyDeclaration.setFromLocation("From Location 2");
@@ -98,6 +108,11 @@ public class MarinePolicyDeclarationDAOTest extends BaseIntegrationTest {
       assertEquals(formatter.format(updatedMarinePolicyDeclaration.getReceiptDate()),
           formatter.format(yesterday()));
 
+      assertEquals(updatedMarinePolicyDeclaration.getDutyAmount().toString(), "20.00");
+      assertEquals(updatedMarinePolicyDeclaration.getExchangeRate().toString(), "6.00");
+      assertEquals(updatedMarinePolicyDeclaration.getAmountDeclared().toString(), "240.00");
+      assertEquals(updatedMarinePolicyDeclaration.getTotalAmount().toString(), "260.00");
+
       connection.rollback();
     } catch (SQLException e) {
       System.out.println(e);
@@ -115,7 +130,8 @@ public class MarinePolicyDeclarationDAOTest extends BaseIntegrationTest {
       MarinePolicyDeclaration marinePolicyDeclaration =
           new MarinePolicyDeclaration(0, marinePolicyId, supplierId, supplierAddressId,
               new BigDecimal(20), "Dollar", "Description", 7, "toLocation", "fromLocation",
-              "invoiceNumber", yesterday(), "receiptNumber", yesterday(), 0);
+              "invoiceNumber", yesterday(), "receiptNumber", yesterday(), 0, new BigDecimal(10),
+              new BigDecimal(5));
       int marinePolicyDeclarationId =
           MarinePolicyDeclarationDAO.create(connection, marinePolicyDeclaration);
 
@@ -124,6 +140,11 @@ public class MarinePolicyDeclarationDAOTest extends BaseIntegrationTest {
       assertEquals(results.size(), 1);
       assertEquals(results.get(0).get("id"), "" + marinePolicyDeclarationId);
 
+      assertEquals(results.get(0).get("amount"), "20.00");
+      assertEquals(results.get(0).get("exchangeRate"), "10.00");
+      assertEquals(results.get(0).get("dutyAmount"), "5.00");
+      assertEquals(results.get(0).get("amountDeclared"), "200.00");
+          
       // supplier id
       results = MarinePolicyDeclarationDAO.searchFor(connection, supplierId + 1, yesterday(),
           tomorrow(), marinePolicyId);
@@ -161,7 +182,8 @@ public class MarinePolicyDeclarationDAOTest extends BaseIntegrationTest {
       MarinePolicyDeclaration marinePolicyDeclaration =
           new MarinePolicyDeclaration(0, marinePolicyId, supplierId, supplierAddressId,
               new BigDecimal(20), "Dollar", "Description", 7, "toLocation", "fromLocation",
-              "invoiceNumber", yesterday(), "receiptNumber", yesterday(), 0);
+              "invoiceNumber", yesterday(), "receiptNumber", yesterday(), 0, new BigDecimal(10),
+              new BigDecimal(5));
       int marinePolicyDeclarationId =
           MarinePolicyDeclarationDAO.create(connection, marinePolicyDeclaration);
 

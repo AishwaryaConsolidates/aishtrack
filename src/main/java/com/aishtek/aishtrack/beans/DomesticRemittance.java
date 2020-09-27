@@ -12,13 +12,15 @@ public class DomesticRemittance extends BaseBean {
   BigDecimal amount;
   String purpose;
   Date signatureDate;
-
+  String chequeNumber;
+  Date chequeDate;
   // for view
   String signatureDateString;
+  String chequeDateString;
 
   public DomesticRemittance(int id, int fromBankAccountId, int fromBankAddressId, int supplierId,
       int supplierBankAccountId, BigDecimal amount, String purpose, Date signatureDate,
-      int deleted) {
+      int deleted, String chequeNumber, Date chequeDate) {
     this.id = id;
     this.fromBankAccountId = fromBankAccountId;
     this.fromBankAddressId = fromBankAddressId;
@@ -28,6 +30,8 @@ public class DomesticRemittance extends BaseBean {
     this.purpose = purpose;
     this.signatureDate = signatureDate;
     this.deleted = deleted;
+    this.chequeNumber = chequeNumber;
+    this.chequeDate = chequeDate;
   }
 
   public int getFromBankAccountId() {
@@ -92,6 +96,30 @@ public class DomesticRemittance extends BaseBean {
 
   public void setSignatureDateString(String signatureDateString) {
     this.signatureDateString = signatureDateString;
+  }
+
+  public String getChequeNumber() {
+    return chequeNumber;
+  }
+
+  public void setChequeNumber(String chequeNumber) {
+    this.chequeNumber = chequeNumber;
+  }
+
+  public Date getChequeDate() {
+    return chequeDate;
+  }
+
+  public void setChequeDate(Date chequeDate) {
+    this.chequeDate = chequeDate;
+  }
+
+  public String getChequeDateString() {
+    return chequeDateString;
+  }
+
+  public void setChequeDateString(String chequeDateString) {
+    this.chequeDateString = chequeDateString;
   }
 
 }

@@ -1,5 +1,6 @@
 package com.aishtek.aishtrack.dao;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,7 +15,7 @@ public class MarinePolicyDeclarationDAO extends BaseDAO {
   public static MarinePolicyDeclaration findById(Connection connection, int id)
       throws SQLException {
       String sql =
-        "SELECT id, marine_policy_id, supplier_id, supplier_address_id, invoice_number, invoice_date, description, amount, currency, quantity, from_location, to_location, receipt_number, receipt_date, deleted FROM marine_policy_declarations where id = ?";
+        "SELECT id, marine_policy_id, supplier_id, supplier_address_id, invoice_number, invoice_date, description, amount, currency, quantity, from_location, to_location, receipt_number, receipt_date, deleted, exchange_rate, duty_amount FROM marine_policy_declarations where id = ?";
 
       PreparedStatement statement = connection.prepareStatement(sql);
     statement.setInt(1, id);
@@ -26,7 +27,8 @@ public class MarinePolicyDeclarationDAO extends BaseDAO {
               result.getInt(4), result.getBigDecimal(8), result.getString(9), result.getString(7),
               result.getInt(10), result.getString(12), result.getString(11), result.getString(5),
               dateFor(result.getTimestamp(6)), result.getString(13),
-              dateFor(result.getTimestamp(14)), result.getInt(15));
+              dateFor(result.getTimestamp(14)), result.getInt(15), result.getBigDecimal(16),
+              result.getBigDecimal(17));
 
       return marinePolicyDeclaration;
     } else {
@@ -38,7 +40,7 @@ public class MarinePolicyDeclarationDAO extends BaseDAO {
   public static int create(Connection connection, MarinePolicyDeclaration marinePolicyDeclaration)
       throws SQLException {
     PreparedStatement preparedStatement = connection.prepareStatement(
-        "insert into marine_policy_declarations (marine_policy_id, supplier_id, supplier_address_id, invoice_number, invoice_date, description, amount, currency, quantity, from_location, to_location, receipt_number, receipt_date) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "insert into marine_policy_declarations (marine_policy_id, supplier_id, supplier_address_id, invoice_number, invoice_date, description, amount, currency, quantity, from_location, to_location, receipt_number, receipt_date, exchange_rate, duty_amount) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         PreparedStatement.RETURN_GENERATED_KEYS);
 
     preparedStatement.setInt(1, marinePolicyDeclaration.getMarinePolicyId());
@@ -54,6 +56,8 @@ public class MarinePolicyDeclarationDAO extends BaseDAO {
     preparedStatement.setString(11, marinePolicyDeclaration.getToLocation());
     preparedStatement.setString(12, marinePolicyDeclaration.getReceiptNumber());
     preparedStatement.setTimestamp(13, timestampFor(marinePolicyDeclaration.getReceiptDate()));
+    preparedStatement.setBigDecimal(14, marinePolicyDeclaration.getExchangeRate());
+    preparedStatement.setBigDecimal(15, marinePolicyDeclaration.getDutyAmount());
 
     preparedStatement.executeUpdate();
 
@@ -68,7 +72,7 @@ public class MarinePolicyDeclarationDAO extends BaseDAO {
   public static void update(Connection connection, MarinePolicyDeclaration marinePolicyDeclaration)
       throws SQLException {
     PreparedStatement preparedStatement = connection.prepareStatement(
-        "update marine_policy_declarations set marine_policy_id = ?, supplier_id = ?, supplier_address_id = ?, invoice_number = ?, invoice_date = ?, description = ?, amount = ?, currency = ?, quantity = ?, from_location = ?, to_location = ?, receipt_number = ?, receipt_date = ? where id = ?");
+        "update marine_policy_declarations set marine_policy_id = ?, supplier_id = ?, supplier_address_id = ?, invoice_number = ?, invoice_date = ?, description = ?, amount = ?, currency = ?, quantity = ?, from_location = ?, to_location = ?, receipt_number = ?, receipt_date = ?, exchange_rate =?, duty_amount = ? where id = ?");
 
     preparedStatement.setInt(1, marinePolicyDeclaration.getMarinePolicyId());
     preparedStatement.setInt(2, marinePolicyDeclaration.getSupplierId());
@@ -83,7 +87,9 @@ public class MarinePolicyDeclarationDAO extends BaseDAO {
     preparedStatement.setString(11, marinePolicyDeclaration.getToLocation());
     preparedStatement.setString(12, marinePolicyDeclaration.getReceiptNumber());
     preparedStatement.setTimestamp(13, timestampFor(marinePolicyDeclaration.getReceiptDate()));
-    preparedStatement.setInt(14, marinePolicyDeclaration.getId());
+    preparedStatement.setBigDecimal(14, marinePolicyDeclaration.getExchangeRate());
+    preparedStatement.setBigDecimal(15, marinePolicyDeclaration.getDutyAmount());
+    preparedStatement.setInt(16, marinePolicyDeclaration.getId());
     preparedStatement.executeUpdate();
   }
 
@@ -91,7 +97,7 @@ public class MarinePolicyDeclarationDAO extends BaseDAO {
       Date startDate, Date endDate, int marinePolicyId) throws SQLException {
     String sql =
         "SELECT mpd.id, s.name, mpd.invoice_date, mpd.amount, mpd.currency, mpd.from_location, mpd.to_location, mpd.invoice_number, mpd.receipt_number, mpd.receipt_date, mpd.quantity, mpd.description, "
-            + " sad.street, sad.area, sad.city, sad.pincode "
+            + " sad.street, sad.area, sad.city, sad.pincode, mpd.exchange_rate, mpd.duty_amount "
             + " from marine_policy_declarations mpd "
             + " inner join suppliers s on mpd.supplier_id = s.id "
             + " inner join addresses sad on mpd.supplier_address_id = sad.id "
@@ -138,7 +144,7 @@ public class MarinePolicyDeclarationDAO extends BaseDAO {
       hashMap.put("id", "" + result.getInt(1));
       hashMap.put("supplier", result.getString(2));
       hashMap.put("invoiceDate", Util.formatDate(result.getDate(3)));
-      hashMap.put("amount", result.getBigDecimal(4).toString());
+      BigDecimal amount = result.getBigDecimal(4);
       hashMap.put("currency", result.getString(5));
       hashMap.put("fromLocation", result.getString(6));
       hashMap.put("toLocation", result.getString(7));
@@ -151,6 +157,14 @@ public class MarinePolicyDeclarationDAO extends BaseDAO {
       hashMap.put("supplierArea", result.getString(14));
       hashMap.put("supplierCity", result.getString(15));
       hashMap.put("supplierPin", result.getString(16));
+      BigDecimal exchangeRate = result.getBigDecimal(17);
+      BigDecimal dutyAmount = result.getBigDecimal(18);
+
+      hashMap.put("amount", amount.toString());
+      hashMap.put("exchangeRate", exchangeRate.toString());
+      hashMap.put("dutyAmount", dutyAmount.toString());
+      hashMap.put("amountDeclared",
+          amount.multiply(exchangeRate).setScale(2, BigDecimal.ROUND_HALF_EVEN).toString());
 
       marinePolicyDeclarations.add(hashMap);
     }

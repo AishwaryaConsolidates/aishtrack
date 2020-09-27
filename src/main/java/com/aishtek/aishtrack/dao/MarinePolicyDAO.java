@@ -72,18 +72,17 @@ public class MarinePolicyDAO extends BaseDAO {
     return marinePolicies;
   }
 
-  public static int create(Connection connection, int addressId, int contactPersonId,
-      String provider, BigDecimal amount, Date startDate, Date endDate) throws SQLException {
+  public static int create(Connection connection, int addressId, String provider, BigDecimal amount,
+      Date startDate, Date endDate) throws SQLException {
     PreparedStatement preparedStatement = connection.prepareStatement(
-        "insert into marine_policies (address_id, contact_person_id, provider, amount, start_date, end_date) values(?, ?, ?, ?, ?, ?)",
+        "insert into marine_policies (address_id, provider, amount, start_date, end_date) values(?, ?, ?, ?, ?)",
         PreparedStatement.RETURN_GENERATED_KEYS);
 
     preparedStatement.setInt(1, addressId);
-    preparedStatement.setInt(2, contactPersonId);
-    preparedStatement.setString(3, provider);
-    preparedStatement.setBigDecimal(4, amount);
-    preparedStatement.setTimestamp(5, timestampFor(startDate));
-    preparedStatement.setTimestamp(6, timestampFor(endDate));
+    preparedStatement.setString(2, provider);
+    preparedStatement.setBigDecimal(3, amount);
+    preparedStatement.setTimestamp(4, timestampFor(startDate));
+    preparedStatement.setTimestamp(5, timestampFor(endDate));
 
     preparedStatement.executeUpdate();
 

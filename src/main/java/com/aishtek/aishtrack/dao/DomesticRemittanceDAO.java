@@ -13,7 +13,7 @@ import com.aishtek.aishtrack.utils.Util;
 public class DomesticRemittanceDAO extends BaseDAO {
   public static DomesticRemittance findById(Connection connection, int id) throws SQLException {
       String sql =
-        "SELECT id, from_bank_account_id, from_bank_address_id, supplier_id, supplier_bank_account_id, amount, purpose, signature_date, deleted FROM domestic_remittances where id = ?";
+        "SELECT id, from_bank_account_id, from_bank_address_id, supplier_id, supplier_bank_account_id, amount, purpose, signature_date, deleted, cheque_number, cheque_date FROM domestic_remittances where id = ?";
 
       PreparedStatement statement = connection.prepareStatement(sql);
     statement.setInt(1, id);
@@ -22,7 +22,8 @@ public class DomesticRemittanceDAO extends BaseDAO {
       if (result.next()) {
       DomesticRemittance domesticRemittance = new DomesticRemittance(result.getInt(1),
           result.getInt(2), result.getInt(3), result.getInt(4), result.getInt(5),
-          result.getBigDecimal(6), result.getString(7), result.getDate(8), result.getInt(9));
+          result.getBigDecimal(6), result.getString(7), result.getDate(8), result.getInt(9),
+          result.getString(10), result.getDate(11));
 
       return domesticRemittance;
     } else {
@@ -36,7 +37,8 @@ public class DomesticRemittanceDAO extends BaseDAO {
         "SELECT dr.id, dr.amount, dr.purpose, dr.signature_date, s.name, "
             + " fbad.street, fbad.area, fbad.city, fbad.state, fbad.pincode, "
             + " sb.name, sb.branch, sb.swift_code, sb.account_number, sb.iban, sb.other_details, sb.encrypted_account_number, sb.id, "
-            + " fb.name, fb.branch, fb.swift_code, fb.account_number, fb.iban, fb.other_details, fb.encrypted_account_number, fb.id "
+            + " fb.name, fb.branch, fb.swift_code, fb.account_number, fb.iban, fb.other_details, fb.encrypted_account_number, fb.id, "
+            + " dr.cheque_number, dr.cheque_date "
             + " FROM domestic_remittances dr inner join suppliers s on dr.supplier_id = s.id "
             + " INNER JOIN addresses fbad on dr.from_bank_address_id = fbad.id "
             + " INNER JOIN bank_accounts sb on dr.supplier_bank_account_id = sb.id "
@@ -77,8 +79,10 @@ public class DomesticRemittanceDAO extends BaseDAO {
       hashMap.put("fromBankIban", result.getString(23));
       hashMap.put("fromBankOtherDetails", result.getString(24));
       hashMap.put("fromBankAccountNumberEncrypted", result.getString(25));
-      hashMap.put("fromrBankAccountId", "" + result.getInt(26));
+      hashMap.put("fromBankAccountId", "" + result.getInt(26));
 
+      hashMap.put("chequeNumber", result.getString(27));
+      hashMap.put("chequeDate", Util.formatDate(result.getDate(28)));
       return hashMap;
     } else {
       throw new SQLException("No domesticRemittance for Id");
@@ -88,7 +92,7 @@ public class DomesticRemittanceDAO extends BaseDAO {
   public static int create(Connection connection, DomesticRemittance domesticRemittance)
       throws SQLException {
     PreparedStatement preparedStatement = connection.prepareStatement(
-        "insert into domestic_remittances (from_bank_account_id, from_bank_address_id, supplier_id, supplier_bank_account_id, amount, purpose, signature_date) values(?, ?, ?, ?, ?, ?, ?)",
+        "insert into domestic_remittances (from_bank_account_id, from_bank_address_id, supplier_id, supplier_bank_account_id, amount, purpose, signature_date, cheque_number, cheque_date) values(?, ?, ?, ?, ?, ?, ?, ?, ?)",
         PreparedStatement.RETURN_GENERATED_KEYS);
 
     preparedStatement.setInt(1, domesticRemittance.getFromBankAccountId());
@@ -98,6 +102,8 @@ public class DomesticRemittanceDAO extends BaseDAO {
     preparedStatement.setBigDecimal(5, domesticRemittance.getAmount());
     preparedStatement.setString(6, domesticRemittance.getPurpose());
     preparedStatement.setTimestamp(7, timestampFor(domesticRemittance.getSignatureDate()));
+    preparedStatement.setString(8, domesticRemittance.getChequeNumber());
+    preparedStatement.setTimestamp(9, timestampFor(domesticRemittance.getChequeDate()));
 
     preparedStatement.executeUpdate();
 
@@ -112,7 +118,7 @@ public class DomesticRemittanceDAO extends BaseDAO {
   public static void update(Connection connection, DomesticRemittance domesticRemittance)
       throws SQLException {
     PreparedStatement preparedStatement = connection.prepareStatement(
-        "update domestic_remittances set from_bank_account_id = ?, from_bank_address_id = ?, supplier_id = ?, supplier_bank_account_id = ?, amount = ?, purpose = ?, signature_date = ? where id = ?");
+        "update domestic_remittances set from_bank_account_id = ?, from_bank_address_id = ?, supplier_id = ?, supplier_bank_account_id = ?, amount = ?, purpose = ?, signature_date = ?, cheque_number = ?, cheque_date = ? where id = ?");
 
     preparedStatement.setInt(1, domesticRemittance.getFromBankAccountId());
     preparedStatement.setInt(2, domesticRemittance.getFromBankAddressId());
@@ -121,8 +127,10 @@ public class DomesticRemittanceDAO extends BaseDAO {
     preparedStatement.setBigDecimal(5, domesticRemittance.getAmount());
     preparedStatement.setString(6, domesticRemittance.getPurpose());
     preparedStatement.setTimestamp(7, timestampFor(domesticRemittance.getSignatureDate()));
+    preparedStatement.setString(8, domesticRemittance.getChequeNumber());
+    preparedStatement.setTimestamp(9, timestampFor(domesticRemittance.getChequeDate()));
 
-    preparedStatement.setInt(8, domesticRemittance.getId());
+    preparedStatement.setInt(10, domesticRemittance.getId());
     preparedStatement.executeUpdate();
   }
 

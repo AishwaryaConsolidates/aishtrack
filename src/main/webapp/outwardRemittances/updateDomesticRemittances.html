@@ -65,6 +65,16 @@
                                 </div>
                                 
                                 <div class="input-group mb-3">
+                                    <label for="chequeNumber" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Cheque Number</label>
+                                    <input id="chequeNumber" name="chequeNumber" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                   <label for="chequeDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Cheque Date</label>
+                                   <input class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" id="chequeDate" name="chequeDate" type="text">
+                               </div>
+                               
+                                <div class="input-group mb-3">
                                    <label for="signatureDate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Signature Date</label>
                                    <input class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" id="signatureDate" name="signatureDate" type="text">
                                </div>
@@ -86,7 +96,9 @@
                    <button type="submit" class="btn btn-primary" id="deleteWorkOrderButton">Delete</button>
                </form>
                <br/><br/>
-               <button type="submit" class="btn btn-primary" id="printDomesticRemittance" onclick="print()">Print</button>
+               <button type="submit" class="btn btn-primary" id="printDomesticRemittance" onclick="print()">Print Preview</button>
+               <br/><br/>
+               <button type="submit" class="btn btn-primary" id="printDomesticRemittance" onclick="printNow()">Print</button>
            </div>
         </div>              
         </div>
@@ -105,6 +117,9 @@
         	loadFooter();
         	getAishwaryaBankAccounts();
         	$('#signatureDate').datepicker({
+        	    dateFormat: 'dd/mm/yy'
+        	});
+        	$('#chequeDate').datepicker({
         	    dateFormat: 'dd/mm/yy'
         	});
         	
@@ -217,11 +232,18 @@
         	$("#amount").val(remittance.amount);
         	$("#purpose").val(remittance.purpose);
         	$("#signatureDate").val(remittance.signatureDateString);
+        	$("#chequeNumber").val(remittance.chequeNumber);
+        	$("#chequeDate").val(remittance.chequeDateString);
         }
         
         function print() {
         	urlParams = new URLSearchParams(window.location.search);
         	window.open(htmlURLBase + "/outwardRemittances/printDomesticRemittance.html?id=" + $("#domesticRemittanceId").val());
+        }
+        
+        function printNow() {
+        	urlParams = new URLSearchParams(window.location.search);
+        	window.open(htmlURLBase + "/outwardRemittances/printDomesticRemittance.html?printNow=true&id=" + $("#domesticRemittanceId").val());
         }
     </script>
 </body>

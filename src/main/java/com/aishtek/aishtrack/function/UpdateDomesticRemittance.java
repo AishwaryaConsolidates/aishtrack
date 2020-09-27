@@ -49,7 +49,8 @@ public class UpdateDomesticRemittance extends BaseFunction
     DomesticRemittance domesticRemittance = new DomesticRemittance(id, response.fromBankAccountId,
         getAishwaryaBankAddressId(connection, response.fromBankAccountId),
         response.supplierId, response.supplierBankAccountId, response.amount, response.purpose,
-        getSignatureDate(response.signatureDate), 0);
+        getSignatureDate(response.signatureDate), 0, response.chequeNumber,
+        getSignatureDate(response.chequeDate));
 
     DomesticRemittanceDAO.save(connection, domesticRemittance);
     return domesticRemittance;
@@ -81,5 +82,7 @@ public class UpdateDomesticRemittance extends BaseFunction
     public BigDecimal amount;
     public String purpose;
     public String signatureDate;
+    public String chequeNumber;
+    public String chequeDate;
   }
 }

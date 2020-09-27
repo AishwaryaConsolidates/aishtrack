@@ -46,7 +46,8 @@ public class UpdateMarinePolicyDeclaration extends BaseFunction
         response.marinePolicyId, response.supplierId, response.supplierAddressId, response.amount,
         response.currency, response.description, response.quantity, response.toLocation,
         response.fromLocation, response.invoiceNumber, dateFor(response.invoiceDate),
-        response.receiptNumber, dateFor(response.receiptDate), 0);
+        response.receiptNumber, dateFor(response.receiptDate), 0, response.exchangeRate,
+        response.dutyAmount);
 
     MarinePolicyDeclarationDAO.save(connection, marinePolicyDeclaration);
     return marinePolicyDeclaration;
@@ -71,5 +72,7 @@ public class UpdateMarinePolicyDeclaration extends BaseFunction
     public String invoiceDate;
     public String receiptNumber;
     public String receiptDate;
+    public BigDecimal dutyAmount;
+    public BigDecimal exchangeRate;
   }
 }
