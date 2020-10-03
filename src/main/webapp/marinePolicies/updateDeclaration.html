@@ -65,6 +65,16 @@
                                 </div>
                                 
                                 <div class="input-group mb-3">
+                                    <label for="exchangeRate" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Exchange Rate</label>
+                                    <input id="exchangeRate" name="exchangeRate" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
+                                </div>
+                                
+                                <div class="input-group mb-3">
+                                    <label for="dutyAmount" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Duty Amount</label>
+                                    <input id="dutyAmount" name="dutyAmount" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" value=0>
+                                </div>
+                                
+                                <div class="input-group mb-3">
                                     <label for="invoiceNumber" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Invoice Number</label>
                                     <input id="invoiceNumber" name="invoiceNumber" type="text" class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7">
                                 </div>
@@ -256,6 +266,8 @@
         	$("#description").val(declaration.description);  	
         	$("#fromLocation").val(declaration.fromLocation);
         	$("#toLocation").val(declaration.toLocation);
+        	$("#exchangeRate").val(declaration.exchangeRate);
+        	$("#dutyAmount").val(declaration.dutyAmount);
         }
     </script>
 </body>

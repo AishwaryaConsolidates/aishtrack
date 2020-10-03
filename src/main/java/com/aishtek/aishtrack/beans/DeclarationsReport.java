@@ -38,7 +38,11 @@ public class DeclarationsReport {
   public void calculateAmountDeclared() {
     this.amountDeclared = new BigDecimal(0);
     for (HashMap<String, String> declaration : declarations) {
-      this.amountDeclared = this.amountDeclared.add(new BigDecimal(declaration.get("amount")));
+      BigDecimal totalAmount = declaration.get("amountDeclared") == null ? new BigDecimal(0)
+          : new BigDecimal(declaration.get("amountDeclared"));
+      BigDecimal dutyAmount = declaration.get("dutyAmount") == null ? new BigDecimal(0)
+          : new BigDecimal(declaration.get("dutyAmount"));
+      this.amountDeclared = this.amountDeclared.add(totalAmount).add(dutyAmount);
     }
   }
 

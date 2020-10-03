@@ -41,7 +41,7 @@ public class MarinePolicyDAO extends BaseDAO {
   public static BigDecimal getAmountUsed(Connection connection, int marinePolicyId, Date startDate)
       throws SQLException {
     String sql =
-        "SELECT sum(amount) from marine_policy_declarations where marine_policy_id = ? and invoice_date < ? and deleted = 0";
+        "SELECT sum((amount * exchange_rate) + duty_amount) from marine_policy_declarations where marine_policy_id = ? and invoice_date < ? and deleted = 0";
 
     PreparedStatement statement = connection.prepareStatement(sql);
 
@@ -50,11 +50,13 @@ public class MarinePolicyDAO extends BaseDAO {
 
     ResultSet result = statement.executeQuery();
 
-    BigDecimal amount = new BigDecimal(0);
     if (result.next()) {
-      amount = result.getBigDecimal(1);
+      BigDecimal amount = result.getBigDecimal(1);
+      if (amount != null) {
+        return amount.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+      }
     }
-    return amount;
+    return new BigDecimal(0);
   }
 
   public static ArrayList<NameId> getCurrentMarinePolicies(Connection connection)

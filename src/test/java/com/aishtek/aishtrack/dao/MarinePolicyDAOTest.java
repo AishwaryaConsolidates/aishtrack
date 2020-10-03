@@ -103,23 +103,22 @@ public class MarinePolicyDAOTest extends BaseIntegrationTest {
           MarinePolicyDeclarationDAO.create(connection, marinePolicyDeclaration2);
 
       BigDecimal amountUsed = MarinePolicyDAO.getAmountUsed(connection, marinePolicyId, tomorrow());
-      assertEquals(amountUsed.toString(), "40.00");
+      assertEquals(amountUsed.toString(), "220.00");
 
       // deleted not included
       MarinePolicyDeclarationDAO.delete(connection, marinePolicyDeclarationId);
 
       amountUsed = MarinePolicyDAO.getAmountUsed(connection, marinePolicyId, tomorrow());
-      assertEquals(amountUsed.toString(), "20.00");
+      assertEquals(amountUsed.toString(), "110.00");
 
-      // outside data passed
-      MarinePolicyDeclaration outsideDatemarinePolicyDeclaration =
-          new MarinePolicyDeclaration(0, marinePolicyId, supplierId, supplierAddressId,
+      // outside the date range data passed
+      new MarinePolicyDeclaration(0, marinePolicyId, supplierId, supplierAddressId,
               new BigDecimal(20), "Dollar", "Description", 7, "toLocation", "fromLocation",
               "invoiceNumber", tomorrow(), "receiptNumber", yesterday(), 0, new BigDecimal(5),
               new BigDecimal(10));
 
       amountUsed = MarinePolicyDAO.getAmountUsed(connection, marinePolicyId, new Date());
-      assertEquals(amountUsed.toString(), "20.00");
+      assertEquals(amountUsed.toString(), "110.00");
 
       connection.rollback();
     } catch (SQLException e) {
