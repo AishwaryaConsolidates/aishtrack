@@ -42,6 +42,7 @@ public class PrintDomesticRemittance extends BaseFunction
             AmountToWordsConverter.convert(new BigDecimal(remittance.get("amount"))));
         remittance.put("amount",
             NumberFormat.getInstance().format((new BigDecimal(remittance.get("amount")))));
+        remittance.put("id", String.format("%04d", new Integer(remittance.get("id"))));
 
         output = createSuccessOutput();
         output.setBody(new Gson().toJson(remittance));

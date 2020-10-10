@@ -59,11 +59,16 @@ public class ImportLocalServiceProviders extends BaseFunction
           String ifsc = formatter.formatCellValue(cell5);
 
           int supplierId = SupplierDAO.create(connection, supplier, "domestic");
-          Address address = new Address("", "", "", "", "");
+
+          Address address = new Address("NA", "NA", "NA", "NA", "NA");
           int addressId = AddressDAO.create(connection, address);
+          SupplierDAO.createSupplierAddress(connection, supplierId, addressId);
+
+          Address bankAddress = new Address("NA", "NA", "NA", "NA", "NA");
+          int bankAddressId = AddressDAO.create(connection, bankAddress);
 
           int bankAccountId = BankAccountDAO.create(connection, bankName, bankBranch, ifsc,
-              accountNumber, "", "", addressId);
+              accountNumber, "", "", bankAddressId);
 
           SupplierDAO.createSupplierBankAccount(connection, supplierId, bankAccountId);
         }

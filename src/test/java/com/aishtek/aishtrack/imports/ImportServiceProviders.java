@@ -22,8 +22,11 @@ import com.amazonaws.util.StringUtils;
 public class ImportServiceProviders {
 
   private Connection getConnection() throws SQLException {
+    // Connection connection = DriverManager.getConnection(
+    // "jdbc:postgresql://78.47.31.201:54320/aishwary_staging", "aishwary_stagelogin", "x0n9jNsP");
     Connection connection = DriverManager.getConnection(
-        "jdbc:postgresql://78.47.31.201:54320/aishwary_staging", "aishwary_stagelogin", "x0n9jNsP");
+        "jdbc:postgresql://aishtek.c5z8niycvgrg.ap-south-1.rds.amazonaws.com/aishtek", "aishtek",
+        "a1sht3k.com");
     connection.setAutoCommit(false);
     return connection;
   }
@@ -47,7 +50,7 @@ public class ImportServiceProviders {
       while (rowIterator.hasNext()) {
         try {
           Row row = rowIterator.next();
-          i = 1 + 1;
+          i = i + 1;
           System.out.println("starting: " + i);
           // For each row, iterate through all the columns
           Iterator<Cell> cellIterator = row.cellIterator();
@@ -69,11 +72,16 @@ public class ImportServiceProviders {
 
           if (!StringUtils.isNullOrEmpty(supplier)) {
             int supplierId = SupplierDAO.create(connection, supplier, "domestic");
-            Address address = new Address("", "", "", "", "");
+
+            Address address = new Address("NA", "NA", "NA", "NA", "NA");
             int addressId = AddressDAO.create(connection, address);
+            SupplierDAO.createSupplierAddress(connection, supplierId, addressId);
+
+            Address bankAddress = new Address("NA", "NA", "NA", "NA", "NA");
+            int bankAddressId = AddressDAO.create(connection, bankAddress);
 
             int bankAccountId = BankAccountDAO.create(connection, bankName, bankBranch, ifsc,
-                accountNumber, "", "", addressId);
+                accountNumber, "", "", bankAddressId);
 
             SupplierDAO.createSupplierBankAccount(connection, supplierId, bankAccountId);
             System.out.println("finished: " + i);

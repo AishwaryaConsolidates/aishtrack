@@ -38,11 +38,12 @@ public class DomesticRemittanceDAO extends BaseDAO {
             + " fbad.street, fbad.area, fbad.city, fbad.state, fbad.pincode, "
             + " sb.name, sb.branch, sb.swift_code, sb.account_number, sb.iban, sb.other_details, sb.encrypted_account_number, sb.id, "
             + " fb.name, fb.branch, fb.swift_code, fb.account_number, fb.iban, fb.other_details, fb.encrypted_account_number, fb.id, "
-            + " dr.cheque_number, dr.cheque_date "
+            + " dr.cheque_number, dr.cheque_date, aba.logo_url "
             + " FROM domestic_remittances dr inner join suppliers s on dr.supplier_id = s.id "
             + " INNER JOIN addresses fbad on dr.from_bank_address_id = fbad.id "
             + " INNER JOIN bank_accounts sb on dr.supplier_bank_account_id = sb.id "
             + " INNER JOIN bank_accounts fb on dr.from_bank_account_id = fb.id "
+            + " INNER JOIN aishwarya_bank_accounts aba on fb.id = aba.bank_account_id "
             + " WHERE dr.id = ? ";
 
     PreparedStatement statement = connection.prepareStatement(sql);
@@ -83,6 +84,7 @@ public class DomesticRemittanceDAO extends BaseDAO {
 
       hashMap.put("chequeNumber", result.getString(27));
       hashMap.put("chequeDate", Util.formatDate(result.getDate(28)));
+      hashMap.put("logoUrl", result.getString(29));
       return hashMap;
     } else {
       throw new SQLException("No domesticRemittance for Id");

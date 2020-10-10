@@ -21,4 +21,18 @@ public class EncryptionServiceTest extends BaseIntegrationTest {
       assertEquals(true, false);
     }
   }
+
+  @Test
+  public void testAnEncryptedBankAccountNumber() throws IOException {
+    String testString = "V818OhNmeXJ0C0CCPmPfWg==";
+
+    EncryptionService es = new EncryptionService();
+    try {
+      String decryptedString = es.decrypt(testString, 31);
+      assertEquals("379405110000104", decryptedString);
+    } catch (Exception e) {
+      e.printStackTrace();
+      assertEquals(true, false);
+    }
+  }
 }
