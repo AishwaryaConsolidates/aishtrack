@@ -99,12 +99,14 @@ public class TechnicianDAO extends BaseDAO {
     }
 
     PreparedStatement statement = connection.prepareStatement(sql);
-
+    int index = 1;
     if (workOrderId > 0) {
-      statement.setInt(1, workOrderId);
+      statement.setInt(index, workOrderId);
+      index++;
     }
     if (serviceReportId > 0) {
-      statement.setInt(1, serviceReportId);
+      statement.setInt(index, serviceReportId);
+      index++;
     }
 
     ResultSet result = statement.executeQuery();
