@@ -157,11 +157,10 @@
     <script src="../js/config.js"></script>
     <script src="../js/aishtrack.js"></script>
     <script type="text/javascript" src="../vendors/DataTables/datatables.min.js"></script>
-    <script type="../js/crypto-js.min-4.0.0.js">
     <script>
         $(function () {
-        	/* checkLogin(); */
-        	/* checkForAdministrator(); */
+        	checkLogin();
+        	checkForAdministrator();
         	getSupplierInfo();
         	loadTopNav();
         	loadFooter();
@@ -231,9 +230,6 @@
             e.preventDefault();
             window.scrollTo(0,0);
             $("#notification").html("<center><img src='../img/Gear-3.1s-104px.gif'/></center>");
-            var cypherKey = "";
-            while(
-var person = prompt("Please enter your name", "Harry Potter");
             $.ajax({
                 url : apiURLBase + "/createSupplierBankAccount",
                 type : "POST",

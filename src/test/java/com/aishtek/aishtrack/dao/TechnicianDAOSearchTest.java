@@ -2,6 +2,7 @@ package com.aishtek.aishtrack.dao;
 
 import static org.junit.Assert.assertEquals;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import org.junit.Test;
@@ -16,6 +17,9 @@ public class TechnicianDAOSearchTest extends BaseIntegrationTest {
   @Test
   public void searchRetunsAllTechnicians() throws SQLException {
     try (Connection connection = getConnection()) {
+      PreparedStatement preparedStatement = connection.prepareStatement("delete from technicians");
+      preparedStatement.executeUpdate();
+
       technicianId1 = createTestTechnician(connection);
       technicianId2 = createTestTechnician(connection);
 
@@ -35,6 +39,9 @@ public class TechnicianDAOSearchTest extends BaseIntegrationTest {
   @Test
   public void searchDoesNotRetunDeletedTechnicians() throws SQLException {
     try (Connection connection = getConnection()) {
+      PreparedStatement preparedStatement = connection.prepareStatement("delete from technicians");
+      preparedStatement.executeUpdate();
+
       technicianId1 = createTestTechnician(connection);
       technicianId2 = createTestTechnician(connection);
 

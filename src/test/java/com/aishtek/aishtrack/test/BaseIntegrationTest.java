@@ -49,7 +49,7 @@ public class BaseIntegrationTest {
 
   public int createTestPerson(Connection connection) throws SQLException {
     return PersonDAO.create(connection,
-        new Person("Asterix", "Gaul", "Troubleshooter", "asterix@aishtek.tst", "9999999999",
+        new Person("Asterix", "Gaul", "Troubleshooter", "9999999999", "asterix@aishtek.tst",
             "8888888888", "7777777777"));
   }
 

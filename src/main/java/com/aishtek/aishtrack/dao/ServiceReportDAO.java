@@ -144,7 +144,8 @@ public class ServiceReportDAO extends BaseDAO {
     String sql =
         "SELECT sr.id, sr.report_date, sr.status, sr.status_date, ct.name, eq.name, sr.brand, sr.model, sr.serial_number, sr.part_number, sr.notes, "
             + " c.name, cp.first_name, cp.last_name, cp.designation, cp.email, cp.phone, "
-            + " ca.street, ca.area, ca.city, ca.state, ca.pincode, wosr.work_order_id,  wo.created_at, sr.type, sr.installation_details, sr.category_id, sr.equipment_id, sr.additional_email "
+            + " ca.street, ca.area, ca.city, ca.state, ca.pincode, wosr.work_order_id,  wo.created_at, sr.type, sr.installation_details, sr.category_id, sr.equipment_id, sr.additional_email, "
+            + " sr.customer_remarks, sr.service_rating, sr.signed_by "
             + " FROM service_reports sr, customers c, addresses ca, persons cp, categories ct, equipments eq, work_order_service_reports wosr, work_orders wo "
             + " WHERE sr.code = ? and sr.customer_id = c.id and sr.address_id = ca.id and sr.contact_person_id = cp.id "
             + " and sr.category_id = ct.id and sr.equipment_id = eq.id and sr.id = wosr.service_report_id and wosr.work_order_id = wo.id ";
@@ -188,6 +189,10 @@ public class ServiceReportDAO extends BaseDAO {
       hashMap.put("categoryId", "" + result.getInt(27));
       hashMap.put("equipmentId", "" + result.getInt(28));
       hashMap.put("additionalEmail", result.getString(29));
+
+      hashMap.put("customerRemarks", result.getString(30));
+      hashMap.put("serviceRating", "" + result.getInt(31));
+      hashMap.put("signedBy", result.getString(32));
 
       hashMap.put("technicians", getTechnicians(connection, serviceReportId));
       return hashMap;
