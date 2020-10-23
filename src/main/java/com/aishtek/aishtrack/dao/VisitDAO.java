@@ -47,14 +47,15 @@ public class VisitDAO extends BaseDAO {
 
   public static Visit findById(Connection connection, int visitId) throws SQLException {
     String sql =
-        "SELECT v.id, v.service_report_id, v.visit_date, v.complaint, v.findings, v.work_done, v.customer_remarks, sr.status, sr.code FROM visits v, service_reports sr where v.service_report_id = sr.id and v.id = ?";
+        "SELECT v.id, v.service_report_id, v.visit_date, v.complaint, v.findings, v.work_done, v.customer_remarks, sr.status, sr.code, v.deleted FROM visits v, service_reports sr where v.service_report_id = sr.id and v.id = ?";
 
     PreparedStatement statement = connection.prepareStatement(sql);
     statement.setInt(1, visitId);
     ResultSet result = statement.executeQuery();
     if (result.next()) {
       Visit visit = new Visit(result.getInt(1), result.getInt(2), dateFor(result.getTimestamp(3)),
-          result.getString(4), result.getString(5), result.getString(6), result.getString(7));
+          result.getString(4), result.getString(5), result.getString(6), result.getString(7),
+          result.getInt(10));
       visit.setServiceReportStatus(result.getString(8));
       visit.setServiceReportCode(result.getString(9));
       return visit;
@@ -86,7 +87,7 @@ public class VisitDAO extends BaseDAO {
   public static ArrayList<Visit> getVisitsDetails(Connection connection,
       int serviceReportId) throws SQLException {
     String sql =
-        "SELECT id, service_report_id, visit_date, complaint, findings, work_done, customer_remarks from visits where service_report_id = ? and deleted = 0 order by visit_date desc ";
+        "SELECT id, service_report_id, visit_date, complaint, findings, work_done, customer_remarks, deleted from visits where service_report_id = ? and deleted = 0 order by visit_date desc ";
 
     PreparedStatement statement = connection.prepareStatement(sql);
     statement.setInt(1, serviceReportId);
@@ -96,7 +97,8 @@ public class VisitDAO extends BaseDAO {
     ArrayList<Visit> visits = new ArrayList<Visit>();
     while (result.next()) {
       Visit visit = new Visit(result.getInt(1), result.getInt(2), dateFor(result.getTimestamp(3)),
-          result.getString(4), result.getString(5), result.getString(6), result.getString(7));
+          result.getString(4), result.getString(5), result.getString(6), result.getString(7),
+          result.getInt(8));
 
       visit.setRecommendedSpareParts(
           RecommendedSparePartDAO.findByVisitId(connection, visit.getId()));

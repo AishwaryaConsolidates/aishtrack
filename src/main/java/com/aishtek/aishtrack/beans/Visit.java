@@ -21,7 +21,7 @@ public class Visit extends BaseBean {
   private String serviceReportCode;
 
   public Visit(int id, int serviceReportId, Date visitDate, String complaint, String findings,
-      String workDone, String customerRemarks) {
+      String workDone, String customerRemarks, int deleted) {
     this.id = id;
     this.serviceReportId = serviceReportId;
     this.visitDate = visitDate;
@@ -29,6 +29,7 @@ public class Visit extends BaseBean {
     this.findings = findings;
     this.workDone = workDone;
     this.customerRemarks = customerRemarks;
+    this.deleted = deleted;
   }
 
   public int getServiceReportId() {

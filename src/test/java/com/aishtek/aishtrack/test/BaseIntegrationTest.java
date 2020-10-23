@@ -11,13 +11,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import com.aishtek.aishtrack.beans.Address;
 import com.aishtek.aishtrack.beans.Customer;
 import com.aishtek.aishtrack.beans.DomesticRemittance;
+import com.aishtek.aishtrack.beans.File;
 import com.aishtek.aishtrack.beans.OutwardRemittance;
 import com.aishtek.aishtrack.beans.Person;
 import com.aishtek.aishtrack.beans.ServiceReport;
 import com.aishtek.aishtrack.beans.Visit;
+import com.aishtek.aishtrack.beans.VisitFile;
 import com.aishtek.aishtrack.beans.WorkOrder;
 import com.aishtek.aishtrack.dao.AddressDAO;
 import com.aishtek.aishtrack.dao.BankAccountDAO;
@@ -25,6 +28,7 @@ import com.aishtek.aishtrack.dao.CategoryDAO;
 import com.aishtek.aishtrack.dao.CustomerDAO;
 import com.aishtek.aishtrack.dao.DomesticRemittanceDAO;
 import com.aishtek.aishtrack.dao.ExpenseReportDAO;
+import com.aishtek.aishtrack.dao.FileDAO;
 import com.aishtek.aishtrack.dao.InlandPolicyDAO;
 import com.aishtek.aishtrack.dao.MarinePolicyDAO;
 import com.aishtek.aishtrack.dao.OutwardRemittanceDAO;
@@ -33,6 +37,7 @@ import com.aishtek.aishtrack.dao.ServiceReportDAO;
 import com.aishtek.aishtrack.dao.SupplierDAO;
 import com.aishtek.aishtrack.dao.TechnicianDAO;
 import com.aishtek.aishtrack.dao.VisitDAO;
+import com.aishtek.aishtrack.dao.VisitFileDAO;
 import com.aishtek.aishtrack.dao.WorkOrderDAO;
 
 public class BaseIntegrationTest {
@@ -59,8 +64,10 @@ public class BaseIntegrationTest {
   }
 
   public int createTestCustomer(Connection connection) throws SQLException {
+    String addToNickName = randomString(5);
     int customerId = CustomerDAO.create(connection,
-        new Customer(0, "Bajji Corner", "Bajji", createTestAddress(connection), 0, "GSTIN"));
+        new Customer(0, "Bajji Corner", "Bajji" + addToNickName, createTestAddress(connection), 0,
+            "GSTIN"));
     CustomerDAO.createContactPerson(connection, customerId, new Person("Asterix", "Gaul",
         "Troubleshooter", "asterix@aishtek.tst", "9999999999", "8888888888", "7777777777"));
     return customerId;
@@ -240,8 +247,27 @@ public class BaseIntegrationTest {
       serviceReportId = createTestServiceReport(connection, 0, 0, 0);
     }
     Visit visit = new Visit(0, serviceReportId, today(), "complaint", "findings",
-        "workDone", "customerRemarks");
+        "workDone", "customerRemarks", 0);
 
     return VisitDAO.create(connection, visit);
+  }
+
+  public int createTestFile(Connection connection, String fileName, String location)
+      throws SQLException {
+    if (StringUtils.isEmpty(fileName)) {
+      fileName = "file_name";
+    }
+    if (StringUtils.isEmpty(location)) {
+      location = "location";
+    }
+
+    return FileDAO.create(connection, new File(fileName, location));
+  }
+
+  public int createTestVisitFile(Connection connection, String fileName, String location,
+      int visitId)
+      throws SQLException {
+    int fileId = createTestFile(connection, fileName, location);
+    return VisitFileDAO.create(connection, new VisitFile(visitId, fileId));
   }
 }

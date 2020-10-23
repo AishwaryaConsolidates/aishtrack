@@ -75,8 +75,11 @@ public class WorkOrderDAO extends BaseDAO {
 
   public static void delete(Connection connection, int workOrderId) throws SQLException {
     PreparedStatement preparedStatement =
-        connection.prepareStatement("update work_orders set deleted = 1 where id = ?");
-    preparedStatement.setInt(1, workOrderId);
+        connection.prepareStatement(
+            "update work_orders set deleted = 1, status = ?, status_date = ? where id = ?");
+    preparedStatement.setString(1, WorkStatus.DELETED_STATUS);
+    preparedStatement.setTimestamp(2, timestampFor(currentTimestamp()));
+    preparedStatement.setInt(3, workOrderId);
     preparedStatement.executeUpdate();
 
     createStatusHistory(connection, workOrderId, WorkStatus.DELETED_STATUS);

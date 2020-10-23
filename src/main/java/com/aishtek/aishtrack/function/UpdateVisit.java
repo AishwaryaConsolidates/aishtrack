@@ -71,7 +71,7 @@ public class UpdateVisit extends BaseFunction
       String complaint, String findings, String workDone, String customerRemarks)
       throws SQLException {
     Visit visit =
-        new Visit(0, serviceReportId, visitDate, complaint, findings, workDone, customerRemarks);
+        new Visit(0, serviceReportId, visitDate, complaint, findings, workDone, customerRemarks, 0);
 
     int visitId = VisitDAO.create(connection, visit);
     updateServiceReportStatus(connection, serviceReportId);
@@ -83,7 +83,8 @@ public class UpdateVisit extends BaseFunction
       String complaint, String findings, String workDone, String customerRemarks)
       throws SQLException {
     Visit visit =
-        new Visit(id, serviceReportId, visitDate, complaint, findings, workDone, customerRemarks);
+        new Visit(id, serviceReportId, visitDate, complaint, findings, workDone, customerRemarks,
+            0);
 
     VisitDAO.update(connection, visit);
     updateServiceReportStatus(connection, serviceReportId);
