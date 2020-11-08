@@ -106,6 +106,7 @@
     var noOfExpenses = 0;
         $(function () {
         	checkLogin();
+        	checkForAdministratorOrManager();
         	$("#technicianEmail").val(getUserEmail());
 
         	loadTopNav();

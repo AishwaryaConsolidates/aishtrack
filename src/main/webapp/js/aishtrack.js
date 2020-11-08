@@ -357,6 +357,14 @@ function checkForAdministrator() {
 	}
 }
 
+function checkForAdministratorOrManager() {
+	if(isAdministrator() || isManager()){
+		return true;
+	} else {
+		window.location.href = htmlURLBase + "/technicianIndex.html";
+	}
+}
+
 function isAdministrator() {
 	if(getUserRole() === "administrator"){
 		return true;
