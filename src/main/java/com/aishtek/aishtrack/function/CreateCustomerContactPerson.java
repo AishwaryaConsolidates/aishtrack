@@ -1,13 +1,11 @@
 package com.aishtek.aishtrack.function;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import com.aishtek.aishtrack.beans.Person;
-import com.aishtek.aishtrack.dao.CustomerDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
+import com.aishtek.aishtrack.services.CustomerService;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.google.gson.Gson;
@@ -21,12 +19,16 @@ public class CreateCustomerContactPerson extends BaseFunction
     try (Connection connection = getConnection()) {
       try {
         Response response = getParams(serverlessInput.getBody());
-        createContactPerson(connection, response.customerId, response.firstName, response.lastName,
-            response.email, response.phone, response.designation, response.mobile,
-            response.alternatePhone);
+
+        CustomerService customerService = customerService();
+
+        customerService.createContactPerson(connection, response.customerId, response.firstName,
+            response.lastName, response.email, response.phone, response.designation,
+            response.mobile, response.alternatePhone);
 
         ArrayList<HashMap<String, String>> contactPersons =
-            CustomerDAO.getContactPersons(connection, response.customerId);
+            customerService.getContactPersons(connection, response.customerId);
+
         output = createSuccessOutputForArrayHash(contactPersons);
         connection.commit();
       } catch (Exception e) {
@@ -39,13 +41,8 @@ public class CreateCustomerContactPerson extends BaseFunction
     return output;
   }
 
-  public int createContactPerson(Connection connection, int customerId, String firstName,
-      String lastName, String email, String phone, String designation, String mobile,
-      String alternatePhone)
-      throws SQLException {
-    Person person =
-        new Person(firstName, lastName, designation, phone, email, mobile, alternatePhone);
-    return CustomerDAO.createContactPerson(connection, customerId, person);
+  private CustomerService customerService() {
+    return new CustomerService();
   }
 
   private Response getParams(String jsonString) {

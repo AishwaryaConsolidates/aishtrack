@@ -2,6 +2,8 @@ package com.aishtek.aishtrack.services;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import com.aishtek.aishtrack.beans.Customer;
 import com.aishtek.aishtrack.beans.Person;
 import com.aishtek.aishtrack.dao.CustomerDAO;
@@ -37,5 +39,10 @@ public class CustomerService extends BaseService {
     Person person =
         new Person(firstName, lastName, designation, phone, email, mobile, alternatePhone);
     return CustomerDAO.createContactPerson(connection, customerId, person);
+  }
+
+  public ArrayList<HashMap<String, String>> getContactPersons(Connection connection,
+      int customerId) throws SQLException {
+    return CustomerDAO.getContactPersons(connection, customerId);
   }
 }

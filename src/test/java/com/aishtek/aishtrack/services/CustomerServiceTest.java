@@ -96,4 +96,38 @@ public class CustomerServiceTest extends BaseIntegrationTest {
       assertEquals(true, false);
     }
   }
+
+  @Test
+  public void getContactPersonsTest() throws IOException {
+    try (Connection connection = getConnection()) {
+      int customerId = createTestCustomer(connection);
+
+      (new CustomerService()).createContactPerson(connection, customerId, firstName, lastName,
+          email, phone, designation, mobile, alternatePhone);
+
+      ArrayList<HashMap<String, String>> contactPersons =
+          (new CustomerService()).getContactPersons(connection, customerId);
+
+      assertEquals(contactPersons.size(), 2);
+
+      assertEquals(contactPersons.get(0).get("firstName"), "Kapil");
+      assertEquals(contactPersons.get(0).get("lastName"), "Dev");
+      assertEquals(contactPersons.get(0).get("designation"), "Bowler");
+      assertEquals(contactPersons.get(0).get("phone"), "1231231234");
+      assertEquals(contactPersons.get(0).get("email"), "email@email.tst");
+      assertEquals(contactPersons.get(0).get("mobile"), "2342342343");
+      assertEquals(contactPersons.get(0).get("alternatePhone"), "4444444444");
+
+      assertEquals(contactPersons.get(1).get("firstName"), "Asterix");
+      assertEquals(contactPersons.get(1).get("lastName"), "Gaul");
+      assertEquals(contactPersons.get(1).get("designation"), "Troubleshooter");
+      assertEquals(contactPersons.get(1).get("phone"), "9999999999");
+      assertEquals(contactPersons.get(1).get("email"), "asterix@aishtek.tst");
+      assertEquals(contactPersons.get(1).get("mobile"), "8888888888");
+      assertEquals(contactPersons.get(1).get("alternatePhone"), "7777777777");
+    } catch (Exception e) {
+      e.printStackTrace();
+      assertEquals(true, false);
+    }
+  }
 }

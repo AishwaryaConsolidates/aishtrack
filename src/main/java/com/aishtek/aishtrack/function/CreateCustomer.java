@@ -43,6 +43,7 @@ public class CreateCustomer extends BaseFunction
   private CustomerService customerService() {
     return new CustomerService();
   }
+
   class Response {
     public String name;
     private String nickName;

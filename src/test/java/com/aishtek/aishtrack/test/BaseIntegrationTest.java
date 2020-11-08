@@ -73,7 +73,7 @@ public class BaseIntegrationTest {
         new Customer(0, "Bajji Corner", "Bajji" + addToNickName, createTestAddress(connection), 0,
             "GSTIN"));
     CustomerDAO.createContactPerson(connection, customerId, new Person("Asterix", "Gaul",
-        "Troubleshooter", "asterix@aishtek.tst", "9999999999", "8888888888", "7777777777"));
+        "Troubleshooter", "9999999999", "asterix@aishtek.tst", "8888888888", "7777777777"));
     return customerId;
   }
 
