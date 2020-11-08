@@ -21,10 +21,12 @@
 <body>
 <table width="80%" align="center">
 <tr>
-<td colspan="4" align="center"><h1>Aishwarya Consolidates Pvt Ltd.,</h1></td>
+<td><img src="https://aishtrack.s3.ap-south-1.amazonaws.com/artifacts/aishwarya_logo.png"/></td>
+<td colspan="3" align="center"><h1>Aishwarya Consolidates Pvt Ltd.,</h1></td>
 </tr>
 <tr>
-<td colspan="4" align="center">#19, First Floor , 10th B Main , 27th Cross Third Block-Jayanagar, Bengaluru 560 011, India</td>
+<td>&nbsp;</td>
+<td colspan="3" align="center">#34, 12th Main, 4th Block, Jayanagar, Bangalore, KA, 560011, India</td>
 </tr>
 
 <tr>
@@ -105,10 +107,10 @@
 
 <tr>
 <td colspan="4" align="center">
-    <table id="summaryTable" class="striped" width="90%" border=1>
+    <table id="summaryTable" class="striped" width="100%" border=1>
 		<tr>
 		<td width="40%"><b>Amount to be remitted</b></td>
-		<td><span class="currency"></span>&nbsp;<span class="amount"></span></td>
+		<td><span class="currency"></span>&nbsp;<span class="amount"></span>&nbsp;(<span class="amountInWords"></span>)</td>
 		</tr>
 
        <tr>
@@ -126,16 +128,14 @@
 		<td>
 		<span class="supplierStreet"></span><br/>
 		<span class="supplierArea"></span><br/>
-		<span class="supplierCity"></span><br/>
-		<span class="supplierState"></span>&nbsp;<span class="supplierPincode"></span>
+		<span class="supplierCity"></span>&nbsp;<span class="supplierState"></span>&nbsp;<span class="supplierPincode"></span>
 		</td>
 		</tr>
 		
 		<tr>
 		<td width="40%"><b>Beneficiary Bank SWIFT code</b></td>
 		<td>
-		<span class="supplierBank"></span><br/>
-		<span class="supplierBankBranch"></span><br/>
+		<span class="supplierBank"></span>&nbsp;<span class="supplierBankBranch"><br/>
 		<span class="supplierBankOtherDetails"></span><br/>
 		SWIFT: <span class="supplierBankSwiftCode"></span>
 		</td>
@@ -544,6 +544,7 @@ undertaking on behalf of the firm/company.</td>
 		
 		function fillRemittance(remittance) {
         	$(".amount").html(remittance.amount);
+        	$(".amountInWords").html(remittance.amountInWords);
         	$(".goods").html(remittance.goods);
         	$(".goodsClassificationNo").html(remittance.goodsClassificationNo);
         	$(".countryOfOrigin").html(remittance.countryOfOrigin);

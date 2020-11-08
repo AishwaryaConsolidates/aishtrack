@@ -20,7 +20,7 @@ public class AmountToWordsConverter {
       "Ninety" // 9
   };
 
-  public static String convert(BigDecimal amount) {
+  public static String convertToRupees(BigDecimal amount) {
 
     int number = amount.intValue();
     int decimal = (int) (amount.remainder(BigDecimal.ONE).doubleValue() * 100);
@@ -28,6 +28,20 @@ public class AmountToWordsConverter {
     String amountString = "Rupees " + convert(number);
     if (decimal > 0) {
       amountString = amountString + " and " + convert(decimal) + " Paisa";
+    }
+
+    amountString = amountString + " only";
+    return amountString;
+  }
+
+  public static String convert(BigDecimal amount) {
+
+    int number = amount.intValue();
+    int decimal = (int) (amount.remainder(BigDecimal.ONE).doubleValue() * 100);
+
+    String amountString = convert(number);
+    if (decimal > 0) {
+      amountString = amountString + " and " + convert(decimal);
     }
 
     amountString = amountString + " only";

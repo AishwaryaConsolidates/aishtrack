@@ -109,7 +109,7 @@ public class OutwardRemittanceDAO extends BaseDAO {
       hashMap.put("fromBankIban", result.getString(44));
       hashMap.put("fromBankOtherDetails", result.getString(45));
       hashMap.put("fromBankAccountNumberEncrypted", result.getString(46));
-      hashMap.put("fromrBankAccountId", "" + result.getInt(47));
+      hashMap.put("fromBankAccountId", "" + result.getInt(47));
 
       return hashMap;
     } else {

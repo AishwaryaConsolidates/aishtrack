@@ -1,10 +1,13 @@
 package com.aishtek.aishtrack.function;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import com.aishtek.aishtrack.dao.OutwardRemittanceDAO;
 import com.aishtek.aishtrack.model.ServerlessInput;
 import com.aishtek.aishtrack.model.ServerlessOutput;
+import com.aishtek.aishtrack.services.AmountToWordsConverter;
 import com.aishtek.aishtrack.services.EncryptionService;
 import com.aishtek.aishtrack.utils.Util;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -23,15 +26,21 @@ public class PrintOutwardRemittance extends BaseFunction
         EncryptionService encryptionService = new EncryptionService();
         int id = Util.getInt(serverlessInput.getQueryStringParameters().get("id"));
 
-        // get visit
         HashMap<String, String> remittance = OutwardRemittanceDAO.findForPrint(connection, id);
         remittance.put("supplierBankAccountNumber",
             encryptionService.decrypt(remittance.get("supplierBankAccountNumberEncrypted"),
                 Integer.parseInt(remittance.get("supplierBankAccountId"))));
         remittance.remove("supplierBankAccountNumberEncrypted");
-        // remittance.put("fromBankAccountNumber",
-        // encryptionService.decrypt(remittance.get("fromBankAccountNumberEncrypted")));
-        // remittance.remove("fromBankAccountNumberEncrypted");
+        remittance.put("fromBankAccountNumber",
+            encryptionService.decrypt(remittance.get("fromBankAccountNumberEncrypted"),
+                Integer.parseInt(remittance.get("fromBankAccountId"))));
+        remittance.remove("fromBankAccountNumberEncrypted");
+
+        remittance.put("amountInWords",
+            AmountToWordsConverter.convert(new BigDecimal(remittance.get("amount"))));
+        remittance.put("amount",
+            NumberFormat.getInstance().format((new BigDecimal(remittance.get("amount")))));
+        remittance.put("id", String.format("%04d", new Integer(remittance.get("id"))));
 
         output = createSuccessOutput();
         output.setBody(new Gson().toJson(remittance));
