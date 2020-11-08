@@ -12,6 +12,15 @@
         "AllowHeaders" : "'*'",
         "AllowOrigin"  : "'*'"
       }
+    },
+    "Function" : {
+      "Environment" : {
+        "Variables" : {
+          "dbConnectURL" : "jdbc:postgresql://78.47.31.201:54320/aishwary_staging",
+          "dbUsername" : "aishwary_stagelogin",
+          "dbPassword" : "x0n9jNsP"
+        }
+      }
     }
   },
   "Resources": {

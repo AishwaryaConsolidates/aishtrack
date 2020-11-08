@@ -4,12 +4,16 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import com.aishtek.aishtrack.beans.Address;
@@ -269,5 +273,23 @@ public class BaseIntegrationTest {
       throws SQLException {
     int fileId = createTestFile(connection, fileName, location);
     return VisitFileDAO.create(connection, new VisitFile(visitId, fileId));
+  }
+
+  public Map<String, String> getLastRecordFromTable(Connection connection, String tableName)
+      throws SQLException {
+    String sql = "select * from " + tableName + " order by id desc limit 1";
+    PreparedStatement statement = connection.prepareStatement(sql);
+    ResultSet result = statement.executeQuery();
+
+    ResultSetMetaData md = result.getMetaData();
+    int columns = md.getColumnCount();
+    Map<String, String> row = new HashMap<String, String>(columns);
+
+    if (result.next()) {
+      for (int i = 1; i <= columns; ++i) {
+        row.put(md.getColumnName(i), result.getObject(i).toString());
+      }
+    }
+    return row;
   }
 }
